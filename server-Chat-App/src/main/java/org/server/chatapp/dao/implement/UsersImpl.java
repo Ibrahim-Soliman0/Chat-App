@@ -6,10 +6,7 @@ import org.server.chatapp.model.Users;
 import org.server.chatapp.model.enums.Gender;
 import org.server.chatapp.model.enums.Status;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +46,6 @@ public class UsersImpl implements UsersDao {
 
     @Override
     public Users get(long id) {
-
         try (Connection connection = Database.getDataSource().getConnection()) {
             String sql = """
                     SELECT * FROM USERS WHERE id = ?""";
@@ -106,17 +102,15 @@ public class UsersImpl implements UsersDao {
                         Status.valueOf(resultSet.getString("status").toUpperCase()),
                         resultSet.getTimestamp("lastSeen").toLocalDateTime()
                 ));
+
+                preparedStatement.close();
+                resultSet.close();
             }
         } catch (SQLException se) {
             se.printStackTrace();
         }
 
         return allUsers;
-    }
-
-    @Override
-    public int save(Users users) {
-        return 0;
     }
 
     @Override
@@ -147,13 +141,15 @@ public class UsersImpl implements UsersDao {
             preparedStatement.setString(5, users.getPassword());
             preparedStatement.setString(6, users.getGender().name());
             preparedStatement.setString(7, users.getCountry());
-            preparedStatement.setDate(8, java.sql.Date.valueOf(users.getDob()));
+            preparedStatement.setDate(8, Date.valueOf(users.getDob()));
             preparedStatement.setString(9, users.getBio());
             preparedStatement.setString(10, users.getStatus().name());
-            preparedStatement.setTimestamp(11, java.sql.Timestamp.valueOf(users.getLastSeen()));
+            preparedStatement.setTimestamp(11, Timestamp.valueOf(users.getLastSeen()));
             preparedStatement.setLong(12, users.getId());
 
             result = preparedStatement.executeUpdate();
+
+            preparedStatement.close();
         } catch (SQLException se) {
             se.printStackTrace();
         }
@@ -190,12 +186,14 @@ public class UsersImpl implements UsersDao {
             preparedStatement.setString(6, users.getPassword());
             preparedStatement.setString(7, users.getGender().name());
             preparedStatement.setString(8, users.getCountry());
-            preparedStatement.setDate(9, java.sql.Date.valueOf(users.getDob()));
+            preparedStatement.setDate(9, Date.valueOf(users.getDob()));
             preparedStatement.setString(10, users.getBio());
             preparedStatement.setString(11, users.getStatus().name());
-            preparedStatement.setTimestamp(12, java.sql.Timestamp.valueOf(users.getLastSeen()));
+            preparedStatement.setTimestamp(12, Timestamp.valueOf(users.getLastSeen()));
 
             result = preparedStatement.executeUpdate();
+
+            preparedStatement.close();
         } catch (SQLException se) {
             se.printStackTrace();
         }
@@ -214,6 +212,8 @@ public class UsersImpl implements UsersDao {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setLong(1, users.getId());
             result = preparedStatement.executeUpdate();
+
+            preparedStatement.close();
         } catch (SQLException se) {
             se.printStackTrace();
         }
