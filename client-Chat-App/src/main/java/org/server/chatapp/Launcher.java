@@ -1,4 +1,4 @@
-package org.chatapp;
+package org.server.chatapp;
 
 import javafx.application.Application;
 

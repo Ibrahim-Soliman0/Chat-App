@@ -1,14 +1,18 @@
-target/
+client-Chat-App/target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 .kotlin
+server-Chat-App/src/main/resources/db.properties
+server-Chat-App/target/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+.idea/runConfigurations
+.idea/*
 *.iws
 *.iml
 *.ipr
