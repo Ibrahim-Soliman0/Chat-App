@@ -163,7 +163,6 @@ public class UsersImpl implements UsersDao {
         try (Connection connection = Database.getDataSource().getConnection()) {
             String sql = """
                     INSERT INTO users (
-                              id,
                               phoneNumber,
                               name,
                               email,
@@ -175,21 +174,20 @@ public class UsersImpl implements UsersDao {
                               bio,
                               status,
                               lastSeen
-                          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);""";
+                          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);""";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setLong(1, users.getId());
-            preparedStatement.setString(2, users.getPhoneNumber());
-            preparedStatement.setString(3, users.getName());
-            preparedStatement.setString(4, users.getEmail());
-            preparedStatement.setString(5, users.getPicturePath());
-            preparedStatement.setString(6, users.getPassword());
-            preparedStatement.setString(7, users.getGender().name());
-            preparedStatement.setString(8, users.getCountry());
-            preparedStatement.setDate(9, Date.valueOf(users.getDob()));
-            preparedStatement.setString(10, users.getBio());
-            preparedStatement.setString(11, users.getStatus().name());
-            preparedStatement.setTimestamp(12, Timestamp.valueOf(users.getLastSeen()));
+            preparedStatement.setString(1, users.getPhoneNumber());
+            preparedStatement.setString(2, users.getName());
+            preparedStatement.setString(3, users.getEmail());
+            preparedStatement.setString(4, users.getPicturePath());
+            preparedStatement.setString(5, users.getPassword());
+            preparedStatement.setString(6, users.getGender().name());
+            preparedStatement.setString(7, users.getCountry());
+            preparedStatement.setDate(8, Date.valueOf(users.getDob()));
+            preparedStatement.setString(9, users.getBio());
+            preparedStatement.setString(10, users.getStatus().name());
+            preparedStatement.setTimestamp(11, Timestamp.valueOf(users.getLastSeen()));
 
             result = preparedStatement.executeUpdate();
 
@@ -207,7 +205,7 @@ public class UsersImpl implements UsersDao {
         int result = 0;
         try (Connection connection = Database.getDataSource().getConnection()) {
             String sql = """
-                    SELECT * FROM USERS WHERE id = ?""";
+                    DELETE FROM USERS WHERE id = ?""";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setLong(1, users.getId());
