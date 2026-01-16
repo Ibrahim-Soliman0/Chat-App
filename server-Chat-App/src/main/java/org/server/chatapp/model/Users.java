@@ -42,6 +42,22 @@ public class Users {
         this.lastSeen = lastSeen;
     }
 
+    public Users(String phoneNumber, String name, String email,
+                 String picturePath, String password, Gender gender,
+                 String country, LocalDate dob, String bio,
+                 Status status, LocalDateTime lastSeen) {
+        this.phoneNumber = phoneNumber;
+        this.name = name;
+        this.email = email;
+        this.picturePath = picturePath;
+        this.password = password;
+        this.gender = gender;
+        this.country = country;
+        this.dob = dob;
+        this.bio = bio;
+        this.status = status;
+        this.lastSeen = lastSeen;
+    }
 
     public Long getId() {
         return id;

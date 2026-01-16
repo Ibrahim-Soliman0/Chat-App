@@ -2,7 +2,8 @@ module org.client.chatapp {
     requires javafx.controls;
     requires javafx.fxml;
 
-
-    opens org.server.chatapp to javafx.fxml;
-    exports org.server.chatapp;
+    exports org.client.chatapp;
+    opens org.client.chatapp to javafx.fxml;
+    opens org.client.chatapp.controller to javafx.fxml;
+    exports org.client.chatapp.controller;
 }
