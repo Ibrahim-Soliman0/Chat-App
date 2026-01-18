@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<Pane accessibleRole="BUTTON" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="450.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.controller.HomeScreenController">
+   <children>
 <?import javafx.scene.Group?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.effect.DropShadow?>
@@ -13,6 +22,13 @@
             <DropShadow blurType="ONE_PASS_BOX" height="15.0" radius="3.25" spread="0.5" width="0.0" />
          </effect>
          <children>
+            <SVGPath content="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" fill="#a9aaab00" layoutX="108.0" layoutY="25.0" scaleX="1.5" scaleY="1.5" stroke="#abacad" />
+            <Group fx:id="profileIcon" layoutX="363.0" layoutY="25.0" />
+         </children>
+      </Pane>
+
+
+
             <Group fx:id="profileIcon" layoutX="363.0" layoutY="25.0" onMouseClicked="#onProfileIconClick" />
             <Group fx:id="chatsIcon" layoutX="94.0" layoutY="25.0" onMouseClicked="#onChatsIconClick" />
          </children>
@@ -21,6 +37,36 @@
          <effect>
             <DropShadow blurType="ONE_PASS_BOX" height="15.0" radius="3.25" spread="0.5" width="0.0" />
          </effect>
+         <children>
+            <Group fx:id="bellIcon" layoutX="363.0" layoutY="26.0">
+               <children>
+
+               </children></Group>
+            <Label fx:id="chatLabel" layoutX="53.0" layoutY="16.0" text="Chats">
+               <font>
+                  <Font name="System Bold" size="27.0" />
+               </font>
+            </Label>
+            <StackPane alignment="CENTER" layoutX="14.0" layoutY="18.0" prefHeight="36" prefWidth="36" style="-fx-background-color: #25D366; -fx-background-radius: 10; -fx-cursor: hand;">
+
+               <SVGPath fx:id="chatLogo" content="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" style="-fx-stroke: white; -fx-stroke-width: 2; -fx-fill: transparent;" />
+            </StackPane>
+            <Group fx:id="groupIcon" layoutX="320.0" layoutY="26.0" />
+
+         </children>
+      </Pane>
+   <StackPane fx:id="searchStack" alignment="CENTER_LEFT" layoutX="12.0" layoutY="85.0" prefHeight="37.0" prefWidth="421.0">
+      <children>
+         <TextField fx:id="searchBar" prefHeight="37.0" prefWidth="421.0" promptText="    search conversations..." />
+         <Group fx:id="searchIconGroup">
+            <children>
+               <Circle fx:id="searchHeadIcon" centerX="11" centerY="11" fill="transparent" radius="8" stroke="#abacad" strokeWidth="2" />
+               <SVGPath fx:id="searchLine" content="m21 21-4.34-4.34" stroke="#abacad" strokeWidth="2" />
+            </children>
+         </Group>
+      </children>
+   </StackPane>
+      <Group fx:id="addFriend" layoutX="400.0" layoutY="26.0" />
       </Pane>
    </children>
 </Pane>
