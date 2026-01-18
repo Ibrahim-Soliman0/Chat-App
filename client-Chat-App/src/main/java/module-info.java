@@ -4,6 +4,6 @@ module org.client.chatapp {
 
     exports org.client.chatapp;
     opens org.client.chatapp to javafx.fxml;
-    opens org.client.chatapp.controller to javafx.fxml;
-    exports org.client.chatapp.controller;
+    opens org.client.chatapp.ui.controller to javafx.fxml;
+    exports org.client.chatapp.ui.controller;
 }

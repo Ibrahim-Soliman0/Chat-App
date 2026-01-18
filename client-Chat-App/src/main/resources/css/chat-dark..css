@@ -1,0 +1,38 @@
+.root {
+    -fx-background-color: #111827;
+    -fx-text-fill: #E5E7EB;
+}
+
+.chat-item {
+    -fx-background-color: #1F2933;
+    -fx-border-color: #374151;
+}
+
+.chat-item:hover {
+    -fx-background-color: #243447;
+}
+
+.chat-name {
+    -fx-text-fill: #F9FAFB;
+}
+
+.chat-last-message,
+.chat-time {
+    -fx-text-fill: #9CA3AF;
+}
+
+.unread-badge {
+    -fx-background-color: #34D399;
+}
+
+.message-sent {
+    -fx-background-color: #14B8A6;
+}
+
+.message-received {
+    -fx-background-color: #374151;
+}
+
+.online-dot {
+    -fx-fill: #4ADE80;
+}
