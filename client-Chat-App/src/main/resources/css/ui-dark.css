@@ -1,0 +1,11 @@
+.root {
+    -fx-text-primary: #F9FAFB;
+    -fx-text-secondary: #D1D5DB;
+    -fx-text-muted: #9CA3AF;
+
+    -fx-bg-app: #111827;
+    -fx-bg-card: #1F2933;
+    -fx-bg-hover: #243447;
+
+    -fx-border-color: #374151;
+}

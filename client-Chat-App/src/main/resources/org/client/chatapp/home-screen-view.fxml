@@ -9,6 +9,14 @@
 
 <Pane accessibleRole="BUTTON" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="450.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.controller.HomeScreenController">
    <children>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="450.0" style="-fx-background-color: #f7f9fa;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.HomeScreenController">
+   <children>
+      <ListView fx:id="chatsList" layoutY="125.0" prefHeight="450.0" prefWidth="450.0" style="-fx-background-color: #f7f8fa;" />
       <Pane layoutY="575.0" prefHeight="75.0" prefWidth="450.0" style="-fx-background-color: #ffffff;">
          <effect>
             <DropShadow blurType="ONE_PASS_BOX" height="15.0" radius="3.25" spread="0.5" width="0.0" />
@@ -21,6 +29,10 @@
 
 
 
+            <Group fx:id="profileIcon" layoutX="363.0" layoutY="25.0" onMouseClicked="#onProfileIconClick" />
+            <Group fx:id="chatsIcon" layoutX="94.0" layoutY="25.0" onMouseClicked="#onChatsIconClick" />
+         </children>
+      </Pane>
       <Pane prefHeight="75.0" prefWidth="450.0" style="-fx-background-color: #ffffff;">
          <effect>
             <DropShadow blurType="ONE_PASS_BOX" height="15.0" radius="3.25" spread="0.5" width="0.0" />
@@ -55,5 +67,6 @@
       </children>
    </StackPane>
       <Group fx:id="addFriend" layoutX="400.0" layoutY="26.0" />
+      </Pane>
    </children>
 </Pane>
