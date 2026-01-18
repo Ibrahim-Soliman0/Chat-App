@@ -47,10 +47,6 @@ public class HomeScreenController {
     private Group groupIcon;
 
 
-
-
-
-
     public void initialize() {
         Circle profileHeadIcon = new Circle(12, 7, 4);
         profileHeadIcon.setStroke(Color.web("#abacad"));
@@ -106,8 +102,7 @@ public class HomeScreenController {
                         "-fx-padding: 0 0 0 35px; " +
                         "-fx-prompt-text-fill: #abacad;"
         );
-        // searchBar.requestFocus();
-//        searchBar.positionCaret(searchBar.getText().length());
+
         Parent parent = searchIconGroup.getParent();
         if (parent instanceof StackPane) {
             StackPane stackPane = (StackPane) parent;
@@ -155,15 +150,7 @@ public class HomeScreenController {
         addFriendBody.setStroke(Color.web("BLACK"));
         addFriendBody.setStrokeWidth(2);
 
-
         addFriend.getChildren().addAll(addFriendHead,vLine,hLine,addFriendBody);
-
-
-
-
-
-
     }
 
-    }
-
+}
