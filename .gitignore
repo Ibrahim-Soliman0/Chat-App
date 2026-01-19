@@ -13,6 +13,7 @@ server-Chat-App/target/
 .idea/libraries/
 .idea/runConfigurations
 .idea/*
+.idea/misc.xml
 *.iws
 *.iml
 *.ipr

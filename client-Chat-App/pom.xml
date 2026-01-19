@@ -23,7 +23,7 @@
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>org.client.chatapp/org.client.chatapp.HelloApplication</mainClass>
+                    <mainClass>org.client.chatapp/org.client.chatapp.ClientChatApp</mainClass>
                 </configuration>
             </plugin>
         </plugins>

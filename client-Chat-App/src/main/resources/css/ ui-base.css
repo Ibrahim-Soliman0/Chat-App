@@ -1,0 +1,35 @@
+.root {
+    /* Fonts */
+    -fx-font-family: "Segoe UI", "System";
+    -fx-font-size: 13px;
+
+    /* Text colors */
+    -fx-text-primary: #111827;
+    -fx-text-secondary: #6B7280;
+    -fx-text-muted: #9CA3AF;
+    -fx-text-inverse: #FFFFFF;
+
+    /* Brand colors */
+    -fx-color-primary: #25D366;   /* Teal / WhatsApp green */
+    -fx-color-accent: #14B8A6;
+    -fx-color-danger: #EF4444;
+
+    /* Backgrounds */
+    -fx-bg-app: #F8FAFB;
+    -fx-bg-card: #FFFFFF;
+    -fx-bg-hover: #F1F5F9;
+    -fx-bg-muted: #E5E7EB;
+
+    /* Borders */
+    -fx-border-color: #E5E7EB;
+    -fx-border-radius-sm: 6;
+    -fx-border-radius-md: 10;
+    -fx-border-radius-lg: 14;
+
+    /* Spacing scale */
+    -fx-space-xs: 4;
+    -fx-space-sm: 8;
+    -fx-space-md: 12;
+    -fx-space-lg: 16;
+    -fx-space-xl: 20;
+}
