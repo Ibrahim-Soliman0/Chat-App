@@ -1,0 +1,32 @@
+/* Login Button Styling */
+.login-button {
+    -fx-background-color: #00ab8a;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+/* Smooth hover effect with scale and color change */
+.login-button:hover {
+    -fx-background-color: #00ab8a;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 3);
+}
+
+/* Pressed state */
+.login-button:pressed {
+    -fx-background-color: #00ab8a;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 3, 0, 0, 1);
+}
+
+/* Focus state (when tabbed to) */
+.login-button:focused {
+    -fx-border-color: #00ab8a;
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+}
