@@ -7,11 +7,17 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
@@ -33,6 +39,33 @@ public class HomeScreenController {
     private Parent root;
     private Stage stage;
     private Scene scene;
+
+    @FXML
+    private Group bellIcon;
+
+    @FXML
+    private TextField searchBar;
+
+    @FXML
+    private Group searchIconGroup;
+
+    @FXML
+    private Circle searchHeadIcon;
+
+    @FXML
+    private SVGPath searchLine;
+
+    @FXML
+    private StackPane searchContainer;
+
+    @FXML
+    private Group addFriend;
+    @FXML
+    private Label chatLabel;
+    @FXML
+    private SVGPath chatLogo;
+    @FXML
+    private Group groupIcon;
 
     public void initialize() {
         Circle profileHeadIcon = new Circle(12, 7, 4);
@@ -112,6 +145,77 @@ public class HomeScreenController {
                 e -> chatsList.getItems().forEach(ChatItemView::updateTimestamp)));
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
+
+        SVGPath bell = new SVGPath();
+        bell.setContent("M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673" +
+                "C19.41 13.956 18 12.499 18 8" +
+                "A6 6 0 0 0 6 8" +
+                "c0 4.499-1.411 5.956-2.738 7.326");
+        bell.getStyleClass().add("icon");
+
+        SVGPath bellLine = new SVGPath();
+        bellLine.setContent("M10.268 21a2 2 0 0 0 3.464 0");
+        bellLine.getStyleClass().add("icon");
+
+        bellIcon.getChildren().addAll(bell, bellLine);
+
+        Circle searchHeadIcon = new Circle(11, 11, 8);
+        searchHeadIcon.setFill(Color.TRANSPARENT);
+        searchHeadIcon.setStroke(Color.web("#abacad"));
+        searchHeadIcon.setStrokeWidth(2);
+
+        SVGPath searchLine = new SVGPath();
+        searchLine.setContent("m21 21-4.34-4.34");
+        searchLine.setStroke(Color.web("#abacad"));
+        searchLine.setStrokeWidth(2);
+        searchIconGroup.getChildren().addAll(searchHeadIcon, searchLine);
+
+        searchBar.setPromptText("Search conversations...");
+        searchBar.setStyle(
+                "-fx-background-color: transparent; " +
+                        "-fx-border-color: rgba(21,0,10,0.68); " +
+                        "-fx-border-width: 1; " +
+                        "-fx-border-radius: 10; " +
+                        "-fx-background-radius: 10; " +
+                        "-fx-padding: 0 0 0 35px; " +
+                        "-fx-prompt-text-fill: #abacad;"
+        );
+
+        Parent parent = searchIconGroup.getParent();
+        if (parent instanceof StackPane) {
+            StackPane stackPane = (StackPane) parent;
+
+            StackPane.setAlignment(searchIconGroup, Pos.CENTER_LEFT);
+            StackPane.setMargin(searchIconGroup, new Insets(0, 0, 0, 8));
+        }
+
+        Circle groupHeadIcon = new Circle(10, 8, 5);
+        groupHeadIcon.getStyleClass().add("icon");
+
+        SVGPath groupBodyIcon = new SVGPath();
+        groupBodyIcon.setContent("M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3");
+        groupBodyIcon.getStyleClass().add("icon");
+
+        SVGPath otherBodyIcon = new SVGPath();
+        otherBodyIcon.setContent("M18 21a8 8 0 0 0-16 0");
+        otherBodyIcon.getStyleClass().add("icon");
+        groupIcon.getChildren().addAll(groupHeadIcon, groupBodyIcon, otherBodyIcon);
+
+
+        Circle addFriendHead = new Circle(9, 7, 4);
+        addFriendHead.getStyleClass().add("icon");
+
+        Line vLine = new Line(19, 8, 19, 14);
+        vLine.getStyleClass().add("icon");
+
+        Line hLine = new Line(22, 11, 16, 11);
+        hLine.getStyleClass().add("icon");
+
+        SVGPath addFriendBody = new SVGPath();
+        addFriendBody.setContent("M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2");
+        addFriendBody.getStyleClass().add("icon");
+
+        addFriend.getChildren().addAll(addFriendHead, vLine, hLine, addFriendBody);
     }
 
     @FXML
