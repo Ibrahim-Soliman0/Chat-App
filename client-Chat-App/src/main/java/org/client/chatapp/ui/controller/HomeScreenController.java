@@ -151,13 +151,26 @@ public class HomeScreenController {
                 "C19.41 13.956 18 12.499 18 8" +
                 "A6 6 0 0 0 6 8" +
                 "c0 4.499-1.411 5.956-2.738 7.326");
-        bell.getStyleClass().add("icon");
+      bell.getStyleClass().add("icon");
 
         SVGPath bellLine = new SVGPath();
         bellLine.setContent("M10.268 21a2 2 0 0 0 3.464 0");
         bellLine.getStyleClass().add("icon");
 
         bellIcon.getChildren().addAll(bell, bellLine);
+        bellIcon.setScaleX(1.1);
+        bellIcon.setScaleY(1.1);
+
+       bellIcon.setOnMouseEntered(e -> {
+           bell.getStyleClass().setAll("onIconHover");
+           bellLine.getStyleClass().setAll("onIconHover");
+        });
+        bellIcon.setOnMouseExited(e -> {
+            bell.getStyleClass().setAll("icon");
+            bellLine.getStyleClass().setAll("icon");
+
+        });
+
 
         Circle searchHeadIcon = new Circle(11, 11, 8);
         searchHeadIcon.setFill(Color.TRANSPARENT);
@@ -180,14 +193,9 @@ public class HomeScreenController {
                         "-fx-padding: 0 0 0 35px; " +
                         "-fx-prompt-text-fill: #abacad;"
         );
+        StackPane.setAlignment(searchIconGroup, Pos.CENTER_LEFT);
+        StackPane.setMargin(searchIconGroup, new Insets(0, 0, 0, 8));
 
-        Parent parent = searchIconGroup.getParent();
-        if (parent instanceof StackPane) {
-            StackPane stackPane = (StackPane) parent;
-
-            StackPane.setAlignment(searchIconGroup, Pos.CENTER_LEFT);
-            StackPane.setMargin(searchIconGroup, new Insets(0, 0, 0, 8));
-        }
 
         Circle groupHeadIcon = new Circle(10, 8, 5);
         groupHeadIcon.getStyleClass().add("icon");
@@ -200,6 +208,20 @@ public class HomeScreenController {
         otherBodyIcon.setContent("M18 21a8 8 0 0 0-16 0");
         otherBodyIcon.getStyleClass().add("icon");
         groupIcon.getChildren().addAll(groupHeadIcon, groupBodyIcon, otherBodyIcon);
+        groupIcon.setScaleX(1.1);
+        groupIcon.setScaleY(1.1);
+        groupIcon.setOnMouseEntered(e -> {
+            groupHeadIcon.getStyleClass().setAll("onIconHover");
+            groupBodyIcon.getStyleClass().setAll("onIconHover");
+            otherBodyIcon.getStyleClass().setAll("onIconHover");
+
+        });
+        groupIcon.setOnMouseExited(e -> {
+            groupHeadIcon.getStyleClass().setAll("icon");
+            groupBodyIcon.getStyleClass().setAll("icon");
+            otherBodyIcon.getStyleClass().setAll("icon");
+
+        });
 
 
         Circle addFriendHead = new Circle(9, 7, 4);
@@ -216,6 +238,23 @@ public class HomeScreenController {
         addFriendBody.getStyleClass().add("icon");
 
         addFriend.getChildren().addAll(addFriendHead, vLine, hLine, addFriendBody);
+        addFriend.setScaleX(1.1);
+        addFriend.setScaleY(1.1);
+        addFriend.setOnMouseEntered(e -> {
+           addFriendHead.getStyleClass().setAll("onIconHover");
+            vLine.getStyleClass().setAll("onIconHover");
+            hLine.getStyleClass().setAll("onIconHover");
+            addFriendBody.getStyleClass().setAll("onIconHover");
+
+        });
+        addFriend.setOnMouseExited(e -> {
+           addFriendHead.getStyleClass().setAll("icon");
+            vLine.getStyleClass().setAll("icon");
+            hLine.getStyleClass().setAll("icon");
+            addFriendBody.getStyleClass().setAll("icon");
+
+        });
+
     }
 
     @FXML
@@ -251,4 +290,60 @@ public class HomeScreenController {
         stage.setResizable(false);
         stage.show();
     }
+
+    @FXML
+    private void onbellIconClick(ActionEvent actionEvent) {
+
+        try {
+            root = FXMLLoader.load(
+                    Objects.requireNonNull(getClass().getResource("notification-screen-view.fxml")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
+    }
+
+    @FXML
+    private void ongroupIconClick(ActionEvent actionEvent) {
+
+        try {
+            root = FXMLLoader.load(
+                    Objects.requireNonNull(getClass().getResource("group-screen-view.fxml")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
+    }
+
+    @FXML
+    private void onaddFriendIconClick(ActionEvent actionEvent) {
+
+        try {
+            root = FXMLLoader.load(
+                    Objects.requireNonNull(getClass().getResource("addFriend-screen-view.fxml")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
+    }
+
+
+
+
+
 }
