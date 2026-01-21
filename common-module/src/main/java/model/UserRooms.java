@@ -1,8 +1,9 @@
-package org.server.chatapp.model;
+package model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class UserRooms {
+public class UserRooms implements Serializable {
 
     private Long id, userId, roomId;
     private Boolean isAdmin;

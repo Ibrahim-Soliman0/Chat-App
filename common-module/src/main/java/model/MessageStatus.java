@@ -1,8 +1,9 @@
-package org.server.chatapp.model;
+package model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class MessageStatus {
+public class MessageStatus implements Serializable {
     private long id;
     private long messageId;
     private long userId;

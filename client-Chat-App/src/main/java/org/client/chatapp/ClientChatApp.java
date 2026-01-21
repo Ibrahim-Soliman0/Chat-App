@@ -17,6 +17,8 @@ public class ClientChatApp extends Application {
                 Objects.requireNonNull(getClass().getResource("/css/chat-light.css"))
                         .toExternalForm(),
                 Objects.requireNonNull(getClass().getResource("/css/chat-components.css"))
+                        .toExternalForm(),
+                Objects.requireNonNull(getClass().getResource("/css/login.css"))
                         .toExternalForm()
                 );
         stage.setTitle("!What's App");

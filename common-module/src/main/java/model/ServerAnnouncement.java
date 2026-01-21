@@ -1,8 +1,9 @@
-package org.server.chatapp.model;
-import java.time.LocalDate;
+package model;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class ServerAnnouncement {
+public class ServerAnnouncement implements Serializable {
     private Long id;
     private String title;
     private String content;

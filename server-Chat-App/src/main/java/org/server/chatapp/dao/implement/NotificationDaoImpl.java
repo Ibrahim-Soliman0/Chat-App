@@ -1,10 +1,10 @@
 package org.server.chatapp.dao.implement;
 
+import model.Notification;
+import model.enums.NotificationStatus;
+import model.enums.NotificationType;
 import org.server.chatapp.dao.Database;
 import org.server.chatapp.dao.dao.NotificationDao;
-import org.server.chatapp.model.Notification;
-import org.server.chatapp.model.enums.NotificationStatus;
-import org.server.chatapp.model.enums.NotificationType;
 
 import java.sql.*;
 import java.util.ArrayList;

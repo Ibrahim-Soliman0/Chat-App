@@ -1,8 +1,9 @@
-package org.server.chatapp.model;
+package model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Message {
+public class Message implements Serializable {
 
     private long id;
     private long senderId;

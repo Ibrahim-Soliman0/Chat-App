@@ -124,6 +124,7 @@
     <modules>
         <module>client-Chat-App</module>
         <module>server-Chat-App</module>
+        <module>common-module</module>
     </modules>
 
 </project>

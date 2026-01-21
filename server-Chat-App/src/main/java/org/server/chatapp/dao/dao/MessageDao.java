@@ -1,6 +1,7 @@
 package org.server.chatapp.dao.dao;
 
-import org.server.chatapp.model.Message;
+
+import model.Message;
 
 import java.util.List;
 
