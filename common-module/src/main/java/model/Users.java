@@ -1,12 +1,14 @@
-package org.server.chatapp.model;
+package model;
 
-import org.server.chatapp.model.enums.Gender;
-import org.server.chatapp.model.enums.Status;
 
+import model.enums.Gender;
+import model.enums.Status;
+
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class Users {
+public class Users implements Serializable {
 
     private Long id;
     private String phoneNumber;
@@ -25,9 +27,9 @@ public class Users {
     }
 
     public Users(Long id, String phoneNumber, String name, String email,
-                String picturePath, String password, Gender gender,
-                String country, LocalDate dob, String bio,
-                Status status, LocalDateTime lastSeen) {
+                 String picturePath, String password, Gender gender,
+                 String country, LocalDate dob, String bio,
+                 Status status, LocalDateTime lastSeen) {
         this.id = id;
         this.phoneNumber = phoneNumber;
         this.name = name;

@@ -1,10 +1,10 @@
 package org.server.chatapp.dao.implement;
 
+import model.Users;
+import model.enums.Gender;
+import model.enums.Status;
 import org.server.chatapp.dao.Database;
 import org.server.chatapp.dao.dao.UsersDao;
-import org.server.chatapp.model.Users;
-import org.server.chatapp.model.enums.Gender;
-import org.server.chatapp.model.enums.Status;
 
 import java.sql.*;
 import java.util.ArrayList;

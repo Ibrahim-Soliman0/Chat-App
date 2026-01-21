@@ -1,7 +1,6 @@
 package org.server.chatapp.dao.dao;
 
-import org.server.chatapp.model.ServerAnnouncement;
-
+import model.ServerAnnouncement;
 
 public interface ServerAnnouncementDao extends Dao<ServerAnnouncement>{
 

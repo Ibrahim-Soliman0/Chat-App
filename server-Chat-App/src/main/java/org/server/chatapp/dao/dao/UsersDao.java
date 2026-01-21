@@ -1,6 +1,6 @@
 package org.server.chatapp.dao.dao;
 
-import org.server.chatapp.model.Users;
+import model.Users;
 
 public interface UsersDao extends Dao<Users> {
 

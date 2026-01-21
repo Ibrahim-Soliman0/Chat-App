@@ -1,10 +1,11 @@
-package org.server.chatapp.model;
+package model;
 
-import org.server.chatapp.model.enums.RoomType;
+import model.enums.RoomType;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class Room {
+public class Room implements Serializable {
     private Long id;
     private RoomType type;
     private String name;

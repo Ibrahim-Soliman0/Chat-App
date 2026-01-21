@@ -80,7 +80,7 @@
               </Label>
       
               <!-- Login Button -->
-              <Button fx:id="loginButton" maxWidth="Infinity" onAction="#handleLogin" styleClass="login-button" text="Log In">
+              <Button fx:id="loginButton" maxWidth="Infinity" onAction="#handleLogin" styleClass="button" text="Log In">
                   <padding>
                       <Insets bottom="12" left="20" right="20" top="12" />
                   </padding>

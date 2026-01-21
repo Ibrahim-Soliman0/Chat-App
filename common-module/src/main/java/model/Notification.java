@@ -1,11 +1,12 @@
-package org.server.chatapp.model;
+package model;
 
-import org.server.chatapp.model.enums.NotificationStatus;
-import org.server.chatapp.model.enums.NotificationType;
+import model.enums.NotificationStatus;
+import model.enums.NotificationType;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Notification {
+public class Notification implements Serializable {
     private long id;
     private long receiverId;
     private NotificationType type;

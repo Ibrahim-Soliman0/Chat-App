@@ -1,6 +1,6 @@
 package org.server.chatapp.dao.dao;
 
-import org.server.chatapp.model.Notification;
+import model.Notification;
 
 import java.util.List;
 

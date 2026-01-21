@@ -1,0 +1,34 @@
+package org.server.chatapp;
+
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import org.server.chatapp.rmi.LoginServiceImpl;
+
+import java.io.IOException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+
+public class ServerChatApp extends Application {
+    @Override
+    public void start(Stage stage) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(ServerChatApp.class.getResource("hello-view.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        stage.setTitle("Hello!");
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public static void main(String[] args) {
+
+        try {
+            var reg = LocateRegistry.createRegistry(5000);
+            LoginServiceImpl loginService = new LoginServiceImpl();
+            reg.rebind("LoginService", loginService);
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+        launch(args);
+    }
+}

@@ -1,8 +1,8 @@
 package org.server.chatapp.dao.implement;
 
+import model.UserRooms;
 import org.server.chatapp.dao.Database;
 import org.server.chatapp.dao.dao.UserRoomsDao;
-import org.server.chatapp.model.UserRooms;
 
 import java.sql.*;
 import java.util.ArrayList;

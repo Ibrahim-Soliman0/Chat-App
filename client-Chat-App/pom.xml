@@ -7,6 +7,17 @@
     <groupId>org.client.chatapp</groupId>
     <artifactId>client-Chat-App</artifactId>
 
+    <dependencies>
+
+        <dependency>
+            <groupId>gov.iti.jets</groupId>
+            <artifactId>common-module</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+    </dependencies>
+
     <parent>
         <groupId>org.parent</groupId>
         <artifactId>Chat-App</artifactId>
