@@ -4,6 +4,8 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.server.chatapp.rmi.GetUserServiceImpl;
+import org.server.chatapp.rmi.LoadFriendsListServiceImpl;
 import org.server.chatapp.rmi.LoginServiceImpl;
 
 import java.io.IOException;
@@ -25,7 +27,11 @@ public class ServerChatApp extends Application {
         try {
             var reg = LocateRegistry.createRegistry(5000);
             LoginServiceImpl loginService = new LoginServiceImpl();
+            LoadFriendsListServiceImpl friendsListService = new LoadFriendsListServiceImpl();
+            GetUserServiceImpl getUserService = new GetUserServiceImpl();
             reg.rebind("LoginService", loginService);
+            reg.rebind("LoadFriendsListService", friendsListService);
+            reg.rebind("GetUserService", getUserService);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }

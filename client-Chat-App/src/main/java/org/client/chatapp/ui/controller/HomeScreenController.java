@@ -4,7 +4,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -16,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -23,6 +23,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.client.chatapp.ClientChatApp;
 import org.client.chatapp.model.ChatItem;
 import org.client.chatapp.ui.component.ChatItemView;
 
@@ -151,7 +152,7 @@ public class HomeScreenController {
                 "C19.41 13.956 18 12.499 18 8" +
                 "A6 6 0 0 0 6 8" +
                 "c0 4.499-1.411 5.956-2.738 7.326");
-      bell.getStyleClass().add("icon");
+        bell.getStyleClass().add("icon");
 
         SVGPath bellLine = new SVGPath();
         bellLine.setContent("M10.268 21a2 2 0 0 0 3.464 0");
@@ -161,10 +162,11 @@ public class HomeScreenController {
         bellIcon.setScaleX(1.1);
         bellIcon.setScaleY(1.1);
 
-       bellIcon.setOnMouseEntered(e -> {
-           bell.getStyleClass().setAll("onIconHover");
-           bellLine.getStyleClass().setAll("onIconHover");
+        bellIcon.setOnMouseEntered(e -> {
+            bell.getStyleClass().setAll("onIconHover");
+            bellLine.getStyleClass().setAll("onIconHover");
         });
+
         bellIcon.setOnMouseExited(e -> {
             bell.getStyleClass().setAll("icon");
             bellLine.getStyleClass().setAll("icon");
@@ -195,7 +197,6 @@ public class HomeScreenController {
         );
         StackPane.setAlignment(searchIconGroup, Pos.CENTER_LEFT);
         StackPane.setMargin(searchIconGroup, new Insets(0, 0, 0, 8));
-
 
         Circle groupHeadIcon = new Circle(10, 8, 5);
         groupHeadIcon.getStyleClass().add("icon");
@@ -241,14 +242,15 @@ public class HomeScreenController {
         addFriend.setScaleX(1.1);
         addFriend.setScaleY(1.1);
         addFriend.setOnMouseEntered(e -> {
-           addFriendHead.getStyleClass().setAll("onIconHover");
+            addFriendHead.getStyleClass().setAll("onIconHover");
             vLine.getStyleClass().setAll("onIconHover");
             hLine.getStyleClass().setAll("onIconHover");
             addFriendBody.getStyleClass().setAll("onIconHover");
 
         });
+
         addFriend.setOnMouseExited(e -> {
-           addFriendHead.getStyleClass().setAll("icon");
+            addFriendHead.getStyleClass().setAll("icon");
             vLine.getStyleClass().setAll("icon");
             hLine.getStyleClass().setAll("icon");
             addFriendBody.getStyleClass().setAll("icon");
@@ -258,92 +260,97 @@ public class HomeScreenController {
     }
 
     @FXML
-    private void onProfileIconClick(ActionEvent actionEvent) {
+    private void onProfileIconClick(MouseEvent actionEvent) {
 
         try {
             root = FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource("profile-screen-view.fxml")));
+                    Objects.requireNonNull(
+                            getClass().getResource("org/client/chatapp/profile-screen-view.fxml")));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         scene = new Scene(root);
+        scene.getStylesheets().addAll(ClientChatApp.allStyles);
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
     }
 
     @FXML
-    private void onChatsIconClick(ActionEvent actionEvent) {
+    private void onChatsIconClick(MouseEvent actionEvent) {
 
         try {
             root = FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource("home-screen-view.fxml")));
+                    Objects.requireNonNull(getClass().getResource(
+                            "/org/client/chatapp/home-screen-view.fxml")));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         scene = new Scene(root);
+        scene.getStylesheets().addAll(ClientChatApp.allStyles);
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
     }
 
     @FXML
-    private void onbellIconClick(ActionEvent actionEvent) {
+    private void onBellIconClick(MouseEvent actionEvent) {
 
         try {
             root = FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource("notification-screen-view.fxml")));
+                    Objects.requireNonNull(getClass().getResource(
+                            "/org/client/chatapp/notification-screen-view.fxml")));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         scene = new Scene(root);
+        scene.getStylesheets().addAll(ClientChatApp.allStyles);
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
     }
 
     @FXML
-    private void ongroupIconClick(ActionEvent actionEvent) {
+    private void onGroupIconClick(MouseEvent actionEvent) {
 
         try {
             root = FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource("group-screen-view.fxml")));
+                    Objects.requireNonNull(getClass().getResource(
+                            "/org/client/chatapp/group-screen-view.fxml")));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         scene = new Scene(root);
+        scene.getStylesheets().addAll(ClientChatApp.allStyles);
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
     }
 
     @FXML
-    private void onaddFriendIconClick(ActionEvent actionEvent) {
+    private void onAddFriendIconClick(MouseEvent actionEvent) {
 
         try {
             root = FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource("addFriend-screen-view.fxml")));
+                    Objects.requireNonNull(getClass().getResource(
+                            "/org/client/chatapp/friends-list-screen-view.fxml")));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
         scene = new Scene(root);
+        scene.getStylesheets().addAll(ClientChatApp.allStyles);
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
     }
-
-
-
-
-
 }

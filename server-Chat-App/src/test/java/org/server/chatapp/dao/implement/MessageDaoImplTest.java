@@ -1,8 +1,8 @@
 package org.server.chatapp.dao.implement;
 
+import model.Message;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.*;
-import org.server.chatapp.model.Message;
 
 import java.time.LocalDateTime;
 import java.util.List;
