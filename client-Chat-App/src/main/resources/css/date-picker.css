@@ -1,0 +1,71 @@
+/* ===== DatePicker Container ===== */
+.date-picker {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
+}
+
+/* Text inside DatePicker */
+.date-picker .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #2C3E50;
+    -fx-prompt-text-fill: #9E9E9E;
+}
+
+/* Arrow Button */
+.date-picker .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.date-picker .arrow {
+    -fx-background-color: #00897B;
+}
+
+/* Popup Calendar */
+.date-picker-popup {
+    -fx-background-color: white;
+    -fx-border-color: #E0E0E0;
+    -fx-border-radius: 8;
+}
+
+/* Month / Year Header */
+.date-picker-popup .month-year-pane {
+    -fx-background-color: #00897B;
+}
+
+.date-picker-popup .month-year-pane .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* Day Names (Mon, Tue...) */
+.date-picker-popup .day-name-cell {
+    -fx-text-fill: #7F8C8D;
+    -fx-font-weight: bold;
+}
+
+/* Normal Days */
+.date-picker-popup .day-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2C3E50;
+    -fx-background-radius: 6;
+}
+
+/* Hover Day */
+.date-picker-popup .day-cell:hover {
+    -fx-background-color: #B2DFDB;
+}
+
+/* Selected Day */
+.date-picker-popup .day-cell:selected {
+    -fx-background-color: #00897B;
+    -fx-text-fill: white;
+}
+
+/* Disabled Days (future dates) */
+.date-picker-popup .day-cell:disabled {
+    -fx-text-fill: #BDBDBD;
+}

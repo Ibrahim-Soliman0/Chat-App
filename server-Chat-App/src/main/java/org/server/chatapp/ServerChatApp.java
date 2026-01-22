@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.server.chatapp.rmi.LoginServiceImpl;
+import org.server.chatapp.rmi.RegisterServiceImpl;
+import rmi.RegisterService;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -25,7 +27,9 @@ public class ServerChatApp extends Application {
         try {
             var reg = LocateRegistry.createRegistry(5000);
             LoginServiceImpl loginService = new LoginServiceImpl();
+            RegisterServiceImpl registerService = new RegisterServiceImpl();
             reg.rebind("LoginService", loginService);
+            reg.rebind("RegisterService", registerService);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
