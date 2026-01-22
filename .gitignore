@@ -5,6 +5,7 @@ client-Chat-App/target/
 .kotlin
 server-Chat-App/src/main/resources/db.properties
 server-Chat-App/target/
+common-module/target/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
