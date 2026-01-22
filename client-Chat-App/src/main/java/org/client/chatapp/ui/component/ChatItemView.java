@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import org.client.chatapp.ClientChatApp;
 import org.client.chatapp.model.ChatItem;
 import org.client.chatapp.ui.utils.TimeUtils;
 
@@ -113,6 +114,7 @@ public class ChatItemView extends HBox {
 
             Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
             Scene scene = new Scene(root);
+            scene.getStylesheets().addAll(ClientChatApp.allStyles);
             stage.setScene(scene);
             stage.show();
         });

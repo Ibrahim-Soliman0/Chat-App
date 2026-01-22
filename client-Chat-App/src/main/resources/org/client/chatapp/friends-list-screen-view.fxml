@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="450.0" style="-fx-background-color: #f7f9fa;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.FriendsListController">
+    <children>
+      <ListView fx:id="friendsList" layoutY="110.0" prefHeight="540.0" prefWidth="450.0" />
+        <Pane prefHeight="110.0" prefWidth="450.0" style="-fx-background-color: #f7f9fa;">
+            <effect>
+                <DropShadow blurType="ONE_PASS_BOX" height="15.0" radius="3.25" spread="0.5" width="0.0" />
+            </effect>
+            <children>
+                <Button fx:id="addFriendButton" layoutX="173.0" layoutY="34.0" mnemonicParsing="false" onAction="#onAddFriendButtonClick" prefHeight="42.0" prefWidth="104.0" text="Add Friend" />
+            <Group fx:id="goBackArrow" layoutX="34.0" layoutY="44.0" onMouseClicked="#onGoBackArrowClick" />
+            </children>
+
+        </Pane>
+      <Label fx:id="noFriendsLabel" alignment="CENTER" layoutX="115.0" layoutY="301.0" prefHeight="49.0" prefWidth="220.0" text="You Have No Friends Yet!" textFill="#00ab8a">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+    </children>
+</Pane>
