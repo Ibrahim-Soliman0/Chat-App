@@ -2,13 +2,26 @@ package org.client.chatapp.ui.controller;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import model.Users;
+import model.enums.Gender;
+import rmi.RegisterService;
 
 import java.io.File;
+import java.io.IOException;
+import java.rmi.AccessException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.time.LocalDate;
 
 public class SetupProfileController {
@@ -255,8 +268,89 @@ public class SetupProfileController {
         if (!valid) {
             return;
         }
+        registerUser();
+    }
 
-        System.out.println("Account Created Successfully");
+    private void registerUser() {
+        try {
+            createAccountBtn.setDisable(true);
+            createAccountBtn.setText("Creating Account...");
+            Users newUser = new Users();
+            newUser.setPhoneNumber(phoneNumber);
+            newUser.setName(nameField.getText().trim());
+            newUser.setEmail(emailField.getText().trim());
+            newUser.setPassword(passwordField.getText());
+            if (maleRadio.isSelected()) {
+                newUser.setGender(Gender.MALE);
+            } else {
+                newUser.setGender(Gender.FEMALE);
+            }
+            newUser.setCountry(countryComboBox.getValue());
+            newUser.setDob(dobPicker.getValue());
+            newUser.setBio(bioField.getText() == null || bioField.getText().isEmpty()
+                    ? null
+                    : bioField.getText().trim());
+
+            if (selectedImageFile != null) {
+                newUser.setPicturePath(selectedImageFile.getAbsolutePath());
+                // TODO:
+            } else {
+                newUser.setPicturePath(null);
+            }
+            Registry registry = LocateRegistry.getRegistry("localhost", 5000);
+            RegisterService registerService = (RegisterService) registry.lookup("RegisterService");
+            Users registeredUser = registerService.register(newUser);
+            showSuccessAlert("Account created successfully!\nWelcome, " + registeredUser.getName() + "!");
+            System.out.println("Account Created Successfully");
+            moveToLogin();
+        } catch (RemoteException e) {
+            String errorMessage = e.getMessage();
+
+            if (errorMessage.contains("Email already exists")) {
+                showErrorAlert("This email is already registered!\nPlease use a different email.");
+            } else if (errorMessage.contains("Phone number already registered")) {
+                showErrorAlert("This phone number is already registered!");
+            } else {
+                showErrorAlert("Registration failed: " + errorMessage);
+            }
+
+        } catch (NotBoundException e) {
+            showErrorAlert("Could not connect to server.\nPlease make sure the server is running.");
+        } catch (IOException e) {
+            showErrorAlert("An error occurred during registration.\nPlease try again.");
+            e.printStackTrace();
+
+        } finally {
+            createAccountBtn.setDisable(false);
+            createAccountBtn.setText("Create Account →");
+
+        }
+    }
+
+    private void moveToLogin() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/client/chatapp/login-view.fxml"));
+        Parent root = loader.load();
+
+        Stage stage = (Stage) genderError.getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void showSuccessAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showErrorAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Registration Error");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     private boolean showErrorIfInvalid(boolean condition,

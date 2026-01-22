@@ -22,6 +22,7 @@ public class UsersImpl implements UsersDao {
             preparedStatement.setString(1, phoneNumber);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
+                Timestamp lastSeenTimestamp = resultSet.getTimestamp("lastSeen");
                 return new Users(
                         resultSet.getLong("id"),
                         resultSet.getString("phoneNumber"),
@@ -34,7 +35,7 @@ public class UsersImpl implements UsersDao {
                         resultSet.getDate("DOB").toLocalDate(),
                         resultSet.getString("bio"),
                         Status.valueOf(resultSet.getString("status").toUpperCase()),
-                        resultSet.getTimestamp("lastSeen").toLocalDateTime()
+                        lastSeenTimestamp != null ? lastSeenTimestamp.toLocalDateTime() : null
                 );
             }
         } catch (SQLException se) {
@@ -54,6 +55,7 @@ public class UsersImpl implements UsersDao {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
+                Timestamp lastSeenTimestamp = resultSet.getTimestamp("lastSeen");
                 return new Users(
                         resultSet.getLong("id"),
                         resultSet.getString("phoneNumber"),
@@ -66,7 +68,7 @@ public class UsersImpl implements UsersDao {
                         resultSet.getDate("DOB").toLocalDate(),
                         resultSet.getString("bio"),
                         Status.valueOf(resultSet.getString("status").toUpperCase()),
-                        resultSet.getTimestamp("lastSeen").toLocalDateTime()
+                        lastSeenTimestamp != null ? lastSeenTimestamp.toLocalDateTime() : null
                 );
             }
         } catch (SQLException se) {
@@ -88,6 +90,7 @@ public class UsersImpl implements UsersDao {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
+                Timestamp lastSeenTimestamp = resultSet.getTimestamp("lastSeen");
                 allUsers.add(new Users(
                         resultSet.getLong("id"),
                         resultSet.getString("phoneNumber"),
@@ -100,7 +103,7 @@ public class UsersImpl implements UsersDao {
                         resultSet.getDate("DOB").toLocalDate(),
                         resultSet.getString("bio"),
                         Status.valueOf(resultSet.getString("status").toUpperCase()),
-                        resultSet.getTimestamp("lastSeen").toLocalDateTime()
+                        lastSeenTimestamp != null ? lastSeenTimestamp.toLocalDateTime() : null
                 ));
 
                 preparedStatement.close();
@@ -144,7 +147,11 @@ public class UsersImpl implements UsersDao {
             preparedStatement.setDate(8, Date.valueOf(users.getDob()));
             preparedStatement.setString(9, users.getBio());
             preparedStatement.setString(10, users.getStatus().name());
-            preparedStatement.setTimestamp(11, Timestamp.valueOf(users.getLastSeen()));
+            if (users.getLastSeen() != null) {
+                preparedStatement.setTimestamp(11, Timestamp.valueOf(users.getLastSeen()));
+            } else {
+                preparedStatement.setNull(11, Types.TIMESTAMP);
+            }
             preparedStatement.setLong(12, users.getId());
 
             result = preparedStatement.executeUpdate();
@@ -176,7 +183,7 @@ public class UsersImpl implements UsersDao {
                               lastSeen
                           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);""";
 
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, users.getPhoneNumber());
             preparedStatement.setString(2, users.getName());
             preparedStatement.setString(3, users.getEmail());
@@ -187,10 +194,18 @@ public class UsersImpl implements UsersDao {
             preparedStatement.setDate(8, Date.valueOf(users.getDob()));
             preparedStatement.setString(9, users.getBio());
             preparedStatement.setString(10, users.getStatus().name());
-            preparedStatement.setTimestamp(11, Timestamp.valueOf(users.getLastSeen()));
-
+            if (users.getLastSeen() != null) {
+                preparedStatement.setTimestamp(11, Timestamp.valueOf(users.getLastSeen()));
+            } else {
+                preparedStatement.setNull(11, Types.TIMESTAMP);
+            }
             result = preparedStatement.executeUpdate();
-
+            if (result > 0) {
+                ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+                if (generatedKeys.next()) {
+                    users.setId(generatedKeys.getLong(1));
+                }
+            }
             preparedStatement.close();
         } catch (SQLException se) {
             se.printStackTrace();
@@ -218,4 +233,39 @@ public class UsersImpl implements UsersDao {
 
         return result;
     }
+
+    @Override
+    public boolean isPhoneNumberExists(String phoneNumber) {
+        try (Connection connection = Database.getDataSource().getConnection()) {
+            String sql = "SELECT count(*) FROM users WHERE phoneNumber = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, phoneNumber);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isEmailExists(String email) {
+        try (Connection connection = Database.getDataSource().getConnection()) {
+            String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0;
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+        return false;
+    }
+
 }
