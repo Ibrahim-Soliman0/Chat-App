@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.geometry.*?>
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.image.Image?>
 
-<VBox alignment="CENTER" prefHeight="650" prefWidth="450" spacing="20" style="-fx-background-color: #f5f5f5;" 
-      stylesheets="@../../../css/login.css"
-      xmlns="http://javafx.com/javafx/21" 
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.LoginController">
+<VBox alignment="CENTER" prefHeight="650" prefWidth="450" spacing="20" style="-fx-background-color: #f5f5f5;" stylesheets="@../../../css/login.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.LoginController">
 
     <padding>
         <Insets bottom="40" left="40" right="40" top="40" />
@@ -23,7 +16,7 @@
        <VBox alignment="CENTER" spacing="10">
            <Text style="-fx-fill: #00ab8a;" text="Chat App">
                <font>
-                   <Font name="System Bold" size="36"/>
+                   <Font name="System Bold" size="36" />
                </font>
            </Text>
        </VBox>
@@ -45,7 +38,7 @@
                         <children>
             
                             <!-- Egyptian Flag and Code -->
-                            <Label style="-fx-font-size: 20;" text="🇪🇪🇬" />
+                            <Label style="-fx-font-size: 20;" text="🇪🇬" />
                             <Label style="-fx-text-fill: #666666; -fx-font-size: 14;" text="+20" />
                             <Separator orientation="VERTICAL" prefHeight="25" />
             
