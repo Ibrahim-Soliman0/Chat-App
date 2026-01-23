@@ -19,7 +19,7 @@ public class ClientChatApp extends Application {
     public static ObservableList<String> allStyles = FXCollections.observableArrayList();
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(ClientChatApp.class.getResource("home-screen-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(ClientChatApp.class.getResource("login-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         allStyles.addAll(Objects.requireNonNull(getClass().getResource("/css/chat-light.css"))
                         .toExternalForm(),
@@ -40,7 +40,7 @@ public class ClientChatApp extends Application {
             registry = LocateRegistry.getRegistry(5000);
         } catch (RemoteException e) {
             e.printStackTrace();
-            // no meaning to continue if the server is not found
+
             return;
         }
 
