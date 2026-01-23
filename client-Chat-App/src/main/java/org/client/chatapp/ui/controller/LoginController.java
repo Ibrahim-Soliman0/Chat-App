@@ -2,12 +2,30 @@ package org.client.chatapp.ui.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import model.Users;
+import org.client.chatapp.ClientChatApp;
+import rmi.LoginService;
+
+import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.Objects;
 
 public class LoginController {
+    private Parent root;
+    private Stage stage;
+    private Scene scene;
 
     @FXML
     private TextField phoneField;
@@ -26,7 +44,7 @@ public class LoginController {
         // Initialize any default values or listeners here
         errorLabel.setVisible(false);
 
-        // Add input validation listener for phone number (digits only)
+        // Add an input validation listener for phone number (digits only)
         phoneField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (!newValue.matches("\\d*")) {
                 phoneField.setText(newValue.replaceAll("[^\\d]", ""));
@@ -39,7 +57,7 @@ public class LoginController {
     }
 
     @FXML
-    private void handleLogin(ActionEvent event) {
+    private void handleLogin(ActionEvent event) throws IOException, NotBoundException {
         // Hide previous error messages
         errorLabel.setVisible(false);
 
@@ -62,25 +80,34 @@ public class LoginController {
             return;
         }
 
-        // Construct full phone number with country code
-        String fullPhone = "+20" + phone;
+        // Construct a full phone number with country code
+        String fullPhone = "0" + phone;
 
-        // TODO: Implement actual login logic here
-        // For now, just print to console
-        System.out.println("Login attempt:");
-        System.out.println("Phone: " + fullPhone);
-        System.out.println("Password: " + password);
+        System.out.println("Login successful");
+        Registry registry = LocateRegistry.getRegistry("localhost", 5000);
+        LoginService loginService = (LoginService) registry.lookup("LoginService");
+        boolean success = loginService.login(fullPhone, password);
+        if (success) {
+            System.out.println("Login successful");
+            moveToMainApp(event);
+        }
+    }
 
-        // Example: Call authentication service
-        // boolean success = authService.login(fullPhone, password);
-        // if (success) {
-        //     navigateToMainApp();
-        // } else {
-        //     showError("Invalid credentials");
-        // }
+    private void moveToMainApp(ActionEvent event) {
+        try {
+            root = FXMLLoader.load(
+                    Objects.requireNonNull(getClass().getResource(
+                            "/org/client/chatapp/home-screen-view.fxml")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        // Placeholder success message
-        showError("Login functionality not yet implemented");
+        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        scene.getStylesheets().addAll(ClientChatApp.allStyles);
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
     }
 
     @FXML
@@ -92,17 +119,17 @@ public class LoginController {
 
     @FXML
     private void handleSignUp(ActionEvent event) {
-        System.out.println("Sign up clicked");
+//        System.out.println("Sign up clicked");
         // TODO: Navigate to sign up screen
         // Example:
-        // try {
-        //     FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SignUpView.fxml"));
-        //     Parent root = loader.load();
-        //     Stage stage = (Stage) loginButton.getScene().getWindow();
-        //     stage.setScene(new Scene(root));
-        // } catch (IOException e) {
-        //     e.printStackTrace();
-        // }
+         try {
+             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/client/chatapp/register-view.fxml"));
+             Parent root = loader.load();
+             Stage stage = (Stage) loginButton.getScene().getWindow();
+             stage.setScene(new Scene(root));
+         } catch (IOException e) {
+             e.printStackTrace();
+         }
     }
 
     private void showError(String message) {
