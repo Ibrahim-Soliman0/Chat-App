@@ -32,6 +32,6 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <Group fx:id="goBackArrow" layoutX="46.0" layoutY="44.0" onMouseClicked="#onGoBackArrowClick" />
+      <Group fx:id="goBackArrow" layoutX="34.0" layoutY="44.0" onMouseClicked="#onGoBackArrowClick" />
    </children>
 </Pane>
