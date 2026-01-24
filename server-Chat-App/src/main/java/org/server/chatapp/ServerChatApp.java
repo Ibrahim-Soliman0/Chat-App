@@ -4,15 +4,10 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.server.chatapp.rmi.GetUserServiceImpl;
-import org.server.chatapp.rmi.LoadFriendsListServiceImpl;
-import org.server.chatapp.rmi.LoginServiceImpl;
-import org.server.chatapp.rmi.RegisterServiceImpl;
 import org.server.chatapp.util.RMIUtil;
+import org.server.chatapp.rmi.*;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
 
 public class ServerChatApp extends Application {
     @Override
