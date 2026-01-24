@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.AddFriendController">
+    <Pane prefHeight="75.0" prefWidth="450.0" style="-fx-background-color: #ffffff;">
+        <effect>
+            <DropShadow blurType="ONE_PASS_BOX" height="15.0" radius="3.25" spread="0.5" width="0.0" />
+        </effect>
+        <children>
+            <Group fx:id="goBackArrow" layoutX="34.0" layoutY="44.0" onMouseClicked="#onGoBackArrowClick" />
+        </children>
+    </Pane>
+    <StackPane alignment="CENTER_LEFT" layoutX="12.0" layoutY="85.0" prefHeight="37.0" prefWidth="421.0">
+        <children>
+            <TextField fx:id="searchBar" prefHeight="37.0" prefWidth="421.0" />
+            <Group fx:id="searchIconGroup" />
+        </children>
+    </StackPane>
+    <ListView fx:id="friendsToAddList" layoutY="124.0" prefHeight="526.0" prefWidth="450.0" />
+</Pane>

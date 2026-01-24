@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.FriendProfileController">
+   <children>
+      <ImageView fx:id="profilePic" fitHeight="114.0" fitWidth="152.0" layoutX="150.0" layoutY="69.0" pickOnBounds="true" preserveRatio="true" />
+      <Label fx:id="nameLabel" alignment="CENTER" layoutX="155.0" layoutY="206.0" prefHeight="27.0" prefWidth="140.0" text="Ibrahim Soliman">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="phoneNumberLabel" alignment="CENTER" layoutX="155.0" layoutY="252.0" prefHeight="27.0" prefWidth="140.0" text="01068666406">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="emailLabel" alignment="CENTER" layoutX="86.0" layoutY="298.0" prefHeight="27.0" prefWidth="278.0" text="ibrahimsoliman269@gmail.com">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <TextArea fx:id="bioTextArea" layoutX="46.0" layoutY="362.0" prefHeight="235.0" prefWidth="359.0" />
+      <Label fx:id="bioLabel" alignment="CENTER" layoutX="155.0" layoutY="335.0" prefHeight="27.0" prefWidth="140.0" text="Bio">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <Group fx:id="goBackArrow" layoutX="34.0" layoutY="44.0" onMouseClicked="#onGoBackArrowClick" />
+   </children>
+</Pane>

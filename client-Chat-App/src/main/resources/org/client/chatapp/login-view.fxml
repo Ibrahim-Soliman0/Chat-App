@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" prefHeight="650" prefWidth="450" spacing="20" style="-fx-background-color: #f5f5f5;" stylesheets="@../../../css/login.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.LoginController">
+
+    <padding>
+        <Insets bottom="40" left="40" right="40" top="40" />
+    </padding>
+   <children>
+   
+       <!-- Logo/Title Section -->
+       <VBox alignment="CENTER" spacing="10">
+           <Text style="-fx-fill: #00ab8a;" text="Chat App">
+               <font>
+                   <Font name="System Bold" size="36" />
+               </font>
+           </Text>
+       </VBox>
+   
+       <Region maxHeight="40" minHeight="20" VBox.vgrow="SOMETIMES" />
+   
+       <!-- Login Form -->
+       <VBox alignment="CENTER" maxWidth="350" spacing="15">
+      <children>
+      
+              <!-- Phone Number Field -->
+              <VBox spacing="5">
+         <children>
+                     <Label style="-fx-text-fill: #333333; -fx-font-weight: bold;" text="Phone Number" />
+                     <HBox alignment="CENTER_LEFT" spacing="5" style="-fx-background-color: white; -fx-background-radius: 5; -fx-border-color: #cccccc; -fx-border-radius: 5; -fx-border-width: 1;">
+                         <padding>
+                             <Insets bottom="10" left="10" right="10" top="10" />
+                         </padding>
+                        <children>
+            
+                            <!-- Egyptian Flag and Code -->
+                            <Label style="-fx-font-size: 20;" text="🇪🇬" />
+                            <Label style="-fx-text-fill: #666666; -fx-font-size: 14;" text="+20" />
+                            <Separator orientation="VERTICAL" prefHeight="25" />
+            
+                            <!-- Phone Input -->
+                            <TextField fx:id="phoneField" promptText="1234567890" style="-fx-background-color: transparent; -fx-border-width: 0;" HBox.hgrow="ALWAYS">
+                                <font>
+                                    <Font size="14" />
+                                </font>
+                            </TextField>
+                        </children>
+                     </HBox>
+         </children>
+              </VBox>
+      
+              <!-- Password Field -->
+              <VBox spacing="5">
+         <children>
+                     <Label style="-fx-text-fill: #333333; -fx-font-weight: bold;" text="Password" />
+                     <PasswordField fx:id="passwordField" promptText="Enter your password" style="-fx-background-color: white; -fx-background-radius: 5; -fx-border-color: #cccccc; -fx-border-radius: 5; -fx-padding: 10;">
+                         <font>
+                             <Font size="14" />
+                         </font>
+                     </PasswordField>
+         </children>
+              </VBox>
+      
+              <!-- Error Label -->
+              <Label fx:id="errorLabel" maxWidth="350" textFill="red" visible="false" wrapText="true">
+                  <font>
+                      <Font size="12" />
+                  </font>
+              </Label>
+      
+              <!-- Login Button -->
+              <Button fx:id="loginButton" maxWidth="Infinity" onAction="#handleLogin" styleClass="button" text="Log In">
+                  <padding>
+                      <Insets bottom="12" left="20" right="20" top="12" />
+                  </padding>
+                  <font>
+                      <Font size="16" />
+                  </font>
+              </Button>
+      
+              <!-- Forgot Password Link -->
+              <Hyperlink onAction="#handleForgotPassword" style="-fx-text-fill: #00ab8a;" text="Forgot password?">
+                  <font>
+                      <Font size="13" />
+                  </font>
+              </Hyperlink>
+      </children>
+       </VBox>
+   
+       <Region VBox.vgrow="SOMETIMES" />
+   
+       <!-- Sign Up Section -->
+       <HBox alignment="CENTER" spacing="5">
+      <children>
+              <Label style="-fx-text-fill: #666666;" text="Don't have an account!">
+                  <font>
+                      <Font size="13" />
+                  </font>
+              </Label>
+              <Hyperlink onAction="#handleSignUp" style="-fx-text-fill: #00ab8a; -fx-font-weight: bold;" text="Click here to sign up">
+                  <font>
+                      <Font size="13" />
+                  </font>
+              </Hyperlink>
+      </children>
+       </HBox>
+   </children>
+
+</VBox>

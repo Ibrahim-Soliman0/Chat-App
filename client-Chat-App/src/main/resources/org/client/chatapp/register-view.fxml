@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.SVGPath?>
+
+<VBox
+        alignment="CENTER"
+        spacing="30.0"
+        style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/25"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="org.client.chatapp.ui.controller.RegisterController"
+>
+
+    <padding>
+        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+    </padding>
+
+    <StackPane maxHeight="120" maxWidth="120" minHeight="120" minWidth="120" prefHeight="120" prefWidth="120">
+        <Circle radius="50.0" style="-fx-fill: #14b8a6;" />
+
+        <SVGPath content="M100-118.46v-669.23Q100-818 121-839q21-21 51.31-21h615.38Q818-860 839-839q21 21 21 51.31v455.38Q860-302 839-281q-21 21-51.31 21H241.54L100-118.46ZM216-320h571.69q4.62 0 8.46-3.85 3.85-3.84 3.85-8.46v-455.38q0-4.62-3.85-8.46-3.84-3.85-8.46-3.85H172.31q-4.62 0-8.46 3.85-3.85 3.84-3.85 8.46v523.08L216-320Zm-56 0v-480 480Z" fill="WHITE" scaleX="0.04" scaleY="0.04" />
+    </StackPane>
+
+    <Label style="-fx-font-weight: bold; -fx-font-size: 32px; -fx-text-fill: #1f2937;" text="ChatFlow" />
+
+    <Label style="-fx-font-size: 14px; -fx-text-fill: #6b7280;" text="Connect with friends and family" />
+
+    <VBox alignment="CENTER" maxWidth="350.0" spacing="15.0">
+
+        <Label style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #374151;" text="Phone Number">
+            <VBox.margin>
+                <Insets top="20.0" />
+            </VBox.margin>
+        </Label>
+
+        <HBox alignment="CENTER" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 8px; -fx-border-color: #d1d5db; -fx-border-radius: 8px; -fx-border-width: 1px;">
+            <padding>
+                <Insets bottom="12.0" left="15.0" right="15.0" top="12.0" />
+            </padding>
+
+            <Label style="-fx-font-size: 14px; -fx-text-fill: #374151; -fx-font-weight: bold;" text="🇪🇬 +20" />
+
+            <TextField fx:id="phoneField" prefWidth="250.0" promptText="Enter a valid 10-digit phone number starting with 1" style="-fx-background-color: transparent; -fx-border-width: 0; -fx-font-size: 14px;">
+            </TextField>
+        </HBox>
+
+        <Label style="-fx-font-size: 11px; -fx-text-fill: #6b7280; -fx-wrap-text: true;"
+               text="Enter 11 digits starting with 01 (e.g., 01012345678)">
+            <VBox.margin>
+                <Insets top="5.0" />
+            </VBox.margin>
+        </Label>
+
+        <Button
+                fx:id="continueButton"
+                maxWidth="Infinity"
+                prefHeight="45.0"
+                style="-fx-background-color: #14b8a6; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 8px; -fx-cursor: hand;"
+                text="Next → "
+                onAction="#handleContinue"
+        >
+            <VBox.margin>
+                <Insets top="10.0" />
+            </VBox.margin>
+        </Button>
+
+        <Label maxWidth="300.0" style="-fx-font-size: 11px; -fx-text-fill: #9ca3af; -fx-wrap-text: true; -fx-text-alignment: center;" text="By continuing, you agree to our  Terms">
+            <VBox.margin>
+                <Insets top="10.0" />
+            </VBox.margin>
+        </Label>
+    </VBox>
+
+</VBox>

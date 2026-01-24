@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="450.0" style="-fx-background-color: #f7f9fa;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.ProfileScreenController">
+    <children>
+        <!-- Top Bar -->
+        <Pane prefHeight="75.0" prefWidth="450.0" style="-fx-background-color: #ffffff;">
+            <effect>
+                <DropShadow blurType="ONE_PASS_BOX" height="15.0" radius="3.25" spread="0.5" width="0.0" />
+            </effect>
+            <children>
+                <Label layoutX="53.0" layoutY="16.0" text="Profile">
+                    <font>
+                        <Font name="System Bold" size="27.0" />
+                    </font>
+                </Label>
+                <StackPane alignment="CENTER" layoutX="14.0" layoutY="18.0" prefHeight="36" prefWidth="36" style="-fx-background-color: #25D366; -fx-background-radius: 10; -fx-cursor: hand;">
+                   <children>
+                       <Circle fx:id="profileHeadIconTop" centerX="12" centerY="7" radius="4" style="-fx-stroke: white; -fx-stroke-width: 2; -fx-fill: transparent;" />
+                       <SVGPath content="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" style="-fx-stroke: white; -fx-stroke-width: 2; -fx-fill: transparent;" />
+                   </children>
+                </StackPane>
+                <!-- Edit Icon -->
+                <Group fx:id="editIcon" layoutX="405.0" layoutY="26.0" onMouseClicked="#onEditIconClick" style="-fx-cursor: hand;" />
+            </children>
+        </Pane>
+
+        <!-- Scrollable Content Area -->
+        <ScrollPane fx:id="scrollPane" fitToWidth="true" hbarPolicy="NEVER" layoutY="75.0" prefHeight="500.0" prefWidth="450.0" style="-fx-background-color: #f7f9fa; -fx-background: #f7f9fa;">
+            <content>
+                <VBox alignment="TOP_CENTER" prefHeight="500.0" prefWidth="450.0" spacing="20" style="-fx-background-color: #f7f9fa;">
+                    <children>
+                        <!-- Profile Image -->
+                        <VBox alignment="CENTER" spacing="10" style="-fx-padding: 30 0 10 0;">
+                            <children>
+                                <Circle fx:id="profileImage" fill="#e0e0e0" radius="60" stroke="#25D366" strokeWidth="3" />
+                                <Label fx:id="initialsLabel" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #666666;" text="U" translateY="-75" />
+                            </children>
+                        </VBox>
+
+                        <!-- Profile Fields Container -->
+                        <VBox prefWidth="390.0" spacing="15" style="-fx-padding: 0 30 20 30;">
+                            <children>
+                                <!-- Full Name -->
+                                <VBox spacing="5">
+                                    <children>
+                                        <Label style="-fx-font-size: 12px; -fx-text-fill: #666666;" text="Full Name" />
+                                        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 12 15;">
+                                            <children>
+                                                <Label fx:id="fullNameLabel" style="-fx-font-size: 14px; -fx-text-fill: #333333;" HBox.hgrow="ALWAYS" />
+                                                <TextField fx:id="fullNameField" managed="false" style="-fx-background-color: transparent; -fx-border-width: 0;" visible="false" HBox.hgrow="ALWAYS" />
+                                            </children>
+                                            <effect>
+                                                <DropShadow blurType="GAUSSIAN" color="#00000020" height="5.0" radius="2.0" spread="0.1" width="5.0" />
+                                            </effect>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+
+                                <!-- Email -->
+                                <VBox spacing="5">
+                                    <children>
+                                        <Label style="-fx-font-size: 12px; -fx-text-fill: #666666;" text="Email" />
+                                        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 12 15;">
+                                            <children>
+                                                <Label fx:id="emailLabel" style="-fx-font-size: 14px; -fx-text-fill: #333333;" HBox.hgrow="ALWAYS" />
+                                                <TextField fx:id="emailField" managed="false" style="-fx-background-color: transparent; -fx-border-width: 0;" visible="false" HBox.hgrow="ALWAYS" />
+                                            </children>
+                                            <effect>
+                                                <DropShadow blurType="GAUSSIAN" color="#00000020" height="5.0" radius="2.0" spread="0.1" width="5.0" />
+                                            </effect>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+
+                                <!-- Gender -->
+                                <VBox spacing="5">
+                                    <children>
+                                        <Label style="-fx-font-size: 12px; -fx-text-fill: #666666;" text="Gender" />
+                                        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 12 15;">
+                                            <children>
+                                                <Label fx:id="genderLabel" style="-fx-font-size: 14px; -fx-text-fill: #333333;" text="Male" HBox.hgrow="ALWAYS" />
+                                                <ComboBox fx:id="genderComboBox" managed="false" visible="false" HBox.hgrow="ALWAYS" styleClass="profile-combo" />
+
+                                            </children>
+                                            <effect>
+                                                <DropShadow blurType="GAUSSIAN" color="#00000020" height="5.0" radius="2.0" spread="0.1" width="5.0" />
+                                            </effect>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+
+                                <!-- Country -->
+                                <VBox spacing="5">
+                                    <children>
+                                        <Label style="-fx-font-size: 12px; -fx-text-fill: #666666;" text="Country" />
+                                        <HBox alignment="CENTER_LEFT" focusTraversable="true" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 12 15;">
+                                            <children>
+                                                <Label fx:id="countryLabel" style="-fx-font-size: 14px; -fx-text-fill: #333333;" text="Egypt" HBox.hgrow="ALWAYS" />
+                                                <ComboBox fx:id="countryComboBox" managed="false" visible="false" HBox.hgrow="ALWAYS" styleClass="profile-combo" />
+                                            </children>
+                                            <effect>
+                                                <DropShadow blurType="GAUSSIAN" color="#00000020" height="5.0" radius="2.0" spread="0.1" width="5.0" />
+                                            </effect>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+
+                                <!-- Date of Birth -->
+                                <VBox spacing="5">
+                                    <children>
+                                        <Label style="-fx-font-size: 12px; -fx-text-fill: #666666;" text="Date of Birth" />
+                                        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 12 15;">
+                                            <children>
+                                                <Label fx:id="dobLabel" style="-fx-font-size: 14px; -fx-text-fill: #333333;" text="01/01/1990" HBox.hgrow="ALWAYS" />
+                                                <DatePicker fx:id="dobPicker" managed="false" visible="false" HBox.hgrow="ALWAYS" />
+                                            </children>
+                                            <effect>
+                                                <DropShadow blurType="GAUSSIAN" color="#00000020" height="5.0" radius="2.0" spread="0.1" width="5.0" />
+                                            </effect>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+
+                                <!-- Bio -->
+                                <VBox spacing="5">
+                                    <children>
+                                        <Label style="-fx-font-size: 12px; -fx-text-fill: #666666;" text="Bio" />
+                                        <HBox alignment="TOP_LEFT" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 12 15;">
+                                            <children>
+                                                <Label fx:id="bioLabel" style="-fx-font-size: 14px; -fx-text-fill: #333333;" text="No bio yet..." wrapText="true" HBox.hgrow="ALWAYS" />
+                                                <TextArea fx:id="bioField" managed="false" prefRowCount="3" style="-fx-background-color: transparent; -fx-border-width: 0;" text="No bio yet..." visible="false" wrapText="true" HBox.hgrow="ALWAYS" />
+                                            </children>
+                                            <effect>
+                                                <DropShadow blurType="GAUSSIAN" color="#00000020" height="5.0" radius="2.0" spread="0.1" width="5.0" />
+                                            </effect>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+
+                                <!-- Change Password Link -->
+                                <HBox alignment="CENTER_LEFT" onMouseClicked="#onChangePasswordClick" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 12 15; -fx-cursor: hand;">
+                                    <children>
+                                        <Group fx:id="passwordIcon" />
+                                        <Label style="-fx-font-size: 14px; -fx-text-fill: #25D366; -fx-font-weight: bold;" text="Change Password" />
+                                    </children>
+                                    <effect>
+                                        <DropShadow blurType="GAUSSIAN" color="#00000020" height="5.0" radius="2.0" spread="0.1" width="5.0" />
+                                    </effect>
+                                </HBox>
+
+                                <!-- Logout Button -->
+                                <Button fx:id="logoutButton" onAction="#onLogoutClick" prefHeight="45.0" prefWidth="390.0" style="-fx-background-color: #ff4444; -fx-text-fill: white;                                                -fx-background-radius: 10; -fx-font-size: 16px;                                                -fx-font-weight: bold; -fx-cursor: hand;" text="Logout">
+                                    <effect>
+                                        <DropShadow blurType="GAUSSIAN" color="#00000030" height="5.0" radius="2.0" spread="0.1" width="5.0" />
+                                    </effect>
+                                </Button>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+
+        <!-- Bottom Navigation Bar -->
+        <Pane layoutY="575.0" prefHeight="75.0" prefWidth="450.0" style="-fx-background-color: #ffffff;">
+            <effect>
+                <DropShadow blurType="ONE_PASS_BOX" height="15.0" radius="3.25" spread="0.5" width="0.0" />
+            </effect>
+            <children>
+                <Group fx:id="profileIcon" layoutX="363.0" layoutY="25.0" onMouseClicked="#onProfileIconClick" />
+                <Group fx:id="chatsIcon" layoutX="94.0" layoutY="25.0" onMouseClicked="#onChatsIconClick" />
+            </children>
+        </Pane>
+    </children>
+</Pane>
