@@ -19,13 +19,15 @@ public class ClientChatApp extends Application {
     public static ObservableList<String> allStyles = FXCollections.observableArrayList();
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(ClientChatApp.class.getResource("login-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(ClientChatApp.class.getResource("profile-screen-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         allStyles.addAll(Objects.requireNonNull(getClass().getResource("/css/chat-light.css"))
                         .toExternalForm(),
                 Objects.requireNonNull(getClass().getResource("/css/chat-components.css"))
                         .toExternalForm(),
                 Objects.requireNonNull(getClass().getResource("/css/login.css"))
+                        .toExternalForm(),
+                Objects.requireNonNull(getClass().getResource("/css/combobox.css"))
                         .toExternalForm());
         scene.getStylesheets().addAll(allStyles);
         stage.setTitle("!What's App");
