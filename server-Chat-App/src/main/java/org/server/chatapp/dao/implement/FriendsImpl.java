@@ -23,7 +23,6 @@ public class FriendsImpl implements FriendsDao {
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            preparedStatement.close();
             if (resultSet.next()) {
                 return new Friend(resultSet.getLong("id"),
                         resultSet.getLong("senderUserId"),
@@ -187,5 +186,41 @@ public class FriendsImpl implements FriendsDao {
         }
 
         return myFriends;
+    }
+
+    @Override
+    public Friend getUserFriendStatus(long myId, long otherId) {
+
+        try (Connection connection = Database.getDataSource().getConnection()) {
+
+            String sql = """
+                      SELECT
+                        *
+                      FROM
+                        FRIENDS as f
+                      WHERE
+                        senderUserId = ? AND receiverUserId = ?
+                      ORDER BY requestDate DESC
+                      LIMIT 1;""";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, myId);
+            preparedStatement.setLong(2, otherId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return new Friend(resultSet.getLong("id"),
+                        resultSet.getLong("senderUserId"),
+                        resultSet.getLong("receiverUserId"),
+                        resultSet.getTimestamp("requestDate"),
+                        resultSet.getTimestamp("responseDate"),
+                        FriendStatus.valueOf(resultSet.getString("status").toUpperCase()));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

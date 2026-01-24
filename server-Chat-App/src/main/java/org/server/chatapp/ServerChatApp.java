@@ -4,10 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.server.chatapp.rmi.GetUserServiceImpl;
-import org.server.chatapp.rmi.LoadFriendsListServiceImpl;
-import org.server.chatapp.rmi.LoginServiceImpl;
-import org.server.chatapp.rmi.RegisterServiceImpl;
+import org.server.chatapp.rmi.*;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -31,10 +28,12 @@ public class ServerChatApp extends Application {
             LoadFriendsListServiceImpl friendsListService = new LoadFriendsListServiceImpl();
             GetUserServiceImpl getUserService = new GetUserServiceImpl();
             RegisterServiceImpl registerService = new RegisterServiceImpl();
+            FriendRequestServiceImpl friendRequestService = new FriendRequestServiceImpl();
             reg.rebind("LoginService", loginService);
             reg.rebind("LoadFriendsListService", friendsListService);
             reg.rebind("GetUserService", getUserService);
             reg.rebind("RegisterService", registerService);
+            reg.rebind("FriendRequestService", friendRequestService);
         } catch (RemoteException e) {
             throw new RuntimeException(e);
         }
