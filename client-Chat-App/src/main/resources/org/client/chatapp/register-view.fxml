@@ -52,7 +52,7 @@
         </HBox>
 
         <Label style="-fx-font-size: 11px; -fx-text-fill: #6b7280; -fx-wrap-text: true;"
-               text="Enter 10 digits starting with 1 (e.g., 1012345678)">
+               text="Enter 11 digits starting with 01 (e.g., 01012345678)">
             <VBox.margin>
                 <Insets top="5.0" />
             </VBox.margin>

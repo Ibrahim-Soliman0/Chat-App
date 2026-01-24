@@ -29,8 +29,8 @@ public class RegisterController {
             if (!newValue.matches("\\d*")) {
                 phoneField.setText(newValue.replaceAll("[^\\d]", ""));
             }
-            if (newValue.length() > 10) {
-                phoneField.setText(newValue.substring(0, 10));
+            if (newValue.length() > 11) {
+                phoneField.setText(newValue.substring(0, 11));
             }
             continueButton.setDisable(!isValidPhoneNumber(phoneField.getText()));
         });
@@ -43,12 +43,11 @@ public class RegisterController {
 
     public void handleContinue() {
         String phoneNumber = phoneField.getText().trim();
-        String fullPhoneNumber = "+20" + phoneNumber;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/client/chatapp/setup-profile-view.fxml"));
             Parent root = loader.load();
             SetupProfileController controller = loader.getController();
-            controller.setPhoneNumber(fullPhoneNumber);
+            controller.setPhoneNumber(phoneNumber);
 
             Stage stage = (Stage) continueButton.getScene().getWindow();
             Scene scene = new Scene(root);
@@ -66,14 +65,11 @@ public class RegisterController {
             return false;
         }
 
-        if (phone.length() != 10) {
+        if (phone.length() != 11) {
             return false;
         }
 
-        if (!phone.startsWith("1")) {
-            return false;
-        }
-        return true;
+        return phone.startsWith("01");
     }
     private void showError(String message) {
 

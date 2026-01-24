@@ -43,3 +43,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+# Ignore all profile pictures
+server-Chat-App/uploads/profiles/*

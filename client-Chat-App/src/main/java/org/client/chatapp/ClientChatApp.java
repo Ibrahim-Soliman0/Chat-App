@@ -40,7 +40,7 @@ public class ClientChatApp extends Application {
             registry = LocateRegistry.getRegistry(5000);
         } catch (RemoteException e) {
             e.printStackTrace();
-            // no meaning to continue if the server is not found
+
             return;
         }
 

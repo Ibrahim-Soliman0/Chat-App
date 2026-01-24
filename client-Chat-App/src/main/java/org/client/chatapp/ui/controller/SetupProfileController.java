@@ -17,6 +17,7 @@ import rmi.RegisterService;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.rmi.AccessException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -166,7 +167,7 @@ public class SetupProfileController {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-        phoneField.setText(phoneNumber);
+        phoneField.setText("+2"+phoneNumber);
     }
 
 
@@ -292,8 +293,14 @@ public class SetupProfileController {
                     : bioField.getText().trim());
 
             if (selectedImageFile != null) {
-                newUser.setPicturePath(selectedImageFile.getAbsolutePath());
-                // TODO:
+//                newUser.setPicturePath(selectedImageFile.getAbsolutePath());
+                try {
+                    byte[] imageBytes = Files.readAllBytes(selectedImageFile.toPath());
+                    newUser.setPictureBytes(imageBytes);
+                } catch (IOException e) {
+                    showErrorAlert("Could not read image file: " + e.getMessage());
+                    return;
+                }
             } else {
                 newUser.setPicturePath(null);
             }
@@ -305,7 +312,6 @@ public class SetupProfileController {
             moveToLogin();
         } catch (RemoteException e) {
             String errorMessage = e.getMessage();
-
             if (errorMessage.contains("Email already exists")) {
                 showErrorAlert("This email is already registered!\nPlease use a different email.");
             } else if (errorMessage.contains("Phone number already registered")) {

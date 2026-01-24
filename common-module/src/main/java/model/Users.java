@@ -15,6 +15,7 @@ public class Users implements Serializable {
     private String name;
     private String email;
     private String picturePath;
+    private byte[] pictureBytes;
     private String password;
     private Gender gender;
     private String country;
@@ -89,6 +90,7 @@ public class Users implements Serializable {
         return email;
     }
 
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -155,6 +157,14 @@ public class Users implements Serializable {
 
     public void setLastSeen(LocalDateTime lastSeen) {
         this.lastSeen = lastSeen;
+    }
+
+    public byte[] getPictureBytes() {
+        return pictureBytes;
+    }
+
+    public void setPictureBytes(byte[] pictureBytes) {
+        this.pictureBytes = pictureBytes;
     }
 
     @Override
