@@ -23,6 +23,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.Users;
 import org.client.chatapp.ClientChatApp;
 import org.client.chatapp.model.ChatItem;
 import org.client.chatapp.ui.component.ChatItemView;
@@ -33,6 +34,7 @@ import java.util.Objects;
 
 public class HomeScreenController {
 
+    private Users user;
     @FXML
     private Group profileIcon, chatsIcon;
     @FXML
@@ -352,5 +354,9 @@ public class HomeScreenController {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
     }
 }
