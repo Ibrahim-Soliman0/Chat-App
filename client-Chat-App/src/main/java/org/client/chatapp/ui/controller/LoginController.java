@@ -83,19 +83,21 @@ public class LoginController {
         // Construct a full phone number with country code
         String fullPhone = "+20" + phone;
 
-        Registry registry = LocateRegistry.getRegistry("localhost", 5000);
-        LoginService loginService = (LoginService) registry.lookup("LoginService");
-        boolean success = loginService.login(fullPhone, password);
-        if (success) {
-            moveToMainApp(event);
+        LoginService loginService = (LoginService) ClientChatApp.registry.lookup("LoginService");
+        Users success = loginService.login(fullPhone, password);
+        if (success != null) {
+            moveToMainApp(event, success);
         }
     }
 
-    private void moveToMainApp(ActionEvent event) {
+    private void moveToMainApp(ActionEvent event, Users user) {
         try {
-            root = FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource(
-                            "/org/client/chatapp/home-screen-view.fxml")));
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
+                    "/org/client/chatapp/home-screen-view.fxml")));
+            root = loader.load();
+            HomeScreenController homeScreenController = loader.getController();
+            homeScreenController.setUser(user);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
