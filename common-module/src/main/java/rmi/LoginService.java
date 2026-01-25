@@ -9,5 +9,5 @@ import java.rmi.RemoteException;
 public interface LoginService extends Remote {
 
     Users getUserByPhoneNumber(UserLoginDTO userLoginDTO) throws RemoteException;
-    boolean login(String phoneNumber, String password) throws  RemoteException;
+    Users login(String phoneNumber, String password) throws  RemoteException;
 }

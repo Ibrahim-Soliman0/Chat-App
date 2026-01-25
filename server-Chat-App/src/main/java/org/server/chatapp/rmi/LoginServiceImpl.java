@@ -24,14 +24,14 @@ public class LoginServiceImpl extends UnicastRemoteObject implements LoginServic
     }
 
     @Override
-    public boolean login(String phoneNumber, String password) throws RemoteException {
-        System.out.println("Not Here");
+    public Users login(String phoneNumber, String password) throws RemoteException {
         if(usersDao.isPhoneNumberExists(phoneNumber))
         {
-            System.out.println("Here");
             Users user = usersDao.getUserByPhoneNumber(phoneNumber);
-            return PasswordUtil.verifyPassword(password, user.getPassword());
+            if(PasswordUtil.verifyPassword(password, user.getPassword()))
+                return user;
+            else return null;
         }
-        return false;
+        return null;
     }
 }
