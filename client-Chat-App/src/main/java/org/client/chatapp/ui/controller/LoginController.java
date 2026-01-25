@@ -81,14 +81,12 @@ public class LoginController {
         }
 
         // Construct a full phone number with country code
-        String fullPhone = "0" + phone;
+        String fullPhone = "+20" + phone;
 
-        System.out.println("Login successful");
         Registry registry = LocateRegistry.getRegistry("localhost", 5000);
         LoginService loginService = (LoginService) registry.lookup("LoginService");
         boolean success = loginService.login(fullPhone, password);
         if (success) {
-            System.out.println("Login successful");
             moveToMainApp(event);
         }
     }
@@ -119,9 +117,7 @@ public class LoginController {
 
     @FXML
     private void handleSignUp(ActionEvent event) {
-//        System.out.println("Sign up clicked");
-        // TODO: Navigate to sign up screen
-        // Example:
+
          try {
              FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/client/chatapp/register-view.fxml"));
              Parent root = loader.load();

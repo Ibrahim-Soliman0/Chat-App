@@ -1,9 +1,6 @@
 package org.server.chatapp.util;
 
-import org.server.chatapp.rmi.GetUserServiceImpl;
-import org.server.chatapp.rmi.LoadFriendsListServiceImpl;
-import org.server.chatapp.rmi.LoginServiceImpl;
-import org.server.chatapp.rmi.RegisterServiceImpl;
+import org.server.chatapp.rmi.*;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -22,10 +19,12 @@ public class RMIUtil {
             registry.rebind("LoadFriendsListService", new LoadFriendsListServiceImpl());
             registry.rebind("GetUserService", new GetUserServiceImpl());
             registry.rebind("RegisterService", new RegisterServiceImpl());
+            registry.rebind("FriendRequestService", new FriendRequestServiceImpl());
             isRunning = true;
             System.out.println("Server start...");
         }
     }
+
     public static void stopServices() throws RemoteException, NotBoundException {
         if (isRunning && registry != null) {
             for (String bound : registry.list()) {
@@ -37,6 +36,7 @@ public class RMIUtil {
             System.out.println("Server stopped");
         }
     }
+
     public static boolean isRunning() {
         return isRunning;
     }

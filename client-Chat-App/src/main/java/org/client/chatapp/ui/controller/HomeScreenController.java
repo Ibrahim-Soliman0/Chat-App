@@ -264,8 +264,8 @@ public class HomeScreenController {
 
         try {
             root = FXMLLoader.load(
-                    Objects.requireNonNull(
-                            getClass().getResource("org/client/chatapp/profile-screen-view.fxml")));
+                    Objects.requireNonNull(getClass().getResource(
+                            "/org/client/chatapp/profile-screen-view.fxml")));
         } catch (IOException e) {
             e.printStackTrace();
         }

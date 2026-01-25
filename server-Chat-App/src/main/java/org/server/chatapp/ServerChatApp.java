@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.server.chatapp.util.RMIUtil;
+import org.server.chatapp.rmi.*;
 
 import java.io.IOException;
 

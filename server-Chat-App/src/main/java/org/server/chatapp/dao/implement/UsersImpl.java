@@ -268,4 +268,61 @@ public class UsersImpl implements UsersDao {
         return false;
     }
 
+    public List<Users> searchUsersByPhoneNumber(String phoneNumber, Long searchingUserId) {
+        phoneNumber += "%";
+        List<Users> matchedUsers = new ArrayList<>();
+        try (Connection connection = Database.getDataSource().getConnection()) {
+            String sql = """
+                      SELECT
+                        *
+                      FROM
+                        USERS AS u
+                      WHERE
+                        u.phoneNumber LIKE ?
+                        AND
+                        u.id NOT IN (
+                              SELECT
+                                  CASE
+                                      WHEN f.senderUserId = ? THEN f.receiverUserId
+                                      ELSE f.senderUserId
+                                  END
+                              FROM
+                                  FRIENDS AS f
+                              WHERE
+                                  (senderUserId = u.id AND f.status = 'ACCEPTED')
+                                      OR
+                                  (receiverUserId = u.id AND f.status = 'ACCEPTED')
+                            )
+                        AND
+                          u.id <> ?
+                      LIMIT 20;""";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, phoneNumber);
+            preparedStatement.setLong(2, searchingUserId);
+            preparedStatement.setLong(3, searchingUserId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Timestamp lastSeenTimestamp = resultSet.getTimestamp("lastSeen");
+                matchedUsers.add(new Users(
+                        resultSet.getLong("id"),
+                        resultSet.getString("phoneNumber"),
+                        resultSet.getString("name"),
+                        resultSet.getString("email"),
+                        resultSet.getString("picturePath"),
+                        resultSet.getString("password"),
+                        Gender.valueOf(resultSet.getString("gender").toUpperCase()),
+                        resultSet.getString("country"),
+                        resultSet.getDate("DOB").toLocalDate(),
+                        resultSet.getString("bio"),
+                        Status.valueOf(resultSet.getString("status").toUpperCase()),
+                        lastSeenTimestamp != null ? lastSeenTimestamp.toLocalDateTime() : null
+                ));
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        return matchedUsers;
+    }
 }
