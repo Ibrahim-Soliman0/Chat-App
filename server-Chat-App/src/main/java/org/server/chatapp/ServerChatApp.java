@@ -4,15 +4,9 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.server.chatapp.rmi.GetUserServiceImpl;
-import org.server.chatapp.rmi.LoadFriendsListServiceImpl;
-import org.server.chatapp.rmi.LoginServiceImpl;
-import org.server.chatapp.rmi.RegisterServiceImpl;
 import org.server.chatapp.util.RMIUtil;
 
 import java.io.IOException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
 
 public class ServerChatApp extends Application {
     @Override
@@ -20,7 +14,7 @@ public class ServerChatApp extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(ServerChatApp.class.getResource("main-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        String css = this.getClass().getResource("/css/button.css").toExternalForm();
+        String css = this.getClass().getResource("/css/admin.css").toExternalForm();
         scene.getStylesheets().add(css);
 
         stage.setTitle("Admin Dashboard");
