@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.shape.SVGPath?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 
-<VBox
-        alignment="CENTER"
-        spacing="30.0"
-        style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/25"
-        xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="org.client.chatapp.ui.controller.RegisterController"
->
+<VBox alignment="CENTER" prefHeight="650.0" prefWidth="450.0" spacing="30.0" style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.RegisterController">
 
     <padding>
         <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
@@ -51,21 +40,13 @@
             </TextField>
         </HBox>
 
-        <Label style="-fx-font-size: 11px; -fx-text-fill: #6b7280; -fx-wrap-text: true;"
-               text="Enter 11 digits starting with 01 (e.g., 01012345678)">
+        <Label style="-fx-font-size: 11px; -fx-text-fill: #6b7280; -fx-wrap-text: true;" text="Enter 11 digits starting with 01 (e.g., 01012345678)">
             <VBox.margin>
                 <Insets top="5.0" />
             </VBox.margin>
         </Label>
 
-        <Button
-                fx:id="continueButton"
-                maxWidth="Infinity"
-                prefHeight="45.0"
-                style="-fx-background-color: #14b8a6; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 8px; -fx-cursor: hand;"
-                text="Next → "
-                onAction="#handleContinue"
-        >
+        <Button fx:id="continueButton" maxWidth="Infinity" onAction="#handleContinue" prefHeight="45.0" style="-fx-background-color: #14b8a6; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-background-radius: 8px; -fx-cursor: hand;" text="Next → ">
             <VBox.margin>
                 <Insets top="10.0" />
             </VBox.margin>

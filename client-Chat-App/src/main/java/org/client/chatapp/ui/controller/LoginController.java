@@ -88,6 +88,10 @@ public class LoginController {
         if (success != null) {
             moveToMainApp(event, success);
         }
+        else
+        {
+            showError("The phone number and the password don't match");
+        }
     }
 
     private void moveToMainApp(ActionEvent event, Users user) {
@@ -97,17 +101,15 @@ public class LoginController {
             root = loader.load();
             HomeScreenController homeScreenController = loader.getController();
             homeScreenController.setUser(user);
-
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            scene.getStylesheets().addAll(ClientChatApp.allStyles);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        scene.getStylesheets().addAll(ClientChatApp.allStyles);
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
     }
 
     @FXML
@@ -119,7 +121,6 @@ public class LoginController {
 
     @FXML
     private void handleSignUp(ActionEvent event) {
-
          try {
              FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/client/chatapp/register-view.fxml"));
              Parent root = loader.load();

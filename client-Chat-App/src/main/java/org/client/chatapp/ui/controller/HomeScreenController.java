@@ -263,21 +263,21 @@ public class HomeScreenController {
 
     @FXML
     private void onProfileIconClick(MouseEvent actionEvent) {
-
         try {
-            root = FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource(
-                            "/org/client/chatapp/profile-screen-view.fxml")));
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
+                    "/org/client/chatapp/profile-screen-view.fxml")));
+            root = loader.load();
+            ProfileScreenController profileScreenController = loader.getController();
+            profileScreenController.setUser(user);
+            stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            scene.getStylesheets().addAll(ClientChatApp.allStyles);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        scene.getStylesheets().addAll(ClientChatApp.allStyles);
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
     }
 
     @FXML
