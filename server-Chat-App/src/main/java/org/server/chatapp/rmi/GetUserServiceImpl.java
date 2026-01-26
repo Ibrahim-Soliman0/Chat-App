@@ -52,7 +52,7 @@ public class GetUserServiceImpl extends UnicastRemoteObject implements GetUserSe
         List<ChatRoomDTO> userRooms = userRoomsImpl.getUserRooms(me);
         List<ChatRoomDTO> userRoomsWithLastMessage = userRooms.stream()
                 .map(chatRoom ->
-                        new ChatRoomDTO(userRoomsImpl.getSingleUserInRoom(chatRoom),
+                        new ChatRoomDTO(me, userRoomsImpl.getSingleUserInRoom(chatRoom),
                                 chatRoom.getUserRoom(), chatRoom.getRoom(),
                                 messageDao.getLastMessageInRoom(chatRoom.getRoom().getId())))
                 .toList();

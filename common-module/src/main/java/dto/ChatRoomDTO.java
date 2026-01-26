@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 public class ChatRoomDTO implements Serializable {
 
-    private Users user;
+    private Users me, other;
     private UserRooms userRoom;
     private Room room;
     private Message lastMessage;
@@ -17,25 +17,34 @@ public class ChatRoomDTO implements Serializable {
     public ChatRoomDTO() {
     }
 
-    public ChatRoomDTO(Users user, UserRooms userRoom, Room room) {
-        this.user = user;
+    public ChatRoomDTO(Users me, UserRooms userRoom, Room room) {
+        this.me = me;
         this.userRoom = userRoom;
         this.room = room;
     }
 
-    public ChatRoomDTO(Users user, UserRooms userRoom, Room room, Message lastMessage) {
-        this.user = user;
+    public ChatRoomDTO(Users me, Users other, UserRooms userRoom, Room room, Message lastMessage) {
+        this.me = me;
+        this.other = other;
         this.userRoom = userRoom;
         this.room = room;
         this.lastMessage = lastMessage;
     }
 
-    public Users getUser() {
-        return user;
+    public Users getMe() {
+        return me;
     }
 
-    public void setUser(Users user) {
-        this.user = user;
+    public void setMe(Users me) {
+        this.me = me;
+    }
+
+    public Users getOther() {
+        return other;
+    }
+
+    public void setOther(Users other) {
+        this.other = other;
     }
 
     public UserRooms getUserRoom() {

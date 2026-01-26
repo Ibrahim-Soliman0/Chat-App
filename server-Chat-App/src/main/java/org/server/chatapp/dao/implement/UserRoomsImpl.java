@@ -246,7 +246,7 @@ public class UserRoomsImpl implements UserRoomsDao {
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setLong(1, chatRoomDTO.getRoom().getId());
-            preparedStatement.setLong(2, chatRoomDTO.getUser().getId());
+            preparedStatement.setLong(2, chatRoomDTO.getMe().getId());
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
@@ -284,7 +284,7 @@ public class UserRoomsImpl implements UserRoomsDao {
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setLong(1, chatRoomDTO.getRoom().getId());
-            preparedStatement.setLong(2, chatRoomDTO.getUser().getId());
+            preparedStatement.setLong(2, chatRoomDTO.getMe().getId());
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
