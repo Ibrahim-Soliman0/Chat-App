@@ -3,6 +3,8 @@ module org.client.chatapp {
     requires javafx.fxml;
     requires org.common.module;
     requires java.rmi;
+    requires javafx.web;
+    requires org.controlsfx.controls;
 
     exports org.client.chatapp;
     opens org.client.chatapp to javafx.fxml;
