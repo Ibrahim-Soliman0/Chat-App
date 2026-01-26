@@ -81,7 +81,7 @@ public class LoginController {
         }
 
         // Construct a full phone number with country code
-        String fullPhone = "+20" + phone;
+        String fullPhone = "0" + phone;
 
         LoginService loginService = (LoginService) ClientChatApp.registry.lookup("LoginService");
         Users success = loginService.login(fullPhone, password);

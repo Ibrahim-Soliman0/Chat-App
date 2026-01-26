@@ -53,7 +53,8 @@ public class AdminDashboardController {
     @FXML
     private void showStatistics() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/server/chatapp/statistics-view.fxml"));
+            FXMLLoader loader =
+                    new FXMLLoader(getClass().getResource("/org/server/chatapp/statistics-view.fxml"));
             Parent view = loader.load();
             contentArea.getChildren().setAll(view);
         } catch (IOException e) {
@@ -62,10 +63,23 @@ public class AdminDashboardController {
         updateActiveButton(btnStatistics);
     }
 
+    @FXML
+    private void showAnnouncement() {
+        try {
+            FXMLLoader loader =
+                    new FXMLLoader(getClass().getResource("/org/server/chatapp/announcement-view.fxml"));
+            Parent view = loader.load();
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        updateActiveButton(btnAnnouncements);
+    }
+
     private void updateActiveButton(Button activeBtn) {
         btnControl.getStyleClass().remove("nav-button-active");
         btnStatistics.getStyleClass().remove("nav-button-active");
-
+        btnAnnouncements.getStyleClass().remove("nav-button-active");
         activeBtn.getStyleClass().add("nav-button-active");
     }
 
