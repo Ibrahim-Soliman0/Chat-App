@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.client.chatapp.ClientChatApp;
 
 import java.io.IOException;
 
@@ -51,6 +52,7 @@ public class RegisterController {
 
             Stage stage = (Stage) continueButton.getScene().getWindow();
             Scene scene = new Scene(root);
+            scene.getStylesheets().addAll(ClientChatApp.allStyles);
             stage.setScene(scene);
             stage.show();
 
