@@ -58,7 +58,7 @@
                     </graphic>
                 </Button>
 
-                <Button fx:id="btnAnnouncements" alignment="BASELINE_LEFT" maxWidth="Infinity" prefHeight="45.0"
+                <Button fx:id="btnAnnouncements" onAction="#showAnnouncement" alignment="BASELINE_LEFT" maxWidth="Infinity" prefHeight="45.0"
                         styleClass="nav-button" text=" Announcements">
                     <graphic>
                         <Group>

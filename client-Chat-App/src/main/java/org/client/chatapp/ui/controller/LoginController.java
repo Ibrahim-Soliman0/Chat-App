@@ -13,6 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.Users;
 import org.client.chatapp.ClientChatApp;
+import org.client.chatapp.rmi.ClientCallBackImp;
 import rmi.LoginService;
 
 import java.io.IOException;
@@ -26,6 +27,8 @@ public class LoginController {
     private Parent root;
     private Stage stage;
     private Scene scene;
+    private static ClientCallBackImp client;
+
 
     @FXML
     private TextField phoneField;
@@ -84,7 +87,8 @@ public class LoginController {
         String fullPhone = "0" + phone;
 
         LoginService loginService = (LoginService) ClientChatApp.registry.lookup("LoginService");
-        Users success = loginService.login(fullPhone, password);
+        client = new ClientCallBackImp();
+        Users success = loginService.login(fullPhone, password , client);
         if (success != null) {
             moveToMainApp(event, success);
         }

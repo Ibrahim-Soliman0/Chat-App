@@ -18,6 +18,7 @@ import model.Users;
 import org.client.chatapp.ClientChatApp;
 import rmi.GetUserService;
 import rmi.LoadFriendsListService;
+import rmi.LoginService;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -378,6 +379,10 @@ public class ProfileScreenController {
         if (result.isPresent() && result.get() == yesButton) {
             // Navigate to login screen
             try {
+                LoginService loginService = (LoginService) ClientChatApp.registry.lookup("LoginService");
+//                TODO: Remove currentUser from onlineUsersMap
+//                  loginService.logout(user.getPhoneNumber());
+
                 root = FXMLLoader.load(
                         Objects.requireNonNull(getClass().getResource(
                                 "/org/client/chatapp/login-view.fxml")));
@@ -390,6 +395,8 @@ public class ProfileScreenController {
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (NotBoundException e) {
+                throw new RuntimeException(e);
             }
         }
     }

@@ -126,3 +126,48 @@
     -fx-font-weight: bold;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 0);
 }
+
+/* --- HTMLEditor Styling --- */
+.html-editor {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 5;
+}
+
+.html-editor .tool-bar {
+    -fx-background-color: #f9fafb;
+    -fx-background-radius: 8;
+    -fx-padding: 5;
+    -fx-spacing: 5;
+}
+
+.html-editor .button,
+.html-editor .toggle-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.html-editor .button:hover,
+.html-editor .toggle-button:hover {
+    -fx-background-color: #e2e8f0;
+}
+
+.html-editor .toggle-button:selected {
+    -fx-background-color: #14b8a6;
+    -fx-text-fill: white;
+}
+
+.html-editor .combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #d1d5db;
+    -fx-border-radius: 5;
+}
+
+.html-editor .web-view {
+    -fx-background-color: white;
+    -fx-padding: 10;
+}}
