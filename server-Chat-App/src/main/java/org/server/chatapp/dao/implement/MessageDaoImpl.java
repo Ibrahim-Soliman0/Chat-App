@@ -1,6 +1,7 @@
 package org.server.chatapp.dao.implement;
 
 import model.Message;
+import model.Room;
 import org.server.chatapp.dao.Database;
 import org.server.chatapp.dao.dao.MessageDao;
 
@@ -224,5 +225,37 @@ public class MessageDaoImpl implements MessageDao {
         }
 
         return messages;
+    }
+
+    @Override
+    public Message getLastMessageInRoom(long roomId) {
+
+        String sql = """
+                    SELECT
+                        *
+                    FROM
+                        Message
+                    WHERE
+                        roomId = ?
+                        AND
+                        isDeleted = false
+                    ORDER BY sentAt DESC
+                    LIMIT 1""";
+        try (Connection connection = Database.getDataSource().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setLong(1, roomId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return createMessageObject(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return null;
     }
 }

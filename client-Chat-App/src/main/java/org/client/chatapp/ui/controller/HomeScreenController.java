@@ -1,9 +1,9 @@
 package org.client.chatapp.ui.controller;
 
+import dto.ChatRoomDTO;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -27,9 +27,12 @@ import model.Users;
 import org.client.chatapp.ClientChatApp;
 import org.client.chatapp.model.ChatItem;
 import org.client.chatapp.ui.component.ChatItemView;
+import rmi.GetUserService;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.util.List;
 import java.util.Objects;
 
 public class HomeScreenController {
@@ -99,50 +102,6 @@ public class HomeScreenController {
         chatsIcon.getChildren().add(chatsSvg);
         chatsIcon.setScaleX(1.5);
         chatsIcon.setScaleY(1.5);
-
-        ObservableList<ChatItemView> chats = FXCollections.observableArrayList();
-
-        chats.add(new ChatItemView(new ChatItem(
-                "Alice",
-                "Hey!",
-                true,
-                LocalDateTime.now().minusDays(7),
-                3
-        )));
-
-        chats.add(new ChatItemView(new ChatItem(
-                "Alice",
-                "Heyyy",
-                true,
-                LocalDateTime.now().minusDays(7),
-                3
-        )));
-
-        chats.add(new ChatItemView(new ChatItem(
-                "Bob",
-                "See you later",
-                false,
-                LocalDateTime.now().minusMinutes(5),
-                0
-        )));
-
-        chats.add(new ChatItemView(new ChatItem(
-                "Ibrahim",
-                "See you later ajsdlkja lasd jaslkdj alkslk asd asd asdas as",
-                false,
-                LocalDateTime.now().minusMinutes(5),
-                90
-        )));
-
-        chats.add(new ChatItemView(new ChatItem(
-                "Ibrahim",
-                "See you later ajsdlkja lasd jaslkdj alkslk asd asd asdas as",
-                true,
-                LocalDateTime.now(),
-                100
-        )));
-
-        chatsList.setItems(chats);
 
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(60),
                 e -> chatsList.getItems().forEach(ChatItemView::updateTimestamp)));
@@ -358,5 +317,31 @@ public class HomeScreenController {
 
     public void setUser(Users user) {
         this.user = user;
+
+        try {
+            GetUserService getUserService =
+                    (GetUserService) ClientChatApp.registry.lookup("GetUserService");
+            List<ChatRoomDTO> allUserRooms = getUserService.getUserRooms(user);
+            List<ChatItemView> userRoomsToChatItemView = allUserRooms.stream()
+                    .map(chatRoomDTO ->  new ChatItemView(
+                                new ChatItem(
+                                        chatRoomDTO.getUser().getName(),
+                                        chatRoomDTO.getLastMessage().getText(),
+                                        chatRoomDTO.getLastMessage().getSenderId()
+                                                != chatRoomDTO.getUser().getId(),
+                                        chatRoomDTO.getLastMessage().getSentAt(),
+                                        // TODO: find a way to figure out the number of unread messages
+                                        0
+                                ),
+                        chatRoomDTO.getUser(),
+                        chatRoomDTO.getRoom()
+                        )
+                    )
+                    .toList();
+
+            chatsList.setItems(FXCollections.observableArrayList(userRoomsToChatItemView));
+        } catch (RemoteException | NotBoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
