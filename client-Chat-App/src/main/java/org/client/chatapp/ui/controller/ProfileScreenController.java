@@ -395,24 +395,6 @@ public class ProfileScreenController {
     }
 
     @FXML
-    private void onProfileIconClick(MouseEvent event) {
-        // Already on profile screen, do nothing or refresh
-        try {
-            root = FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource(
-                            "/org/client/chatapp/profile-screen-view.fxml")));
-            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            scene.getStylesheets().addAll(ClientChatApp.allStyles);
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @FXML
     private void onChatsIconClick(MouseEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(

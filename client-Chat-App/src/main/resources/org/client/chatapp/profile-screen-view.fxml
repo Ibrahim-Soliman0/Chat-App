@@ -175,7 +175,7 @@
                 <DropShadow blurType="ONE_PASS_BOX" height="15.0" radius="3.25" spread="0.5" width="0.0" />
             </effect>
             <children>
-                <Group fx:id="profileIcon" layoutX="363.0" layoutY="25.0" onMouseClicked="#onProfileIconClick" />
+                <Group fx:id="profileIcon" layoutX="363.0" layoutY="25.0"/>
                 <Group fx:id="chatsIcon" layoutX="94.0" layoutY="25.0" onMouseClicked="#onChatsIconClick" />
             </children>
         </Pane>
