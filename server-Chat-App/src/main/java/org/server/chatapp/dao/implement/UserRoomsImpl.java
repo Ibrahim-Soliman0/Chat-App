@@ -1,6 +1,8 @@
 package org.server.chatapp.dao.implement;
 
+import dto.ChatRoomDTO;
 import model.UserRooms;
+import model.Users;
 import org.server.chatapp.dao.Database;
 import org.server.chatapp.dao.dao.UserRoomsDao;
 
@@ -25,7 +27,8 @@ public class UserRoomsImpl implements UserRoomsDao {
                         resultSet.getLong("roomId"),
                         resultSet.getBoolean("isAdmin"),
                         resultSet.getTimestamp("joinedAt").toLocalDateTime(),
-                        resultSet.getTimestamp("leftAt").toLocalDateTime(),
+                        resultSet.getTimestamp("leftAt") != null
+                                ? resultSet.getTimestamp("leftAt").toLocalDateTime() : null,
                         resultSet.getBoolean("isActive")
                 );
             }
@@ -76,14 +79,14 @@ public class UserRoomsImpl implements UserRoomsDao {
         try (Connection connection = Database.getDataSource().getConnection()) {
 
             String sql = """
-            UPDATE userrooms SET
-                userId   = ?,
-                roomId   = ?,
-                isAdmin  = ?,
-                joinedAt = ?,
-                leftAt   = ?,
-                isActive = ?
-            WHERE id = ?;""";
+                    UPDATE userrooms SET
+                        userId   = ?,
+                        roomId   = ?,
+                        isAdmin  = ?,
+                        joinedAt = ?,
+                        leftAt   = ?,
+                        isActive = ?
+                    WHERE id = ?;""";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
@@ -121,15 +124,15 @@ public class UserRoomsImpl implements UserRoomsDao {
         try (Connection connection = Database.getDataSource().getConnection()) {
 
             String sql = """
-            INSERT INTO userrooms (
-                userId,
-                roomId,
-                isAdmin,
-                joinedAt,
-                leftAt,
-                isActive
-            ) VALUES (?, ?, ?, ?, ?, ?);
-        """;
+                        INSERT INTO userrooms (
+                            userId,
+                            roomId,
+                            isAdmin,
+                            joinedAt,
+                            leftAt,
+                            isActive
+                        ) VALUES (?, ?, ?, ?, ?, ?);
+                    """;
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
@@ -176,5 +179,121 @@ public class UserRoomsImpl implements UserRoomsDao {
         }
 
         return result;
+    }
+
+    @Override
+    public List<ChatRoomDTO> getUserRooms(Users user) {
+
+        List<ChatRoomDTO> allUserRooms = new ArrayList<>();
+
+        try (Connection connection = Database.getDataSource().getConnection()) {
+            String sql = """
+                    SELECT
+                    	ur.id AS userRoomsId,
+                        r.id AS roomId
+                    FROM
+                    	USERROOMS as ur
+                    JOIN
+                    	USERS as u
+                        ON
+                        ur.userId = u.id
+                    JOIN
+                    	ROOM as r
+                        ON
+                        ur.roomId = r.id
+                    WHERE
+                    	u.id = ?""";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, user.getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                long userRoomId = resultSet.getLong("userRoomsId");
+                long roomId = resultSet.getLong("roomId");
+
+                allUserRooms.add(new ChatRoomDTO(user, get(userRoomId), new RoomImpl().get(roomId)));
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        return allUserRooms;
+    }
+
+    @Override
+    public Users getSingleUserInRoom(ChatRoomDTO chatRoomDTO) {
+
+        try (Connection connection = Database.getDataSource().getConnection()) {
+            String sql = """
+                    SELECT
+                        userId
+                    FROM
+                        USERROOMS as ur
+                    JOIN
+                        USERS as u
+                        ON
+                            ur.userId = u.id
+                    JOIN
+                        ROOM as r
+                        ON
+                            ur.roomId = r.id
+                    WHERE
+                        roomId = ?
+                    AND
+                        u.id <> ?
+                    LIMIT 1;""";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, chatRoomDTO.getRoom().getId());
+            preparedStatement.setLong(2, chatRoomDTO.getUser().getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return new UsersImpl().get(resultSet.getLong("userId"));
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<Users> getUsersInRoom(ChatRoomDTO chatRoomDTO) {
+
+        List<Users> usersInGroup = new ArrayList<>();
+        try (Connection connection = Database.getDataSource().getConnection()) {
+            String sql = """
+                    SELECT
+                        userId
+                    FROM
+                        USERROOMS as ur
+                    JOIN
+                        USERS as u
+                        ON
+                            ur.userId = u.id
+                    JOIN
+                        ROOM as r
+                        ON
+                            ur.roomId = r.id
+                    WHERE
+                        roomId = ?
+                    AND
+                        u.id <> ?""";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, chatRoomDTO.getRoom().getId());
+            preparedStatement.setLong(2, chatRoomDTO.getUser().getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                usersInGroup.add(new UsersImpl().get(resultSet.getLong("userId")));
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        return usersInGroup;
     }
 }
