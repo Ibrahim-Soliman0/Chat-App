@@ -1,5 +1,6 @@
 package org.client.chatapp.ui.component;
 
+import dto.ChatRoomDTO;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -18,6 +19,7 @@ import model.Room;
 import model.Users;
 import org.client.chatapp.ClientChatApp;
 import org.client.chatapp.model.ChatItem;
+import org.client.chatapp.ui.controller.ChatRoomController;
 import org.client.chatapp.ui.utils.TimeUtils;
 
 import java.io.IOException;
@@ -25,6 +27,7 @@ import java.util.Objects;
 
 public class ChatItemView extends HBox {
 
+    private ChatRoomDTO dataToBeUsedInChat;
     private final ChatItem chatItem;
     private Users me;
     private Room chatRoom;
@@ -32,10 +35,11 @@ public class ChatItemView extends HBox {
     private VBox rightBox;
     private StackPane unreadBadge;
 
-    public ChatItemView(ChatItem chatItem, Users me, Room chatRoom) {
+    public ChatItemView(ChatItem chatItem, Users me, Room chatRoom, ChatRoomDTO dataToBeUsedInChat) {
         this.chatItem = chatItem;
         this.me = me;
         this.chatRoom = chatRoom;
+        this.dataToBeUsedInChat = dataToBeUsedInChat;
 
         time = new Label(TimeUtils.formatChatTimestamp(chatItem.getMessageTime()));
         time.getStyleClass().add("chat-time");
@@ -108,12 +112,14 @@ public class ChatItemView extends HBox {
             chatItem.setUnreadMessageCount(0);
             rightBox.getChildren().remove(unreadBadge);
 
-            System.out.println("Open chat: " + chatItem.getName());
-
             Parent root = null;
             try {
-                root = FXMLLoader.load(
+                FXMLLoader loader = new FXMLLoader(
                         Objects.requireNonNull(getClass().getResource("chat-room-view.fxml")));
+
+                root = loader.load();
+                ChatRoomController chatRoomController = loader.getController();
+                chatRoomController.setChatRoomDTO(dataToBeUsedInChat);
             } catch (IOException e) {
                 e.printStackTrace();
             }

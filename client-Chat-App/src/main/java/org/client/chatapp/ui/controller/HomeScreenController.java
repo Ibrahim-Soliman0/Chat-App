@@ -323,19 +323,20 @@ public class HomeScreenController {
                     (GetUserService) ClientChatApp.registry.lookup("GetUserService");
             List<ChatRoomDTO> allUserRooms = getUserService.getUserRooms(user);
             List<ChatItemView> userRoomsToChatItemView = allUserRooms.stream()
-                    .map(chatRoomDTO ->  new ChatItemView(
-                                new ChatItem(
-                                        chatRoomDTO.getUser().getName(),
-                                        chatRoomDTO.getLastMessage().getText(),
-                                        chatRoomDTO.getLastMessage().getSenderId()
-                                                != chatRoomDTO.getUser().getId(),
-                                        chatRoomDTO.getLastMessage().getSentAt(),
-                                        // TODO: find a way to figure out the number of unread messages
-                                        0
-                                ),
-                        chatRoomDTO.getUser(),
-                        chatRoomDTO.getRoom()
-                        )
+                    .map(chatRoomDTO -> new ChatItemView(
+                                    new ChatItem(
+                                            chatRoomDTO.getOther().getName(),
+                                            chatRoomDTO.getLastMessage().getText(),
+                                            chatRoomDTO.getLastMessage().getSenderId()
+                                                    != chatRoomDTO.getMe().getId(),
+                                            chatRoomDTO.getLastMessage().getSentAt(),
+                                            // TODO: find a way to figure out the number of unread messages
+                                            0
+                                    ),
+                                    chatRoomDTO.getOther(),
+                                    chatRoomDTO.getRoom(),
+                                    chatRoomDTO
+                            )
                     )
                     .toList();
 
