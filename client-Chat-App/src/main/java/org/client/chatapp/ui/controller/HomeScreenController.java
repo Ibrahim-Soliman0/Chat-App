@@ -24,6 +24,7 @@ import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Users;
+import model.enums.RoomType;
 import org.client.chatapp.ClientChatApp;
 import org.client.chatapp.model.ChatItem;
 import org.client.chatapp.ui.component.ChatItemView;
@@ -217,7 +218,9 @@ public class HomeScreenController {
             addFriendBody.getStyleClass().setAll("icon");
 
         });
-
+        user = new Users();
+        user.setId(1L);
+        setUser(user);
     }
 
     @FXML
@@ -305,23 +308,28 @@ public class HomeScreenController {
             List<ChatRoomDTO> allUserRooms = getUserService.getUserRooms(user);
             List<ChatItemView> userRoomsToChatItemView = allUserRooms.stream()
                     .map(chatRoomDTO -> {
-                        ChatItemView chatItemView = new ChatItemView(
-                                new ChatItem(
-                                        chatRoomDTO.getOther().getName(),
-                                        chatRoomDTO.getLastMessage().getText(),
-                                        chatRoomDTO.getLastMessage().getSenderId()
-                                                != chatRoomDTO.getMe().getId(),
-                                        chatRoomDTO.getLastMessage().getSentAt(),
-                                        // TODO: find a way to figure out the number of unread messages
-                                        0
-                                ),
-                                chatRoomDTO.getOther(),
-                                chatRoomDTO.getRoom(),
-                                chatRoomDTO
-                        );
-                        chatItemView.setOnMouseClicked(event -> openChatRoom(chatRoomDTO, event));
-                        return chatItemView;
-                    })
+                                try {
+                                    return new ChatItemView(
+                                            new ChatItem(
+                                                    chatRoomDTO.getRoom().getType() == RoomType.ONE_TO_ONE
+                                                            ? chatRoomDTO.getOther().getName()
+                                                            : chatRoomDTO.getRoom().getName(),
+                                                    chatRoomDTO.getLastMessage().getText(),
+                                                    chatRoomDTO.getLastMessage().getSenderId()
+                                                            != chatRoomDTO.getMe().getId(),
+                                                    chatRoomDTO.getLastMessage().getSentAt(),
+                                                    getUserService.getUnreadMessagesCount
+                                                            (chatRoomDTO.getMe(), chatRoomDTO.getRoom())
+                                            ),
+                                            chatRoomDTO.getOther(),
+                                            chatRoomDTO.getRoom(),
+                                            chatRoomDTO
+                                    );
+                                } catch (RemoteException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                    )
                     .toList();
 
             chatsList.setItems(FXCollections.observableArrayList(userRoomsToChatItemView));

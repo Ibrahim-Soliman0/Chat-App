@@ -2,6 +2,7 @@ package org.server.chatapp.dao.implement;
 
 import model.Message;
 import model.Room;
+import model.Users;
 import org.server.chatapp.dao.Database;
 import org.server.chatapp.dao.dao.MessageDao;
 
@@ -257,5 +258,84 @@ public class MessageDaoImpl implements MessageDao {
         }
 
         return null;
+    }
+
+    @Override
+    public int getUnreadMessagesCount(Users user, Room room) {
+
+        String sql = """
+                  SELECT
+                      COUNT(*) AS unreadCount
+                  FROM
+                      Message AS m
+                  WHERE
+                      senderId <> ?
+                      AND
+                      roomId = ?
+                      AND m.id IN (
+                        SELECT
+                            messageId
+                        FROM
+                            MessageStatus
+                        WHERE
+                            seenAt IS NULL
+                      );""";
+        try (Connection connection = Database.getDataSource().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setLong(1, user.getId());
+            ps.setLong(2, room.getId());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("unreadCount");
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return 0;
+    }
+
+    @Override
+    public List<Message> getUnreadMessages(Users user, Room room) {
+
+        List<Message> messages = new ArrayList<>();
+        String sql = """
+                  SELECT
+                      *
+                  FROM
+                      Message AS m
+                  WHERE
+                      senderId <> ?
+                      AND
+                      roomId = ?
+                      AND m.id IN (
+                        SELECT
+                            messageId
+                        FROM
+                            MessageStatus
+                        WHERE
+                            seenAt IS NULL
+                      );""";
+        try (Connection connection = Database.getDataSource().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setLong(1, user.getId());
+            ps.setLong(2, room.getId());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    messages.add(createMessageObject(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return messages;
     }
 }

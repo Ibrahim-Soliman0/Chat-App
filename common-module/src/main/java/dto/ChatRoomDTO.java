@@ -6,10 +6,14 @@ import model.UserRooms;
 import model.Users;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class ChatRoomDTO implements Serializable {
 
+    //? if the other object is null this means it's a group chat
+    //? so the list of users will be filled with the group members instead
     private Users me, other;
+    private List<Users> groupMembers;
     private UserRooms userRoom;
     private Room room;
     private Message lastMessage;
@@ -26,6 +30,14 @@ public class ChatRoomDTO implements Serializable {
     public ChatRoomDTO(Users me, Users other, UserRooms userRoom, Room room, Message lastMessage) {
         this.me = me;
         this.other = other;
+        this.userRoom = userRoom;
+        this.room = room;
+        this.lastMessage = lastMessage;
+    }
+
+    public ChatRoomDTO(Users me, List<Users> groupMembers, UserRooms userRoom, Room room, Message lastMessage) {
+        this.me = me;
+        this.groupMembers = groupMembers;
         this.userRoom = userRoom;
         this.room = room;
         this.lastMessage = lastMessage;
