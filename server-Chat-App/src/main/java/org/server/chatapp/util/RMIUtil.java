@@ -20,6 +20,7 @@ public class RMIUtil {
             registry.rebind("GetUserService", new GetUserServiceImpl());
             registry.rebind("RegisterService", new RegisterServiceImpl());
             registry.rebind("FriendRequestService", new FriendRequestServiceImpl());
+            registry.rebind("GetMessageService", new GetMessageServiceImpl());
             isRunning = true;
             System.out.println("Server start...");
         }

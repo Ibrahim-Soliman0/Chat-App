@@ -19,7 +19,7 @@
             </effect>
             <children>
                 <Group fx:id="profileIcon" layoutX="363.0" layoutY="25.0" onMouseClicked="#onProfileIconClick"/>
-                <Group fx:id="chatsIcon" layoutX="94.0" layoutY="25.0" onMouseClicked="#onChatsIconClick"/>
+                <Group fx:id="chatsIcon" layoutX="94.0" layoutY="25.0"/>
             </children>
         </Pane>
         <Pane prefHeight="75.0" prefWidth="450.0" style="-fx-background-color: #ffffff;">
