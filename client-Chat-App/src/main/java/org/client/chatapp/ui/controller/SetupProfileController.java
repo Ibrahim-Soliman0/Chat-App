@@ -93,6 +93,8 @@ public class SetupProfileController {
     private Label bioCounter;
     @FXML
     private Label bioError;
+    @FXML
+    private Label clearImageLbl;
     private static final int BIO_MAX_LENGTH = 150;
 
     @FXML
@@ -167,7 +169,7 @@ public class SetupProfileController {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
-        phoneField.setText("+2"+phoneNumber);
+        phoneField.setText("+2" + phoneNumber);
     }
 
 
@@ -198,6 +200,8 @@ public class SetupProfileController {
             profileImageView.setImage(image);
 
             profilePlaceholder.setVisible(false);
+            clearImageLbl.setVisible(true);
+            clearImageLbl.setManaged(true);
         }
     }
 
@@ -312,6 +316,9 @@ public class SetupProfileController {
             moveToLogin();
         } catch (RemoteException e) {
             String errorMessage = e.getMessage();
+            if (e.getCause() != null) {
+                errorMessage = e.getCause().getMessage();
+            }
             if (errorMessage.contains("Email already exists")) {
                 showErrorAlert("This email is already registered!\nPlease use a different email.");
             } else if (errorMessage.contains("Phone number already registered")) {
@@ -369,5 +376,25 @@ public class SetupProfileController {
         }
         errorLabel.setVisible(false);
         return true;
+    }
+
+    @FXML
+    public void handleBackAction() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/client/chatapp/register-view.fxml"));
+        Parent root = loader.load();
+
+        Stage stage = (Stage) genderError.getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+    @FXML
+    public void handleRemovePhoto(){
+        selectedImageFile = null;
+        profileImageView.setImage(null);
+        profilePlaceholder.setVisible(true);
+
+        clearImageLbl.setVisible(false);
+        clearImageLbl.setManaged(false);
     }
 }
