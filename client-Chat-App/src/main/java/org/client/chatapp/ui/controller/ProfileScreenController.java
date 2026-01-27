@@ -78,14 +78,7 @@ public class ProfileScreenController {
         // Initialize ComboBoxes and DatePicker
         initializeFormControls();
 
-//        try {
-//            GetUserService getUserService = (GetUserService) ClientChatApp.registry.lookup("GetUserService");
-//            user = getUserService.getUser(1L);
-//
-//        } catch (RemoteException | NotBoundException ex) {
-//            throw new RuntimeException(ex);
-//        }
-//        loadProfileData(user);
+        Platform.runLater(() -> scrollPane.setVvalue(0.0));
     }
 
     private void initializeNavigationIcons() {

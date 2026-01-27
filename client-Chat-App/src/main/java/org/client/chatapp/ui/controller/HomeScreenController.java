@@ -240,25 +240,6 @@ public class HomeScreenController {
     }
 
     @FXML
-    private void onChatsIconClick(MouseEvent actionEvent) {
-
-        try {
-            root = FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource(
-                            "/org/client/chatapp/home-screen-view.fxml")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        scene.getStylesheets().addAll(ClientChatApp.allStyles);
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
-    }
-
-    @FXML
     private void onBellIconClick(MouseEvent actionEvent) {
 
         try {
@@ -323,26 +304,47 @@ public class HomeScreenController {
                     (GetUserService) ClientChatApp.registry.lookup("GetUserService");
             List<ChatRoomDTO> allUserRooms = getUserService.getUserRooms(user);
             List<ChatItemView> userRoomsToChatItemView = allUserRooms.stream()
-                    .map(chatRoomDTO -> new ChatItemView(
-                                    new ChatItem(
-                                            chatRoomDTO.getOther().getName(),
-                                            chatRoomDTO.getLastMessage().getText(),
-                                            chatRoomDTO.getLastMessage().getSenderId()
-                                                    != chatRoomDTO.getMe().getId(),
-                                            chatRoomDTO.getLastMessage().getSentAt(),
-                                            // TODO: find a way to figure out the number of unread messages
-                                            0
-                                    ),
-                                    chatRoomDTO.getOther(),
-                                    chatRoomDTO.getRoom(),
-                                    chatRoomDTO
-                            )
-                    )
+                    .map(chatRoomDTO -> {
+                        ChatItemView chatItemView = new ChatItemView(
+                                new ChatItem(
+                                        chatRoomDTO.getOther().getName(),
+                                        chatRoomDTO.getLastMessage().getText(),
+                                        chatRoomDTO.getLastMessage().getSenderId()
+                                                != chatRoomDTO.getMe().getId(),
+                                        chatRoomDTO.getLastMessage().getSentAt(),
+                                        // TODO: find a way to figure out the number of unread messages
+                                        0
+                                ),
+                                chatRoomDTO.getOther(),
+                                chatRoomDTO.getRoom(),
+                                chatRoomDTO
+                        );
+                        chatItemView.setOnMouseClicked(event -> openChatRoom(chatRoomDTO, event));
+                        return chatItemView;
+                    })
                     .toList();
 
             chatsList.setItems(FXCollections.observableArrayList(userRoomsToChatItemView));
         } catch (RemoteException | NotBoundException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void openChatRoom(ChatRoomDTO chatRoomDTO, MouseEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
+                    "/org/client/chatapp/chat-room-view.fxml")));
+            root = loader.load();
+            ChatRoomController chatRoomController = loader.getController();
+            chatRoomController.initializeChat(user, chatRoomDTO);
+            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            scene.getStylesheets().addAll(ClientChatApp.allStyles);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
