@@ -207,7 +207,7 @@ public class MessageDaoImpl implements MessageDao {
         String sql = """
         SELECT * FROM Message
         WHERE roomId = ? AND isDeleted = false
-        ORDER BY sentAt
+        ORDER BY sentAt ASC
         """;
         try (Connection connection = Database.getDataSource().getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
