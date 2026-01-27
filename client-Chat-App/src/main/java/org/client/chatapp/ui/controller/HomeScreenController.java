@@ -218,9 +218,9 @@ public class HomeScreenController {
             addFriendBody.getStyleClass().setAll("icon");
 
         });
-        user = new Users();
-        user.setId(1L);
-        setUser(user);
+//        user = new Users();
+//        user.setId(1L);
+//        setUser(user);
     }
 
     @FXML
@@ -306,7 +306,7 @@ public class HomeScreenController {
             GetUserService getUserService =
                     (GetUserService) ClientChatApp.registry.lookup("GetUserService");
             List<ChatRoomDTO> allUserRooms = getUserService.getUserRooms(user);
-            List<ChatItemView> userRoomsToChatItemView = allUserRooms.stream()
+            List<ChatItemView> userRoomsToChatItemView = (List<ChatItemView>) allUserRooms.stream()
                     .map(chatRoomDTO -> {
                                 try {
                                     return new ChatItemView(
@@ -335,24 +335,6 @@ public class HomeScreenController {
             chatsList.setItems(FXCollections.observableArrayList(userRoomsToChatItemView));
         } catch (RemoteException | NotBoundException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void openChatRoom(ChatRoomDTO chatRoomDTO, MouseEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
-                    "/org/client/chatapp/chat-room-view.fxml")));
-            root = loader.load();
-            ChatRoomController chatRoomController = loader.getController();
-            chatRoomController.initializeChat(user, chatRoomDTO);
-            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            scene.getStylesheets().addAll(ClientChatApp.allStyles);
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

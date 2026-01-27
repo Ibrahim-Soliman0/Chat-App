@@ -115,11 +115,11 @@ public class ChatItemView extends HBox {
             Parent root = null;
             try {
                 FXMLLoader loader = new FXMLLoader(
-                        Objects.requireNonNull(getClass().getResource("chat-room-view.fxml")));
+                        Objects.requireNonNull(getClass().getResource("/org/client/chatapp/chat-room-view.fxml")));
 
                 root = loader.load();
                 ChatRoomController chatRoomController = loader.getController();
-                chatRoomController.setChatRoomDTO(dataToBeUsedInChat);
+                chatRoomController.initializeChat(dataToBeUsedInChat);
             } catch (IOException e) {
                 e.printStackTrace();
             }
