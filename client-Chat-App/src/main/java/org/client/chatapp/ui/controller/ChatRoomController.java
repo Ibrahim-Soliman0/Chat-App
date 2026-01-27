@@ -68,8 +68,8 @@ public class ChatRoomController {
     private Scene scene;
     private Parent root;
 
-    public void initializeChat(Users currentUser, ChatRoomDTO chatRoomDTO) {
-        this.currentUser = currentUser;
+    public void initializeChat(ChatRoomDTO chatRoomDTO) {
+        this.currentUser = chatRoomDTO.getMe();
         this.chatRoomDTO = chatRoomDTO;
         this.otherUser = chatRoomDTO.getOther();
 
@@ -227,9 +227,5 @@ public class ChatRoomController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    public void setChatRoomDTO(ChatRoomDTO dataToBeUsedInChat) {
-        this.chatRoomDTO = dataToBeUsedInChat;
     }
 }
