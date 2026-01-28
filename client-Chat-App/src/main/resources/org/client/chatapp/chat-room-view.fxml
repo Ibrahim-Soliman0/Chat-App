@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.effect.*?>
@@ -8,7 +7,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="450.0" style="-fx-background-color: #f7f9fa;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.ChatRoomController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="450.0" style="-fx-background-color: #f7f9fa;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.ChatRoomController">
     <children>
         <!-- Header -->
         <Pane prefHeight="75.0" prefWidth="450.0" style="-fx-background-color: #ffffff;">
@@ -74,10 +73,10 @@
                         <Font name="System Bold" size="11.0" />
                     </font>
                <graphic>
-                  <Group fx:id="backButton1" nodeOrientation="RIGHT_TO_LEFT" onMouseClicked="#onBackButtonClick" style="-fx-cursor: hand;" stylesheets="@../../../css/chat-light.css">
+                  <Group fx:id="backButton1" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#onBackButtonClick" style="-fx-cursor: hand;" stylesheets="@../../../css/chat-light.css">
                      <children>
-                        <SVGPath fx:id="backArrow11" content="m12 19-7-7 7-7" style="-fx-stroke: #000000; -fx-stroke-width: 2; -fx-stroke-linecap: round; -fx-stroke-linejoin: round; -fx-fill: transparent;" />
-                        <SVGPath fx:id="backArrow21" content="M19 12H5" style="-fx-stroke: #000000; -fx-stroke-width: 2; -fx-stroke-linecap: round; -fx-stroke-linejoin: round; -fx-fill: transparent;" />
+                        <SVGPath fx:id="backArrow11" content="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z" style="-fx-stroke: #000000; -fx-stroke-width: 2; -fx-stroke-linecap: round; -fx-stroke-linejoin: round; -fx-fill: transparent;" />
+                        <SVGPath fx:id="backArrow21" content="M6 12h16" style="-fx-stroke: #000000; -fx-stroke-width: 2; -fx-stroke-linecap: round; -fx-stroke-linejoin: round; -fx-fill: transparent;" />
                      </children>
                   </Group>
                </graphic>
