@@ -5,6 +5,7 @@ import model.enums.NotificationType;
 import java.time.LocalDateTime;
 
 public class NotificationItem {
+    private Long id;
 
     private NotificationType type;
     private String name;
@@ -13,23 +14,33 @@ public class NotificationItem {
     private boolean read;
     private String profilePic;
 
-    public NotificationItem(NotificationType type, String name, String message, LocalDateTime time, boolean read) {
+    public NotificationItem(Long id,
+                            NotificationType type,
+                            String name,
+                            String message,
+                            LocalDateTime time,
+                            boolean read,
+                            String profilePic) {
+        this.id = id;
         this.type = type;
         this.name = name;
         this.message = message;
         this.time = time;
         this.read = read;
-        this.profilePic = "defaultProfilePic.png";
+        this.profilePic = profilePic != null ? profilePic : "defaultProfilePic.png";
     }
 
-    public NotificationItem(NotificationType type, String name, String message, LocalDateTime time, boolean read, String profilePic) {
-        this.type = type;
-        this.name = name;
-        this.message = message;
-        this.time = time;
-        this.read = false;
-        this.profilePic = profilePic;
+    public NotificationItem(Long id,
+                            NotificationType type,
+                            String name,
+                            String message,
+                            LocalDateTime time,
+                            boolean read) {
+        this(id, type, name, message, time, read, "defaultProfilePic.png");
+    }
 
+    public Long getId() {
+        return id;
     }
 
     public NotificationType getType() {
@@ -52,12 +63,20 @@ public class NotificationItem {
         return !read;
     }
 
-    public void setRead(boolean read) {
-        this.read = !read;
+    public boolean isRead() {
+        return read;
     }
+     public void setRead(boolean read) { this.read = !read; }
 
     public String getProfilePic() {
         return profilePic;
     }
-}
 
+    public void markAsRead() {
+        this.read = true;
+    }
+
+    public void markAsUnread() {
+        this.read = false;
+    }
+}

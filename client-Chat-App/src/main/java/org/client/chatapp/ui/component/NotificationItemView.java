@@ -2,16 +2,27 @@ package org.client.chatapp.ui.component;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
+import model.Notification;
+import org.client.chatapp.ClientChatApp;
 import org.client.chatapp.model.NotificationItem;
 import org.client.chatapp.ui.utils.TimeUtils;
+import rmi.NotificationService;
+
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NotificationItemView extends HBox {
 
@@ -22,31 +33,37 @@ public class NotificationItemView extends HBox {
     private VBox textBox;
     private HBox rightContent;
     private Label time;
+    private static NotificationService service;
+    @FXML
+    private static ListView<NotificationItemView> notificationListView;
+
 
     public NotificationItemView(NotificationItem notificationItem) {
         this.notificationItem = notificationItem;
+
         buildUI();
         registerHandlers();
         startTimeUpdater();
     }
 
     private void buildUI() {
-        setSpacing(15);
-        setAlignment(Pos.CENTER_LEFT);
-        getStyleClass().add("notification-item");
+        getStyleClass().add("chat-item");
+        int characterLimit = 40;
 
         ImageView avatar = new ImageView(notificationItem.getProfilePic());
         avatar.setFitWidth(60);
         avatar.setFitHeight(60);
         avatar.setPreserveRatio(true);
-        Circle clip = new Circle(30, 30, 30); // full circle
+        Circle clip = new Circle(30, 30, 30);
         avatar.setClip(clip);
 
         Label name = new Label(notificationItem.getName());
-        name.getStyleClass().add("notification-title");
+        name.getStyleClass().add("chat-name");
 
-        Label message = new Label(notificationItem.getMessage());
-        message.getStyleClass().add("notification-message");
+        Label message = new Label(notificationItem.getMessage().length() <= characterLimit
+                ? notificationItem.getMessage() :
+                notificationItem.getMessage().substring(0, characterLimit + 1) + "...");
+        message.getStyleClass().add("chat-last-message");
 
         textBox = new VBox();
         textBox.setSpacing(4);
@@ -61,9 +78,11 @@ public class NotificationItemView extends HBox {
         binIcon.getStyleClass().add("icon");
         binIcon.setOnMouseEntered(e -> binIcon.getStyleClass().setAll("onIconHover"));
         binIcon.setOnMouseExited(e -> binIcon.getStyleClass().setAll("icon"));
+        binIcon.setOnMouseClicked(e -> handleDelete());
+
 
         time = new Label(TimeUtils.formatChatTimestamp(notificationItem.getTime()));
-        time.getStyleClass().add("notification-time");
+        time.getStyleClass().add("chat-time");
         if (notificationItem.isUnread()) {
             Label badgeLabel = new Label("●");
             badgeLabel.setStyle("-fx-text-fill: rgba(0,255,51,0.55); -fx-font-size: 18px;");
@@ -99,11 +118,32 @@ public class NotificationItemView extends HBox {
         timeUpdater.play();
     }
 
-
     private void updateTimestamp() {
         if (time != null) {
             time.setText(TimeUtils.formatChatTimestamp(notificationItem.getTime()));
         }
     }
 
+    public void stopTimeUpdater() {
+        if (timeUpdater != null) {
+            timeUpdater.stop();
+        }
+    }
+    public void handleDelete() {
+        stopTimeUpdater();
+
+        try {
+            service.deleteNotification(notificationItem.getId());
+            notificationListView.getItems().remove(this);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+    public static void setService(NotificationService notificationService) {
+        service = notificationService;
+    }
+
+    public static void setNotificationListView(ListView<NotificationItemView> notificationListView) {
+        NotificationItemView.notificationListView = notificationListView;
+    }
 }

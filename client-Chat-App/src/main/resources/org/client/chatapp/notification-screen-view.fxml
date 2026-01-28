@@ -21,4 +21,10 @@
 
       <Group fx:id="backArrow" layoutX="30.0" layoutY="40.0" onMouseClicked="#onBackArrowClick" />
    </children>
+   <Label fx:id="noNotificationsLabel"
+          layoutX="150.0"
+          layoutY="300.0"
+          text="No notifications yet"
+          visible="false"
+          style="-fx-text-fill: #888888; -fx-font-size: 16;" />
 </Pane>

@@ -1,5 +1,5 @@
 module org.common.module {
-    requires java.sql;
+    requires transitive java.sql;
     requires java.rmi;
 
     exports dto;

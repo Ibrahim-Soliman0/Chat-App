@@ -133,7 +133,7 @@ public class NotificationDaoImpl implements NotificationDao {
 
     @Override
     public List<Notification> getByReceiverId(long receiverId) {
-        String sql = "SELECT * FROM notification WHERE receiverId = ? ORDER BY createdAt DESC";
+        String sql = "SELECT * FROM notification WHERE receiverId = ? AND status = 'UNREAD' ORDER BY createdAt DESC";
         List<Notification> notifications = new ArrayList<>();
         try (Connection connection = Database.getDataSource().getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -181,7 +181,7 @@ public class NotificationDaoImpl implements NotificationDao {
         notification.setType(NotificationType.valueOf(rs.getString("type").toUpperCase()));
         notification.setContent(rs.getString("content"));
 
-        long friendId = rs.getLong("friendId");
+        long friendId = rs.getLong("freindId");
         notification.setFriendId(rs.wasNull() ? null : friendId);
 
         notification.setCreatedAt(rs.getTimestamp("createdAt"));
