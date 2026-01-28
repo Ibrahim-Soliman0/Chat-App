@@ -119,7 +119,7 @@ public class ChatItemView extends HBox {
 
                 root = loader.load();
                 ChatRoomController chatRoomController = loader.getController();
-                chatRoomController.setChatRoomDTO(dataToBeUsedInChat);
+                chatRoomController.initializeChat(dataToBeUsedInChat);
             } catch (IOException e) {
                 e.printStackTrace();
             }

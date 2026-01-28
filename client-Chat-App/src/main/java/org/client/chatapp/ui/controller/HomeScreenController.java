@@ -336,7 +336,7 @@ public class HomeScreenController {
                     "/org/client/chatapp/chat-room-view.fxml")));
             root = loader.load();
             ChatRoomController chatRoomController = loader.getController();
-            chatRoomController.initializeChat(user, chatRoomDTO);
+            chatRoomController.initializeChat(chatRoomDTO);
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             scene.getStylesheets().addAll(ClientChatApp.allStyles);
