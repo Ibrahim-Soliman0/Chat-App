@@ -63,9 +63,9 @@ public class ChatItemView extends HBox {
         Label name = new Label(chatItem.getName());
         name.getStyleClass().add("chat-name");
 
-        Label lastMessage = new Label(chatItem.getLastMessage().length() <= characterLimit
-                ? chatItem.getLastMessage() :
-                chatItem.getLastMessage().substring(0, characterLimit + 1) + "...");
+        String messageText = (chatItem.isIncoming() ? "" : "You: ") + chatItem.getLastMessage();
+        Label lastMessage = new Label(messageText.length() <= characterLimit ? messageText
+                : messageText.substring(0, characterLimit + 1) + "...");
         lastMessage.getStyleClass().add("chat-last-message");
 
         VBox textBox = new VBox(name, lastMessage);
@@ -115,7 +115,7 @@ public class ChatItemView extends HBox {
             Parent root = null;
             try {
                 FXMLLoader loader = new FXMLLoader(
-                        Objects.requireNonNull(getClass().getResource("chat-room-view.fxml")));
+                        Objects.requireNonNull(getClass().getResource("/org/client/chatapp/chat-room-view.fxml")));
 
                 root = loader.load();
                 ChatRoomController chatRoomController = loader.getController();
