@@ -35,6 +35,15 @@ import java.util.Objects;
 public class ChatRoomController {
 
     @FXML
+    public SVGPath videoCallButton;
+
+    @FXML
+    public SVGPath phoneCallButton;
+
+    @FXML
+    public Group ellipsisButton;
+
+    @FXML
     private Group backButton;
 
     @FXML
@@ -227,5 +236,21 @@ public class ChatRoomController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    public void onAttachmentButtonClick(MouseEvent mouseEvent) {
+        // TODO: Move to File Transfer including all accepted files
+    }
+
+    public void onPhoneCallButtonClick(MouseEvent mouseEvent) {
+        // TODO: Implement Phone Call
+    }
+
+    public void onVideoCallButtonClick(MouseEvent mouseEvent) {
+        // TODO: Implement Video Call
+    }
+
+    public void onEllipsisButtonClick(MouseEvent mouseEvent) {
+        // TODO: Implement Options Button
     }
 }
