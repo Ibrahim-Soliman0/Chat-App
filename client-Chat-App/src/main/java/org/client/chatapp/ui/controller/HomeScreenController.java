@@ -246,9 +246,13 @@ public class HomeScreenController {
     private void onBellIconClick(MouseEvent actionEvent) {
 
         try {
-            root = FXMLLoader.load(
+            FXMLLoader loader = FXMLLoader.load(
                     Objects.requireNonNull(getClass().getResource(
                             "/org/client/chatapp/notification-screen-view.fxml")));
+
+            root = loader.load();
+            NotificationScreenController notificationScreenController = loader.getController();
+            notificationScreenController.setUser(user);
         } catch (IOException e) {
             e.printStackTrace();
         }

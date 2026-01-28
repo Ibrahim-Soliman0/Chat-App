@@ -58,36 +58,7 @@ public class NotificationScreenController {
         });
 
         NotificationItemView.setNotificationListView(notificationListView);
-        // TODO: to be removed later after getting passed the actual logged in user
-        user = new Users();
-        user.setId(2L);
-        try {
 
-            NotificationService notificationService =
-                    (NotificationService) ClientChatApp.registry.lookup("NotificationService");
-            NotificationItemView.setService(notificationService);
-            List<NotificationDTO> notifications = notificationService.getNotifications(user);
-
-            List<NotificationItemView> notificationToItemView = notifications.stream()
-                    .map(notificationDTO -> {
-                        Notification notification = notificationDTO.getNotification();
-                        NotificationItem item = new NotificationItem(notification.getId(),notification.getType(), notificationDTO.getName(),
-                                // TODO: get the real picture to show later
-
-
-
-                                notification.getContent(), notification.getCreatedAt().toLocalDateTime(), false);
-                        return new NotificationItemView(item);
-                    })
-                    .toList();
-
-            notificationListView.setItems(FXCollections.observableArrayList(notificationToItemView));
-           // System.out.println( notificationToItemView.size());
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        } catch (NotBoundException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @FXML
@@ -109,6 +80,29 @@ public class NotificationScreenController {
 
     public void setUser(Users user) {
         this.user = user;
+
+        try {
+            NotificationService notificationService = (NotificationService) ClientChatApp.registry.lookup("NotificationService");
+            NotificationItemView.setService(notificationService);
+            List<NotificationDTO> notifications = notificationService.getNotifications(user);
+
+            List<NotificationItemView> notificationToItemView = notifications.stream()
+                .map(notificationDTO -> {
+                    Notification notification = notificationDTO.getNotification();
+                    NotificationItem item = new NotificationItem(notification.getId(),notification.getType(), notificationDTO.getName(),
+                            // TODO: get the real picture to show later
+
+                            notification.getContent(), notification.getCreatedAt().toLocalDateTime(), false);
+                    return new NotificationItemView(item);
+                })
+                .toList();
+
+            notificationListView.setItems(FXCollections.observableArrayList(notificationToItemView));
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        } catch (NotBoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 
