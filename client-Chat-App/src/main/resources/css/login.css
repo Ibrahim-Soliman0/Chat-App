@@ -30,3 +30,68 @@
     -fx-border-width: 2;
     -fx-border-radius: 5;
 }
+.account-card {
+    -fx-padding: 10;
+    -fx-background-radius: 12;
+    -fx-background-color: transparent;
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.account-card:hover {
+    -fx-background-color: #E8ECEE;
+    -fx-cursor: hand;
+}
+
+.account-card:hover .circle {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);
+}
+
+.account-name-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #2C3E50;
+    -fx-font-size: 13px;
+}
+.accounts-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+    -fx-focus-color: transparent;
+    -fx-view-order: 1;
+}
+
+.accounts-scroll-pane .scroll-bar:horizontal {
+    -fx-max-height: 0;
+    -fx-opacity: 0;
+    -fx-padding: -5;
+}
+
+.accounts-scroll-pane .scroll-bar:vertical {
+    -fx-max-width: 0;
+    -fx-opacity: 0;
+}
+
+.accounts-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+.remove-account-btn {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-background-radius: 50;
+    -fx-padding: 0 5 2 5;
+    -fx-font-size: 10px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-opacity: 0;
+    -fx-translate-x: 5;
+    -fx-translate-y: -5;
+}
+
+.account-card:hover .remove-account-btn {
+    -fx-opacity: 1;
+}
+
+.remove-account-btn:hover {
+    -fx-background-color: #c0392b;
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
