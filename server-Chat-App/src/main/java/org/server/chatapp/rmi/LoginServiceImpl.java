@@ -10,6 +10,9 @@ import org.server.chatapp.util.PasswordUtil;
 import rmi.ClientCallBack;
 import rmi.LoginService;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Map;
@@ -60,5 +63,23 @@ public class LoginServiceImpl extends UnicastRemoteObject implements LoginServic
             }
         });
 
+    }
+
+    @Override
+    public byte[] getUserProfilePicture(String phoneNumber) throws RemoteException {
+        Users user = usersDao.getUserByPhoneNumber(phoneNumber);
+        if (user != null && user.getPicturePath() != null) {
+            String fullPath = System.getProperty("user.dir") + File.separator + "server-Chat-App" + File.separator + user.getPicturePath();
+            File imageFile = new File(fullPath);
+
+            if (imageFile.exists()) {
+                try {
+                    return Files.readAllBytes(imageFile.toPath());
+                } catch (IOException e) {
+                    System.err.println("Error reading image file: " + e.getMessage());
+                }
+            }
+        }
+        return null;
     }
 }

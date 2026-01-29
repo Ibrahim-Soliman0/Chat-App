@@ -14,4 +14,5 @@ public interface LoginService extends Remote {
     void logout(String phoneNumber) throws RemoteException;
 
     void broadcastAnnouncement(String title,String htmlContent) throws RemoteException;
+    byte[] getUserProfilePicture(String phoneNumber) throws RemoteException;
 }
