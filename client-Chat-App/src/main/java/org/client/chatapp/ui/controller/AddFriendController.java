@@ -46,9 +46,6 @@ public class AddFriendController {
     private Scene scene;
 
     public void initialize() {
-        // Todo: change this later with the actual logged in user
-        user = new Users();
-        user.setId(1L);
         SVGPath arrowHead = new SVGPath();
         arrowHead.setContent("m12 19-7-7 7-7");
         arrowHead.getStyleClass().add("icon");
@@ -107,6 +104,7 @@ public class AddFriendController {
         try {
             getUserService = (GetUserService) ClientChatApp.registry.lookup("GetUserService");
             FriendRequestItemView.setGetUserService(getUserService);
+            FriendRequestItemView.setListView(friendsToAddList);
         } catch (RemoteException | NotBoundException e) {
             System.out.println("Couldn't get (GetUserService) From Registry");
             e.printStackTrace();
@@ -129,12 +127,10 @@ public class AddFriendController {
                     }
 
                     List<FriendRequestItemView> matchedUsersToView = matchedUsers.stream()
-                            .map((u -> new FriendRequestItemView(
-                                    new FriendItem(u.getPicturePath(), u.getName()),
-                                    user, u)))
+                            .map((u -> new FriendRequestItemView(user, u)))
                             .toList();
 
-                    friendsToAddList.setItems(FXCollections.observableList(matchedUsersToView));
+                    friendsToAddList.setItems(FXCollections.observableArrayList(matchedUsersToView));
                 });
     }
 
@@ -142,9 +138,13 @@ public class AddFriendController {
     private void onGoBackArrowClick(MouseEvent mouseEvent) {
 
         try {
-            root = FXMLLoader.load(
+            FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource(
                             "/org/client/chatapp/friends-list-screen-view.fxml")));
+
+            root = loader.load();
+            FriendsListController friendsListController = loader.getController();
+            friendsListController.setUser(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -155,5 +155,9 @@ public class AddFriendController {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
     }
 }

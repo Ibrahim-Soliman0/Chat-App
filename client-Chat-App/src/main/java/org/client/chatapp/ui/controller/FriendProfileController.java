@@ -16,6 +16,7 @@ import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import model.Users;
 import org.client.chatapp.ClientChatApp;
+import org.client.chatapp.ui.utils.ImageUtil;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -67,7 +68,8 @@ public class FriendProfileController {
         emailLabel.setText(user.getEmail());
         bioTextArea.setText(user.getBio());
 
-        profilePic.setImage(new Image(user.getPicturePath()));
+        Image userProfileImage = ImageUtil.getImageFromByteArray(user.getPictureBytes());
+        profilePic.setImage(userProfileImage);
         profilePic.setPreserveRatio(false);
         profilePic.setSmooth(true);
 
