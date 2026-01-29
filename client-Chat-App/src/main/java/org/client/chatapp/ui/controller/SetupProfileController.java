@@ -397,4 +397,14 @@ public class SetupProfileController {
         clearImageLbl.setVisible(false);
         clearImageLbl.setManaged(false);
     }
+    @FXML
+    public void handleBackToLogin() throws IOException{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/client/chatapp/login-view.fxml"));
+        Parent root = loader.load();
+
+        Stage stage = (Stage) genderError.getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
 }
