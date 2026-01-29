@@ -1,8 +1,11 @@
 package org.server.chatapp.dao.implement;
+
 import model.Room;
 import model.enums.RoomType;
 import org.server.chatapp.dao.Database;
 import org.server.chatapp.dao.dao.RoomDao;
+import org.server.chatapp.util.ImageUtil;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,8 @@ public class RoomImpl implements RoomDao {
                 room.setDescription(rs.getString("description"));
                 room.setPicturePath(rs.getString("picturePath"));
 
+                ImageUtil.setImageBytes(room);
+
                 Timestamp createdAt = rs.getTimestamp("createdAt");
                 if (createdAt != null) room.setCreatedAt(createdAt.toLocalDateTime());
 
@@ -41,6 +46,7 @@ public class RoomImpl implements RoomDao {
         } catch (SQLException se) {
             se.printStackTrace();
         }
+
         return null;
     }
 
@@ -59,6 +65,8 @@ public class RoomImpl implements RoomDao {
                 room.setDescription(rs.getString("description"));
                 room.setPicturePath(rs.getString("picturePath"));
 
+                ImageUtil.setImageBytes(room);
+
                 Timestamp createdAt = rs.getTimestamp("createdAt");
                 if (createdAt != null) room.setCreatedAt(createdAt.toLocalDateTime());
 
@@ -73,6 +81,7 @@ public class RoomImpl implements RoomDao {
         } catch (SQLException se) {
             se.printStackTrace();
         }
+
         return allRooms;
     }
 
@@ -100,6 +109,7 @@ public class RoomImpl implements RoomDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return result;
     }
 
@@ -123,6 +133,7 @@ public class RoomImpl implements RoomDao {
         } catch (SQLException se) {
             se.printStackTrace();
         }
+
         return result;
     }
 
@@ -139,10 +150,11 @@ public class RoomImpl implements RoomDao {
         } catch (SQLException se) {
             se.printStackTrace();
         }
+
         return result;
     }
 
-    }
+}
 
 
 

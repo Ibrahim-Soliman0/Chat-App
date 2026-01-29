@@ -33,6 +33,7 @@ import rmi.GetUserService;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -218,9 +219,6 @@ public class HomeScreenController {
             addFriendBody.getStyleClass().setAll("icon");
 
         });
-        user = new Users();
-        user.setId(1L);
-        setUser(user);
     }
 
     @FXML
@@ -246,9 +244,13 @@ public class HomeScreenController {
     private void onBellIconClick(MouseEvent actionEvent) {
 
         try {
-            root = FXMLLoader.load(
+            FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource(
                             "/org/client/chatapp/notification-screen-view.fxml")));
+
+            root = loader.load();
+            NotificationScreenController notificationScreenController = loader.getController();
+            notificationScreenController.setUser(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -284,9 +286,13 @@ public class HomeScreenController {
     private void onAddFriendIconClick(MouseEvent actionEvent) {
 
         try {
-            root = FXMLLoader.load(
+            FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource(
                             "/org/client/chatapp/friends-list-screen-view.fxml")));
+
+            root = loader.load();
+            FriendsListController friendsListController = loader.getController();
+            friendsListController.setUser(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -314,10 +320,14 @@ public class HomeScreenController {
                                                     chatRoomDTO.getRoom().getType() == RoomType.ONE_TO_ONE
                                                             ? chatRoomDTO.getOther().getName()
                                                             : chatRoomDTO.getRoom().getName(),
-                                                    chatRoomDTO.getLastMessage().getText(),
-                                                    chatRoomDTO.getLastMessage().getSenderId()
-                                                            != chatRoomDTO.getMe().getId(),
-                                                    chatRoomDTO.getLastMessage().getSentAt(),
+                                                    chatRoomDTO.getLastMessage() == null
+                                                            ? "No Messages in This Chat Yet!"
+                                                            : chatRoomDTO.getLastMessage().getText(),
+                                                    chatRoomDTO.getLastMessage() == null ||
+                                                            chatRoomDTO.getLastMessage().getSenderId()
+                                                                    != chatRoomDTO.getMe().getId(),
+                                                    chatRoomDTO.getLastMessage() == null
+                                                    ? LocalDateTime.now() : chatRoomDTO.getLastMessage().getSentAt(),
                                                     getUserService.getUnreadMessagesCount
                                                             (chatRoomDTO.getMe(), chatRoomDTO.getRoom())
                                             ),
@@ -335,24 +345,6 @@ public class HomeScreenController {
             chatsList.setItems(FXCollections.observableArrayList(userRoomsToChatItemView));
         } catch (RemoteException | NotBoundException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void openChatRoom(ChatRoomDTO chatRoomDTO, MouseEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
-                    "/org/client/chatapp/chat-room-view.fxml")));
-            root = loader.load();
-            ChatRoomController chatRoomController = loader.getController();
-            chatRoomController.initializeChat(user, chatRoomDTO);
-            stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            scene.getStylesheets().addAll(ClientChatApp.allStyles);
-            stage.setScene(scene);
-            stage.setResizable(false);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

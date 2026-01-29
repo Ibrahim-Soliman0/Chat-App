@@ -9,14 +9,12 @@ public class Room implements Serializable {
     private Long id;
     private RoomType type;
     private String name;
-   private String description;
-   private String picturePath;
-   private LocalDateTime createdAt;
-   private LocalDateTime lastMessageAt;
-   private Long createdBy;
-
-   // private List<Message> messages = new ArrayList<>();
-
+    private String description;
+    private String picturePath;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastMessageAt;
+    private Long createdBy;
+    private byte[] pictureBytes;
 
     public Room() {
     }
@@ -94,6 +92,14 @@ public class Room implements Serializable {
 
     public void setCreatedBy(Long createdBy) {
         this.createdBy = createdBy;
+    }
+
+    public byte[] getPictureBytes() {
+        return pictureBytes;
+    }
+
+    public void setPictureBytes(byte[] pictureBytes) {
+        this.pictureBytes = pictureBytes;
     }
 
     @Override

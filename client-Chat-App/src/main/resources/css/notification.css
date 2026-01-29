@@ -1,0 +1,44 @@
+.notification-item {
+    -fx-background-color: #f7f8fa;
+    -fx-padding: 12 16;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 0 0 1 0;
+}
+
+.notification-item-unread {
+    -fx-background-color: #b9f1e9;
+}
+
+.notification-item:hover {
+    -fx-background-color:  #f1f5f9;
+    -fx-cursor: hand;
+}
+
+.notification-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+.notification-message {
+    -fx-font-size: 14px;
+    -fx-text-fill: #6B7280;
+}
+
+.notification-time {
+    -fx-font-size: 12px;
+    -fx-text-fill: #9CA3AF;
+}
+
+.unread-message-count {
+    -fx-background-color: #00ab8a;
+    -fx-background-radius: 12;
+    -fx-padding: 4 8;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+.unread-badge {
+    -fx-text-fill: rgba(0, 255, 51, 0.55);
+    -fx-font-size: 14px;
+}

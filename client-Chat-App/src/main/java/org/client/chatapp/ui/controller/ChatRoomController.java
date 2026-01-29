@@ -35,6 +35,15 @@ import java.util.Objects;
 public class ChatRoomController {
 
     @FXML
+    public SVGPath videoCallButton;
+
+    @FXML
+    public SVGPath phoneCallButton;
+
+    @FXML
+    public Group ellipsisButton;
+
+    @FXML
     private Group backButton;
 
     @FXML
@@ -68,8 +77,8 @@ public class ChatRoomController {
     private Scene scene;
     private Parent root;
 
-    public void initializeChat(Users currentUser, ChatRoomDTO chatRoomDTO) {
-        this.currentUser = currentUser;
+    public void initializeChat(ChatRoomDTO chatRoomDTO) {
+        this.currentUser = chatRoomDTO.getMe();
         this.chatRoomDTO = chatRoomDTO;
         this.otherUser = chatRoomDTO.getOther();
 
@@ -229,7 +238,19 @@ public class ChatRoomController {
         alert.showAndWait();
     }
 
-    public void setChatRoomDTO(ChatRoomDTO dataToBeUsedInChat) {
-        this.chatRoomDTO = dataToBeUsedInChat;
+    public void onAttachmentButtonClick(MouseEvent mouseEvent) {
+        // TODO: Move to File Transfer including all accepted files
+    }
+
+    public void onPhoneCallButtonClick(MouseEvent mouseEvent) {
+        // TODO: Implement Phone Call
+    }
+
+    public void onVideoCallButtonClick(MouseEvent mouseEvent) {
+        // TODO: Implement Video Call
+    }
+
+    public void onEllipsisButtonClick(MouseEvent mouseEvent) {
+        // TODO: Implement Options Button
     }
 }
