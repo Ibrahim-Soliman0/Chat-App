@@ -70,6 +70,7 @@ public class NotificationScreenController {
             root = loader.load();
             HomeScreenController homeScreenController = loader.getController();
             homeScreenController.setUser(user);
+            homeScreenController.clearNotifications();
         } catch (IOException e) {
             e.printStackTrace();
         }

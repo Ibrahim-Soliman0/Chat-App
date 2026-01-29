@@ -149,6 +149,25 @@ public class NotificationDaoImpl implements NotificationDao {
     }
 
     @Override
+    public int getCountByReceiverId(long receiverId) {
+        String sql = "SELECT COUNT(*) AS notifications_count FROM notification WHERE receiverId = ? AND status = 'UNREAD' ORDER BY createdAt DESC";
+        int result = 0;
+        try (Connection connection = Database.getDataSource().getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, receiverId);
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                result = rs.getInt("notifications_count");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    @Override
     public int markAsRead(long id) {
         String sql = "UPDATE notification SET status = 'READ' WHERE id = ?";
         try (Connection connection = Database.getDataSource().getConnection();

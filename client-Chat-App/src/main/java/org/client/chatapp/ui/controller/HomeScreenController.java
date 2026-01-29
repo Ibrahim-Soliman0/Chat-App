@@ -29,6 +29,7 @@ import org.client.chatapp.ClientChatApp;
 import org.client.chatapp.model.ChatItem;
 import org.client.chatapp.ui.component.ChatItemView;
 import rmi.GetUserService;
+import rmi.NotificationService;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
@@ -74,6 +75,7 @@ public class HomeScreenController {
     private SVGPath chatLogo;
     @FXML
     private Group groupIcon;
+    private Circle notificationsFound;
 
     public void initialize() {
         Circle profileHeadIcon = new Circle(12, 7, 4);
@@ -121,7 +123,13 @@ public class HomeScreenController {
         bellLine.setContent("M10.268 21a2 2 0 0 0 3.464 0");
         bellLine.getStyleClass().add("icon");
 
-        bellIcon.getChildren().addAll(bell, bellLine);
+        notificationsFound = new Circle(12, 7, 3);
+        notificationsFound.setFill(Color.web("#00ab8a"));
+        notificationsFound.setVisible(false);
+
+        notificationsFound.setTranslateX(11);
+
+        bellIcon.getChildren().addAll(bell, bellLine, notificationsFound);
         bellIcon.setScaleX(1.1);
         bellIcon.setScaleY(1.1);
 
@@ -209,7 +217,6 @@ public class HomeScreenController {
             vLine.getStyleClass().setAll("onIconHover");
             hLine.getStyleClass().setAll("onIconHover");
             addFriendBody.getStyleClass().setAll("onIconHover");
-
         });
 
         addFriend.setOnMouseExited(e -> {
@@ -217,7 +224,6 @@ public class HomeScreenController {
             vLine.getStyleClass().setAll("icon");
             hLine.getStyleClass().setAll("icon");
             addFriendBody.getStyleClass().setAll("icon");
-
         });
     }
 
@@ -307,7 +313,8 @@ public class HomeScreenController {
 
     public void setUser(Users user) {
         this.user = user;
-
+        //! remove this after testing
+        user.setId(2L);
         try {
             GetUserService getUserService =
                     (GetUserService) ClientChatApp.registry.lookup("GetUserService");
@@ -343,8 +350,22 @@ public class HomeScreenController {
                     .toList();
 
             chatsList.setItems(FXCollections.observableArrayList(userRoomsToChatItemView));
+
+            NotificationService notificationService =
+                    (NotificationService) ClientChatApp.registry.lookup("NotificationService");
+
+            int notificationsCount = notificationService.getNotificationsCount(user);
+
+            if (notificationsCount > 0) {
+                notificationsFound.setVisible(true);
+            }
+
         } catch (RemoteException | NotBoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public void clearNotifications() {
+        notificationsFound.setVisible(false);
     }
 }
