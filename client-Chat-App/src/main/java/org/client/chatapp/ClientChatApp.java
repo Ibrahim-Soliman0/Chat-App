@@ -1,8 +1,10 @@
 package org.client.chatapp;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -30,6 +32,10 @@ public class ClientChatApp extends Application {
                 Objects.requireNonNull(getClass().getResource("/css/combobox.css"))
                         .toExternalForm());
         scene.getStylesheets().addAll(allStyles);
+        stage.setOnCloseRequest(e -> {
+            Platform.exit();
+            System.exit(0);
+        });
         stage.setTitle("!What's App");
         stage.setScene(scene);
         stage.setResizable(false);

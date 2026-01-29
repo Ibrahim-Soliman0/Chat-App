@@ -223,7 +223,7 @@ public class FriendRequestItemView extends HBox {
 
         SVGPath correctMarkIcon = new SVGPath();
         correctMarkIcon.setContent("m16 11 2 2 4-4");
-        bodyIcon.getStyleClass().add("icon-black");
+        correctMarkIcon.getStyleClass().add("icon-black");
 
         Group acceptRequestIcon = new Group();
         acceptRequestIcon.getChildren().addAll(headIcon, bodyIcon, correctMarkIcon);

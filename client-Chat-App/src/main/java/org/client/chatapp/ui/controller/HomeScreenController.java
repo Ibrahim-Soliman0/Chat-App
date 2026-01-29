@@ -313,8 +313,7 @@ public class HomeScreenController {
 
     public void setUser(Users user) {
         this.user = user;
-        //! remove this after testing
-        user.setId(2L);
+
         try {
             GetUserService getUserService =
                     (GetUserService) ClientChatApp.registry.lookup("GetUserService");
