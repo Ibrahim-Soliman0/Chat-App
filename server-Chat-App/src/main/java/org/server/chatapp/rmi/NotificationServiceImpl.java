@@ -50,9 +50,15 @@ public class NotificationServiceImpl extends UnicastRemoteObject implements Noti
     }
 
     @Override
-    public void deleteNotification(Long notificationId)throws RemoteException{
+    public void deleteNotification(Long notificationId) throws RemoteException {
         NotificationDaoImpl notificationDao=new NotificationDaoImpl();
         notificationDao.markAsDeleted(notificationId);
+    }
+
+    @Override
+    public void markNotificationAsRead(Long notificationId) throws RemoteException {
+        NotificationDaoImpl notificationDao=new NotificationDaoImpl();
+        notificationDao.markAsRead(notificationId);
     }
 
     @Override

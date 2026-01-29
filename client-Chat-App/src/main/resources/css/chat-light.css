@@ -84,6 +84,8 @@
     -fx-fill: transparent;
     -fx-stroke: #121212;
     -fx-stroke-width: 3;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
 }
 
 .icon-button {

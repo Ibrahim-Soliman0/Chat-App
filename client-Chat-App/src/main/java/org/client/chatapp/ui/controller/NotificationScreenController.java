@@ -98,7 +98,7 @@ public class NotificationScreenController {
                             notification.getId(),notification.getType(), notificationDTO.getName(),
                             notification.getContent(), notification.getCreatedAt().toLocalDateTime(),
                             false);
-                    return new NotificationItemView(item, notificationDTO.getSender(), notificationDTO.getRoom());
+                    return new NotificationItemView(item, user, notificationDTO.getSender(), notificationDTO.getRoom());
                 })
                 .toList();
 
