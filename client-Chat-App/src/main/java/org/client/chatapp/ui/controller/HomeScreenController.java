@@ -33,6 +33,7 @@ import rmi.GetUserService;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -243,7 +244,7 @@ public class HomeScreenController {
     private void onBellIconClick(MouseEvent actionEvent) {
 
         try {
-            FXMLLoader loader = FXMLLoader.load(
+            FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource(
                             "/org/client/chatapp/notification-screen-view.fxml")));
 
@@ -306,7 +307,7 @@ public class HomeScreenController {
 
     public void setUser(Users user) {
         this.user = user;
-        user.setId(1L);
+
         try {
             GetUserService getUserService =
                     (GetUserService) ClientChatApp.registry.lookup("GetUserService");
@@ -319,10 +320,14 @@ public class HomeScreenController {
                                                     chatRoomDTO.getRoom().getType() == RoomType.ONE_TO_ONE
                                                             ? chatRoomDTO.getOther().getName()
                                                             : chatRoomDTO.getRoom().getName(),
-                                                    chatRoomDTO.getLastMessage().getText(),
-                                                    chatRoomDTO.getLastMessage().getSenderId()
-                                                            != chatRoomDTO.getMe().getId(),
-                                                    chatRoomDTO.getLastMessage().getSentAt(),
+                                                    chatRoomDTO.getLastMessage() == null
+                                                            ? "No Messages in This Chat Yet!"
+                                                            : chatRoomDTO.getLastMessage().getText(),
+                                                    chatRoomDTO.getLastMessage() == null ||
+                                                            chatRoomDTO.getLastMessage().getSenderId()
+                                                                    != chatRoomDTO.getMe().getId(),
+                                                    chatRoomDTO.getLastMessage() == null
+                                                    ? LocalDateTime.now() : chatRoomDTO.getLastMessage().getSentAt(),
                                                     getUserService.getUnreadMessagesCount
                                                             (chatRoomDTO.getMe(), chatRoomDTO.getRoom())
                                             ),
