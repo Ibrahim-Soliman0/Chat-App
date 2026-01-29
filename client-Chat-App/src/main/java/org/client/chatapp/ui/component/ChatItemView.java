@@ -3,10 +3,12 @@ package org.client.chatapp.ui.component;
 import dto.ChatRoomDTO;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -20,6 +22,7 @@ import model.Users;
 import org.client.chatapp.ClientChatApp;
 import org.client.chatapp.model.ChatItem;
 import org.client.chatapp.ui.controller.ChatRoomController;
+import org.client.chatapp.ui.utils.ImageUtil;
 import org.client.chatapp.ui.utils.TimeUtils;
 
 import java.io.IOException;
@@ -52,12 +55,21 @@ public class ChatItemView extends HBox {
         getStyleClass().add("chat-item");
         int characterLimit = 50;
 
-        ImageView avatar = new ImageView(chatItem.getProfilePic());
+        Image profileImage = ImageUtil.getImageFromByteArray(
+                dataToBeUsedInChat.getOther() != null ?
+                        dataToBeUsedInChat.getOther().getPictureBytes() :
+                        chatRoom.getPictureBytes());
+
+        ImageView avatar = new ImageView(profileImage);
         avatar.setFitWidth(60);
         avatar.setFitHeight(60);
-        avatar.setPreserveRatio(true);
+//        avatar.setPreserveRatio(true);
+        avatar.setSmooth(true);
 
-        Circle clip = new Circle(30, 30, 24);
+        Circle clip = new Circle();
+        clip.centerXProperty().bind(avatar.fitWidthProperty().divide(2));
+        clip.centerYProperty().bind(avatar.fitHeightProperty().divide(2));
+        clip.radiusProperty().bind(avatar.fitWidthProperty().divide(2));
         avatar.setClip(clip);
 
         Label name = new Label(chatItem.getName());

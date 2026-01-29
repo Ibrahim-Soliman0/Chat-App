@@ -4,10 +4,6 @@ public class FriendItem {
 
     private String profilePicPath, name;
 
-    public FriendItem(String name) {
-        this("defaultProfilePic.png", name);
-    }
-
     public FriendItem(String profilePicPath, String name) {
         this.profilePicPath = profilePicPath;
         this.name = name;

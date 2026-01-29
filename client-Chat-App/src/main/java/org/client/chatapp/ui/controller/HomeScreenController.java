@@ -218,9 +218,6 @@ public class HomeScreenController {
             addFriendBody.getStyleClass().setAll("icon");
 
         });
-//        user = new Users();
-//        user.setId(1L);
-//        setUser(user);
     }
 
     @FXML
@@ -284,9 +281,13 @@ public class HomeScreenController {
     private void onAddFriendIconClick(MouseEvent actionEvent) {
 
         try {
-            root = FXMLLoader.load(
+            FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource(
                             "/org/client/chatapp/friends-list-screen-view.fxml")));
+
+            root = loader.load();
+            FriendsListController friendsListController = loader.getController();
+            friendsListController.setUser(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -301,12 +302,12 @@ public class HomeScreenController {
 
     public void setUser(Users user) {
         this.user = user;
-
+        user.setId(1L);
         try {
             GetUserService getUserService =
                     (GetUserService) ClientChatApp.registry.lookup("GetUserService");
             List<ChatRoomDTO> allUserRooms = getUserService.getUserRooms(user);
-            List<ChatItemView> userRoomsToChatItemView = (List<ChatItemView>) allUserRooms.stream()
+            List<ChatItemView> userRoomsToChatItemView = allUserRooms.stream()
                     .map(chatRoomDTO -> {
                                 try {
                                     return new ChatItemView(

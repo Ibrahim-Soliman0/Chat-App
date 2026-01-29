@@ -5,6 +5,7 @@ module org.client.chatapp {
     requires java.rmi;
     requires javafx.web;
     requires org.controlsfx.controls;
+    requires java.desktop;
 
     exports org.client.chatapp;
     opens org.client.chatapp to javafx.fxml;

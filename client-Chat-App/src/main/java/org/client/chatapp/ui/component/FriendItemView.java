@@ -1,31 +1,30 @@
 package org.client.chatapp.ui.component;
 
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import model.Users;
 import org.client.chatapp.ClientChatApp;
-import org.client.chatapp.model.FriendItem;
 import org.client.chatapp.ui.controller.FriendProfileController;
+import org.client.chatapp.ui.utils.ImageUtil;
 
 import java.io.IOException;
 import java.util.Objects;
 
 public class FriendItemView extends HBox {
 
-    private FriendItem friendItem;
     private Users user;
 
-    public FriendItemView(FriendItem friendItem, Users user) {
-        this.friendItem = friendItem;
+    public FriendItemView(Users user) {
         this.user = user;
 
         buildUI();
@@ -37,15 +36,21 @@ public class FriendItemView extends HBox {
 
         setAlignment(Pos.CENTER_LEFT);
 
-        ImageView avatar = new ImageView(friendItem.getProfilePicPath());
+        Image userProfileImage = ImageUtil.getImageFromByteArray(user.getPictureBytes());
+
+        ImageView avatar = new ImageView(userProfileImage);
         avatar.setFitWidth(60);
         avatar.setFitHeight(60);
-        avatar.setPreserveRatio(true);
+//        avatar.setPreserveRatio(true);
+        avatar.setSmooth(true);
 
-        Circle clip = new Circle(30, 30, 24);
+        Circle clip = new Circle();
+        clip.centerXProperty().bind(avatar.fitWidthProperty().divide(2));
+        clip.centerYProperty().bind(avatar.fitHeightProperty().divide(2));
+        clip.radiusProperty().bind(avatar.fitWidthProperty().divide(2));
         avatar.setClip(clip);
 
-        Label name = new Label(friendItem.getName());
+        Label name = new Label(user.getName());
         name.getStyleClass().add("chat-name");
         name.setPadding(new Insets(0, 0, 0, 10));
 
@@ -74,14 +79,6 @@ public class FriendItemView extends HBox {
             stage.setScene(scene);
             stage.show();
         });
-    }
-
-    public FriendItem getFriendItem() {
-        return friendItem;
-    }
-
-    public void setFriendItem(FriendItem friendItem) {
-        this.friendItem = friendItem;
     }
 
     public Users getUser() {
