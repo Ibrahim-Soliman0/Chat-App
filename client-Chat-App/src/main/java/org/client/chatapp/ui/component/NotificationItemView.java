@@ -2,31 +2,30 @@ package org.client.chatapp.ui.component;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
 import javafx.util.Duration;
-import model.Notification;
-import org.client.chatapp.ClientChatApp;
+import model.Room;
+import model.Users;
 import org.client.chatapp.model.NotificationItem;
+import org.client.chatapp.ui.utils.ImageUtil;
 import org.client.chatapp.ui.utils.TimeUtils;
 import rmi.NotificationService;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class NotificationItemView extends HBox {
 
     private final NotificationItem notificationItem;
+    private Users sender;
+    private Room groupChat;
     private final VBox rightBox = new VBox();
     private StackPane unreadBadge;
     private Timeline timeUpdater;
@@ -38,8 +37,10 @@ public class NotificationItemView extends HBox {
     private static ListView<NotificationItemView> notificationListView;
 
 
-    public NotificationItemView(NotificationItem notificationItem) {
+    public NotificationItemView(NotificationItem notificationItem, Users sender, Room groupChat) {
         this.notificationItem = notificationItem;
+        this.sender = sender;
+        this.groupChat = groupChat;
 
         buildUI();
         registerHandlers();
@@ -50,11 +51,19 @@ public class NotificationItemView extends HBox {
         getStyleClass().add("chat-item");
         int characterLimit = 40;
 
-        ImageView avatar = new ImageView(notificationItem.getProfilePic());
+        Image profileImage = ImageUtil.getImageFromByteArray(sender != null ?
+                sender.getPictureBytes() : groupChat.getPictureBytes());
+
+        ImageView avatar = new ImageView(profileImage);
         avatar.setFitWidth(60);
         avatar.setFitHeight(60);
-        avatar.setPreserveRatio(true);
-        Circle clip = new Circle(30, 30, 30);
+//        avatar.setPreserveRatio(true);
+        avatar.setSmooth(true);
+
+        Circle clip = new Circle();
+        clip.centerXProperty().bind(avatar.fitWidthProperty().divide(2));
+        clip.centerYProperty().bind(avatar.fitHeightProperty().divide(2));
+        clip.radiusProperty().bind(avatar.fitWidthProperty().divide(2));
         avatar.setClip(clip);
 
         Label name = new Label(notificationItem.getName());
@@ -89,6 +98,7 @@ public class NotificationItemView extends HBox {
             unreadBadge = new StackPane(badgeLabel);
             rightContent.getChildren().add(0, unreadBadge);
         }
+
         rightContent.getChildren().addAll(time, binIcon);
         rightBox.getChildren().add(rightContent);
         HBox.setHgrow(rightBox, Priority.ALWAYS);
@@ -145,5 +155,21 @@ public class NotificationItemView extends HBox {
 
     public static void setNotificationListView(ListView<NotificationItemView> notificationListView) {
         NotificationItemView.notificationListView = notificationListView;
+    }
+
+    public Users getSender() {
+        return sender;
+    }
+
+    public void setSender(Users sender) {
+        this.sender = sender;
+    }
+
+    public Room getGroupChat() {
+        return groupChat;
+    }
+
+    public void setGroupChat(Room groupChat) {
+        this.groupChat = groupChat;
     }
 }

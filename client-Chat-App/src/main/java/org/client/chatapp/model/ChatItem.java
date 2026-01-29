@@ -4,29 +4,19 @@ import java.time.LocalDateTime;
 
 public class ChatItem {
 
-    private String name, lastMessage, profilePic;
+    private String name, lastMessage;
     private boolean incoming;
     private LocalDateTime messageTime;
     private int unreadMessageCount;
 
-    public ChatItem(int unreadMessageCount, LocalDateTime messageTime, String lastMessage, String name) {
-        this(name, lastMessage, true, messageTime, unreadMessageCount, "defaultProfilePic.png");
-    }
 
     public ChatItem(String name, String lastMessage, boolean incoming,
                     LocalDateTime messageTime, int unreadMessageCount) {
-        this(name, lastMessage, incoming, messageTime,
-                unreadMessageCount, "defaultProfilePic.png");
-    }
-
-    public ChatItem(String name, String lastMessage, boolean incoming,
-                    LocalDateTime messageTime, int unreadMessageCount, String profilePic) {
         this.name = name;
         this.lastMessage = lastMessage;
         this.incoming = incoming;
         this.messageTime = messageTime;
         this.unreadMessageCount = unreadMessageCount;
-        this.profilePic = profilePic;
     }
 
     public String getName() {
@@ -69,19 +59,10 @@ public class ChatItem {
         this.unreadMessageCount = unreadMessageCount;
     }
 
-    public String getProfilePic() {
-        return profilePic;
-    }
-
-    public void setProfilePic(String profilePic) {
-        this.profilePic = profilePic;
-    }
-
     @Override
     public String toString() {
         return "ChatItem{" +
-                "profilePic=" + profilePic +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", lastMessage='" + lastMessage + '\'' +
                 ", incoming=" + incoming +
                 ", messageTime=" + messageTime +

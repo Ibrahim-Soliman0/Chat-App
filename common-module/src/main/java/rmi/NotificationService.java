@@ -10,5 +10,6 @@ import java.util.List;
 
 public interface NotificationService extends Remote {
     List<NotificationDTO> getNotifications(Users user) throws RemoteException;
-    void deleteNotification(Long notificationId)throws RemoteException;
+
+    void deleteNotification(Long notificationId) throws RemoteException;
 }

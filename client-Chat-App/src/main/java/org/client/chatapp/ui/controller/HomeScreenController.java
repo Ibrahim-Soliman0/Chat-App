@@ -33,6 +33,7 @@ import rmi.GetUserService;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -218,9 +219,6 @@ public class HomeScreenController {
             addFriendBody.getStyleClass().setAll("icon");
 
         });
-//        user = new Users();
-//        user.setId(1L);
-//        setUser(user);
     }
 
     @FXML
@@ -246,7 +244,7 @@ public class HomeScreenController {
     private void onBellIconClick(MouseEvent actionEvent) {
 
         try {
-            FXMLLoader loader = FXMLLoader.load(
+            FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource(
                             "/org/client/chatapp/notification-screen-view.fxml")));
 
@@ -288,9 +286,13 @@ public class HomeScreenController {
     private void onAddFriendIconClick(MouseEvent actionEvent) {
 
         try {
-            root = FXMLLoader.load(
+            FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource(
                             "/org/client/chatapp/friends-list-screen-view.fxml")));
+
+            root = loader.load();
+            FriendsListController friendsListController = loader.getController();
+            friendsListController.setUser(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -310,7 +312,7 @@ public class HomeScreenController {
             GetUserService getUserService =
                     (GetUserService) ClientChatApp.registry.lookup("GetUserService");
             List<ChatRoomDTO> allUserRooms = getUserService.getUserRooms(user);
-            List<ChatItemView> userRoomsToChatItemView = (List<ChatItemView>) allUserRooms.stream()
+            List<ChatItemView> userRoomsToChatItemView = allUserRooms.stream()
                     .map(chatRoomDTO -> {
                                 try {
                                     return new ChatItemView(
@@ -318,10 +320,14 @@ public class HomeScreenController {
                                                     chatRoomDTO.getRoom().getType() == RoomType.ONE_TO_ONE
                                                             ? chatRoomDTO.getOther().getName()
                                                             : chatRoomDTO.getRoom().getName(),
-                                                    chatRoomDTO.getLastMessage().getText(),
-                                                    chatRoomDTO.getLastMessage().getSenderId()
-                                                            != chatRoomDTO.getMe().getId(),
-                                                    chatRoomDTO.getLastMessage().getSentAt(),
+                                                    chatRoomDTO.getLastMessage() == null
+                                                            ? "No Messages in This Chat Yet!"
+                                                            : chatRoomDTO.getLastMessage().getText(),
+                                                    chatRoomDTO.getLastMessage() == null ||
+                                                            chatRoomDTO.getLastMessage().getSenderId()
+                                                                    != chatRoomDTO.getMe().getId(),
+                                                    chatRoomDTO.getLastMessage() == null
+                                                    ? LocalDateTime.now() : chatRoomDTO.getLastMessage().getSentAt(),
                                                     getUserService.getUnreadMessagesCount
                                                             (chatRoomDTO.getMe(), chatRoomDTO.getRoom())
                                             ),

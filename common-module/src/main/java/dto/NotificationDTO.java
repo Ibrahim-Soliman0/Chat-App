@@ -8,23 +8,23 @@ import java.io.Serializable;
 
 public class NotificationDTO implements Serializable {
     private Notification notification;
-    private Users senderId;
+    private Users sender;
     private Room room;
     private String name;
 
-    public NotificationDTO(Notification type, Users senderId, Room room, String name) {
+    public NotificationDTO(Notification type, Users sender, Room room, String name) {
         this.notification = type;
-        this.senderId = senderId;
+        this.sender = sender;
         this.room = room;
         this.name = name;
     }
 
-    public Users getSenderId() {
-        return senderId;
+    public Users getSender() {
+        return sender;
     }
 
-    public void setSenderId(Users senderId) {
-        this.senderId = senderId;
+    public void setSender(Users sender) {
+        this.sender = sender;
     }
 
     public Notification getNotification() {

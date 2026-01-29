@@ -64,8 +64,12 @@ public class NotificationScreenController {
     @FXML
     private void onBackArrowClick(MouseEvent mouseEvent) {
         try {
-            root = FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource("/org/client/chatapp/home-screen-view.fxml")));
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
+                    "/org/client/chatapp/home-screen-view.fxml")));
+
+            root = loader.load();
+            HomeScreenController homeScreenController = loader.getController();
+            homeScreenController.setUser(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -89,18 +93,16 @@ public class NotificationScreenController {
             List<NotificationItemView> notificationToItemView = notifications.stream()
                 .map(notificationDTO -> {
                     Notification notification = notificationDTO.getNotification();
-                    NotificationItem item = new NotificationItem(notification.getId(),notification.getType(), notificationDTO.getName(),
-                            // TODO: get the real picture to show later
-
-                            notification.getContent(), notification.getCreatedAt().toLocalDateTime(), false);
-                    return new NotificationItemView(item);
+                    NotificationItem item = new NotificationItem(
+                            notification.getId(),notification.getType(), notificationDTO.getName(),
+                            notification.getContent(), notification.getCreatedAt().toLocalDateTime(),
+                            false);
+                    return new NotificationItemView(item, notificationDTO.getSender(), notificationDTO.getRoom());
                 })
                 .toList();
 
             notificationListView.setItems(FXCollections.observableArrayList(notificationToItemView));
-        } catch (RemoteException e) {
-            throw new RuntimeException(e);
-        } catch (NotBoundException e) {
+        } catch (RemoteException | NotBoundException e) {
             throw new RuntimeException(e);
         }
     }
