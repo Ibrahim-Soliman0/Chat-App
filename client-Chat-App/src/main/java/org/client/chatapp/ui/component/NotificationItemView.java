@@ -58,7 +58,7 @@ public class NotificationItemView extends HBox {
 
     private void buildUI() {
         getStyleClass().add("chat-item");
-        int characterLimit = 40;
+        int characterLimit = 33;
 
         Image profileImage = ImageUtil.getImageFromByteArray(sender != null ?
                 sender.getPictureBytes() : chatRoom.getPictureBytes());

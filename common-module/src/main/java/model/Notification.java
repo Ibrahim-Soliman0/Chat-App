@@ -19,6 +19,17 @@ public class Notification implements Serializable {
 
     public Notification() {}
 
+    public Notification(long receiverId, NotificationType type, String content,
+                        Long friendId, Timestamp createdAt, NotificationStatus status, Long roomId) {
+        this.receiverId = receiverId;
+        this.type = type;
+        this.content = content;
+        this.friendId = friendId;
+        this.createdAt = createdAt;
+        this.status = status;
+        this.roomId = roomId;
+    }
+
     public Notification(long id, long receiverId, NotificationType type, String content,
                         Long friendId, Timestamp createdAt, NotificationStatus status, Long roomId) {
         this.id = id;

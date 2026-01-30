@@ -66,4 +66,11 @@ public class NotificationServiceImpl extends UnicastRemoteObject implements Noti
         NotificationDaoImpl notificationDao = new NotificationDaoImpl();
         return notificationDao.getCountByReceiverId(user.getId());
     }
+
+    @Override
+    public void sendNotification(Notification notification) throws RemoteException {
+        NotificationDaoImpl notificationDao = new NotificationDaoImpl();
+        // TODO: later send the message to the user in realtime
+        notificationDao.insert(notification);
+    }
 }

@@ -78,7 +78,7 @@ public class NotificationDaoImpl implements NotificationDao {
     }
 
     @Override
-    public int insert(Notification notification) {
+    public long insert(Notification notification) {
         String sql = "INSERT INTO notification (receiverId, type, content, friendId, createdAt, status, roomId) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = Database.getDataSource().getConnection();
@@ -200,7 +200,7 @@ public class NotificationDaoImpl implements NotificationDao {
         notification.setType(NotificationType.valueOf(rs.getString("type").toUpperCase()));
         notification.setContent(rs.getString("content"));
 
-        long friendId = rs.getLong("freindId");
+        long friendId = rs.getLong("friendId");
         notification.setFriendId(rs.wasNull() ? null : friendId);
 
         notification.setCreatedAt(rs.getTimestamp("createdAt"));

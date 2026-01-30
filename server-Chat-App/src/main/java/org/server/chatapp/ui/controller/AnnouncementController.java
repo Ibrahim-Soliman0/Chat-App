@@ -53,7 +53,7 @@ public class AnnouncementController {
             announcement.setExpireAt(LocalDateTime.now().plusDays(7));
             announcement.setActive(true);
 
-            int result = announcementDao.insert(announcement);
+            long result = announcementDao.insert(announcement);
 
             if (result > 0) {
                 loginService.broadcastAnnouncement(title, htmlContent);

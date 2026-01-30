@@ -178,7 +178,7 @@ public class UsersImpl implements UsersDao {
     }
 
     @Override
-    public int insert(Users users) {
+    public long insert(Users users) {
         int result = 0;
         try (Connection connection = Database.getDataSource().getConnection()) {
             String sql = """
