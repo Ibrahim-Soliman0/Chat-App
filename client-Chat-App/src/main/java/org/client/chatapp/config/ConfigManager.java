@@ -7,6 +7,7 @@ import jakarta.xml.bind.Unmarshaller;
 import org.client.chatapp.ui.utils.SavedUserUtil;
 
 import java.io.File;
+import java.util.Optional;
 
 public class ConfigManager {
     private static final String FILE_PATH = "client-Chat-App/config.xml";
@@ -44,18 +45,31 @@ public class ConfigManager {
 
     public static void addUser(SavedUserUtil newUser) {
         UserConfig currentConfig = loadConfig();
-        boolean exists = currentConfig.getUsers().stream()
-                .anyMatch(u -> u.getPhoneNumber().equals(newUser.getPhoneNumber()));
-
-        if (!exists) {
+        Optional<SavedUserUtil> existingUser = currentConfig.getUsers().stream()
+                .filter(u -> u.getPhoneNumber().equals(newUser.getPhoneNumber()))
+                .findFirst();
+        if(existingUser.isPresent()){
+            existingUser.get().setName(newUser.getName());
+            existingUser.get().setEncryptedPassword(newUser.getEncryptedPassword());
+        }else{
             currentConfig.getUsers().add(newUser);
-            saveConfig(currentConfig);
         }
+        saveConfig(currentConfig);
     }
     public static void removeUser(String phoneNumber) {
         UserConfig config = loadConfig();
         if (config != null) {
             config.getUsers().removeIf(u -> u.getPhoneNumber().equals(phoneNumber));
+            saveConfig(config);
+        }
+    }
+    public static void logoutUser(String phoneNumber) {
+        UserConfig config = loadConfig();
+        if (config != null) {
+            config.getUsers().stream()
+                    .filter(u -> u.getPhoneNumber().equals(phoneNumber))
+                    .findFirst()
+                    .ifPresent(u -> u.setEncryptedPassword(null));
             saveConfig(config);
         }
     }

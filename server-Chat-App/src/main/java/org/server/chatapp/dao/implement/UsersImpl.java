@@ -342,4 +342,16 @@ public class UsersImpl implements UsersDao {
 
         return matchedUsers;
     }
+
+    @Override
+    public boolean updateStatus(String phoneNumber, Status status) {
+        Users user = getUserByPhoneNumber(phoneNumber);
+        if (user != null) {
+            user.setStatus(status);
+            update(user);
+            return true;
+        }
+        return false;
+
+    }
 }

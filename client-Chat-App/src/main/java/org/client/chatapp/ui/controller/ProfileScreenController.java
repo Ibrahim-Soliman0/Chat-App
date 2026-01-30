@@ -16,6 +16,9 @@ import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import model.Users;
 import org.client.chatapp.ClientChatApp;
+import org.client.chatapp.config.ConfigManager;
+import org.client.chatapp.config.UserConfig;
+import org.client.chatapp.ui.utils.SavedUserUtil;
 import rmi.GetUserService;
 import rmi.LoadFriendsListService;
 import rmi.LoginService;
@@ -27,6 +30,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
+
+import static org.client.chatapp.config.ConfigManager.loadConfig;
 
 public class ProfileScreenController {
 
@@ -373,8 +378,9 @@ public class ProfileScreenController {
             // Navigate to login screen
             try {
                 LoginService loginService = (LoginService) ClientChatApp.registry.lookup("LoginService");
-//                TODO: Remove currentUser from onlineUsersMap
-//                  loginService.logout(user.getPhoneNumber());
+                loginService.logout(user.getPhoneNumber());
+                ConfigManager.logoutUser(user.getPhoneNumber());
+                this.user = null;
 
                 root = FXMLLoader.load(
                         Objects.requireNonNull(getClass().getResource(

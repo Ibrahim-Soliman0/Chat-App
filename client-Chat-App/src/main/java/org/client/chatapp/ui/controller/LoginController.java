@@ -264,11 +264,17 @@ public class LoginController {
 
         avatarStack.getChildren().addAll(avatarGroup, removeBtn);
         imageCircle.setOnMouseClicked(event -> {
-            try {
-                String decryptedPassword = EncryptionUtil.decrypt(user.getEncryptedPassword());
-                autoLogin(user.getPhoneNumber(), decryptedPassword);
-            } catch (Exception e) {
-                showError("Auto-login failed. Please sign in manually.");
+            if (user.getEncryptedPassword() == null || user.getEncryptedPassword().isEmpty()) {
+                phoneField.setText(user.getPhoneNumber().substring(1));
+                passwordField.requestFocus();
+                showError("Please enter your password to sign in.");
+            } else {
+                try {
+                    String decryptedPassword = EncryptionUtil.decrypt(user.getEncryptedPassword());
+                    autoLogin(user.getPhoneNumber(), decryptedPassword);
+                } catch (Exception e) {
+                    showError("Session expired. Please enter password.");
+                }
             }
         });
 
