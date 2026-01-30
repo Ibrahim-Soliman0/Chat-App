@@ -23,7 +23,7 @@ import java.util.Objects;
 
 public class FriendProfileController {
 
-    private Users user;
+    private Users loggedInUser, friendUser;
     @FXML
     private Group goBackArrow;
     @FXML
@@ -60,15 +60,16 @@ public class FriendProfileController {
         }));
     }
 
-    public void setUser(Users user) {
-        this.user = user;
+    public void setFriendUser(Users friendUser, Users loggedInUser) {
+        this.friendUser = friendUser;
+        this.loggedInUser = loggedInUser;
 
-        nameLabel.setText(user.getName());
-        phoneNumberLabel.setText(user.getPhoneNumber());
-        emailLabel.setText(user.getEmail());
-        bioTextArea.setText(user.getBio());
+        nameLabel.setText(friendUser.getName());
+        phoneNumberLabel.setText(friendUser.getPhoneNumber());
+        emailLabel.setText(friendUser.getEmail());
+        bioTextArea.setText(friendUser.getBio());
 
-        Image userProfileImage = ImageUtil.getImageFromByteArray(user.getPictureBytes());
+        Image userProfileImage = ImageUtil.getImageFromByteArray(friendUser.getPictureBytes());
         profilePic.setImage(userProfileImage);
         profilePic.setPreserveRatio(false);
         profilePic.setSmooth(true);
@@ -84,9 +85,13 @@ public class FriendProfileController {
     private void onGoBackArrowClick(MouseEvent mouseEvent) {
 
         try {
-            root = FXMLLoader.load(
+            FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource(
                             "/org/client/chatapp/friends-list-screen-view.fxml")));
+
+            root = loader.load();
+            FriendsListController friendsListController = loader.getController();
+            friendsListController.setUser(loggedInUser);
         } catch (IOException e) {
             e.printStackTrace();
         }
