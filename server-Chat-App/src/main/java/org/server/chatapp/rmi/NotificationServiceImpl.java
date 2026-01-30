@@ -17,7 +17,6 @@ public class NotificationServiceImpl extends UnicastRemoteObject implements Noti
     public NotificationServiceImpl() throws RemoteException {
     }
 
-    // TODO: create a method like this one that sends if i have notifications or not
     @Override
     public List<NotificationDTO> getNotifications(Users user) throws RemoteException {
         FriendsImpl friendsImpl = new FriendsImpl();
@@ -51,8 +50,27 @@ public class NotificationServiceImpl extends UnicastRemoteObject implements Noti
     }
 
     @Override
-    public void deleteNotification(Long notificationId)throws RemoteException{
+    public void deleteNotification(Long notificationId) throws RemoteException {
         NotificationDaoImpl notificationDao=new NotificationDaoImpl();
         notificationDao.markAsDeleted(notificationId);
+    }
+
+    @Override
+    public void markNotificationAsRead(Long notificationId) throws RemoteException {
+        NotificationDaoImpl notificationDao=new NotificationDaoImpl();
+        notificationDao.markAsRead(notificationId);
+    }
+
+    @Override
+    public int getNotificationsCount(Users user) throws RemoteException {
+        NotificationDaoImpl notificationDao = new NotificationDaoImpl();
+        return notificationDao.getCountByReceiverId(user.getId());
+    }
+
+    @Override
+    public void sendNotification(Notification notification) throws RemoteException {
+        NotificationDaoImpl notificationDao = new NotificationDaoImpl();
+        // TODO: later send the message to the user in realtime
+        notificationDao.insert(notification);
     }
 }

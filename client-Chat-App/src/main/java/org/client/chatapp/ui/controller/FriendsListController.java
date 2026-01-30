@@ -137,6 +137,10 @@ public class FriendsListController {
             myFriendsToUser = myFriends.stream()
                     .map((friend) -> {
                         try {
+                            if (friend.getReceiverUserId() == user.getId()) {
+                                return finalGetUserService.getUser(friend.getSenderUserId());
+                            }
+
                             return finalGetUserService.getUser(friend.getReceiverUserId());
                         } catch (RemoteException e) {
                             e.printStackTrace();
@@ -146,7 +150,7 @@ public class FriendsListController {
                     .toList();
 
             List<FriendItemView> userListToFriendItemView = myFriendsToUser.stream()
-                    .map(FriendItemView::new)
+                    .map(friend -> new FriendItemView(friend, user))
                     .toList();
 
             friendsList.getItems().addAll(userListToFriendItemView);

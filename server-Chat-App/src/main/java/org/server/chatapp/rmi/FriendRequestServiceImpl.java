@@ -1,8 +1,11 @@
 package org.server.chatapp.rmi;
 
 import model.Friend;
+import model.Notification;
 import model.Users;
 import model.enums.FriendStatus;
+import model.enums.NotificationStatus;
+import model.enums.NotificationType;
 import org.server.chatapp.dao.implement.FriendsImpl;
 import rmi.FriendRequestService;
 
@@ -16,12 +19,21 @@ public class FriendRequestServiceImpl extends UnicastRemoteObject implements Fri
     public FriendRequestServiceImpl() throws RemoteException {}
 
     @Override
-    public int sendFriendRequest(Users sender, Users receiver) throws RemoteException {
+    public void sendFriendRequest(Users sender, Users receiver) throws RemoteException {
         FriendsImpl friendsImpl = new FriendsImpl();
         Friend friendRequest = new Friend(sender.getId(), receiver.getId(), Timestamp.from(Instant.now()),
                 null, FriendStatus.PENDING);
 
-        return friendsImpl.insert(friendRequest);
+        long friendRecordId = friendsImpl.insert(friendRequest);
+        Notification friendRequestNotification = new Notification(receiver.getId(),
+                NotificationType.FRIEND_REQUEST,
+                sender.getName() + " Sent You a Friend Request.",
+                friendRecordId, Timestamp.from(Instant.now()), NotificationStatus.UNREAD, null);
+
+        NotificationServiceImpl notificationService = new NotificationServiceImpl();
+        notificationService.sendNotification(friendRequestNotification);
+
+        // TODO: later send the notification realtime
     }
 
     @Override
@@ -41,5 +53,14 @@ public class FriendRequestServiceImpl extends UnicastRemoteObject implements Fri
         Friend friendRequest = friendsImpl.getUserFriendStatus(sender.getId(), receiver.getId());
 
         return friendsImpl.delete(friendRequest);
+    }
+
+    @Override
+    public int rejectFriendRequest(Users sender, Users receiver) throws RemoteException {
+        FriendsImpl friendsImpl = new FriendsImpl();
+        Friend friendRequest = friendsImpl.getUserFriendStatus(sender.getId(), receiver.getId());
+        friendRequest.setStatus(FriendStatus.REJECTED);
+
+        return friendsImpl.update(friendRequest);
     }
 }

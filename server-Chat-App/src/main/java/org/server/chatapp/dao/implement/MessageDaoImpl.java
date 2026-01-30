@@ -131,7 +131,7 @@ public class MessageDaoImpl implements MessageDao {
 
 
     @Override
-    public int insert(Message message) {
+    public long insert(Message message) {
         String sql = """
         INSERT INTO Message
         (senderId, roomId, text, fontFamily, fontSize, fontColor, backgroundColor,

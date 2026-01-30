@@ -117,7 +117,7 @@ public class UserRoomsImpl implements UserRoomsDao {
 
 
     @Override
-    public int insert(UserRooms userRooms) {
+    public long insert(UserRooms userRooms) {
 
         int result = 0;
 

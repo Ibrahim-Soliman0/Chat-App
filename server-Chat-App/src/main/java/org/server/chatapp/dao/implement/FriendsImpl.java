@@ -71,16 +71,17 @@ public class FriendsImpl implements FriendsDao {
     }
 
     @Override
-    public int insert(Friend friend) {
+    public long insert(Friend friend) {
 
-        int result = 0;
-        try (Connection connection = Database.getDataSource().getConnection()) {
-            String sql = """
-                    INSERT INTO friends 
-                    (senderUserId, receiverUserId, requestDate, responseDate, status)
-                    VALUES (?, ?, ?, ?, ?)""";
+        String sql = """
+                INSERT INTO friends 
+                (senderUserId, receiverUserId, requestDate, responseDate, status)
+                VALUES (?, ?, ?, ?, ?)""";
 
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        try (Connection connection = Database.getDataSource().getConnection();
+             PreparedStatement preparedStatement =
+                connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
+
 
             preparedStatement.setLong(1, friend.getSenderUserId());
             preparedStatement.setLong(2, friend.getReceiverUserId());
@@ -88,14 +89,19 @@ public class FriendsImpl implements FriendsDao {
             preparedStatement.setTimestamp(4, friend.getResponseDate());
             preparedStatement.setString(5, friend.getStatus().name());
 
-            result = preparedStatement.executeUpdate();
+            preparedStatement.executeUpdate();
 
-            preparedStatement.close();
+            try (ResultSet rs = preparedStatement.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getLong(1);
+                }
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return result;
+        return -1;
     }
 
     @Override
@@ -104,7 +110,7 @@ public class FriendsImpl implements FriendsDao {
         try (Connection connection = Database.getDataSource().getConnection()) {
 
             String sql = """
-                        DELETE FROM friends WHERE id = ?""";
+                    DELETE FROM friends WHERE id = ?""";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
@@ -128,7 +134,7 @@ public class FriendsImpl implements FriendsDao {
         try (Connection connection = Database.getDataSource().getConnection()) {
 
             String sql = """
-                            SELECT * FROM friends""";
+                    SELECT * FROM friends""";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
@@ -164,7 +170,9 @@ public class FriendsImpl implements FriendsDao {
                          FROM
                             friends
                          WHERE
-                            senderUserId = ? AND STATUS = 'ACCEPTED'""";
+                             senderUserId = ? AND STATUS = 'ACCEPTED'
+                             OR
+                             receiverUserId = 12 AND STATUS = 'ACCEPTED'""";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setLong(1, userId);
@@ -194,14 +202,14 @@ public class FriendsImpl implements FriendsDao {
         try (Connection connection = Database.getDataSource().getConnection()) {
 
             String sql = """
-                      SELECT
-                        *
-                      FROM
-                        FRIENDS as f
-                      WHERE
-                        senderUserId = ? AND receiverUserId = ?
-                      ORDER BY requestDate DESC
-                      LIMIT 1;""";
+                    SELECT
+                      *
+                    FROM
+                      FRIENDS as f
+                    WHERE
+                      senderUserId = ? AND receiverUserId = ?
+                    ORDER BY requestDate DESC
+                    LIMIT 1;""";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setLong(1, myId);

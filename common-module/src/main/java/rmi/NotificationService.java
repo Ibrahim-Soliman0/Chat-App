@@ -12,4 +12,10 @@ public interface NotificationService extends Remote {
     List<NotificationDTO> getNotifications(Users user) throws RemoteException;
 
     void deleteNotification(Long notificationId) throws RemoteException;
+
+    int getNotificationsCount(Users user) throws RemoteException;
+
+    void markNotificationAsRead(Long notificationId) throws RemoteException;
+
+    void sendNotification(Notification notification) throws RemoteException;
 }

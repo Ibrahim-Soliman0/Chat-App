@@ -22,10 +22,11 @@ import java.util.Objects;
 
 public class FriendItemView extends HBox {
 
-    private Users user;
+    private Users user, loggedInUser;
 
-    public FriendItemView(Users user) {
+    public FriendItemView(Users user, Users loggedInUser) {
         this.user = user;
+        this.loggedInUser = loggedInUser;
 
         buildUI();
         registerHandlers();
@@ -68,7 +69,7 @@ public class FriendItemView extends HBox {
                 root = loader.load();
 
                 FriendProfileController friendProfileController = loader.getController();
-                friendProfileController.setUser(user);
+                friendProfileController.setFriendUser(user, loggedInUser);
             } catch (IOException e) {
                 e.printStackTrace();
             }

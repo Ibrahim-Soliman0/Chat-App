@@ -28,7 +28,6 @@ import org.client.chatapp.ui.utils.ImageUtil;
 import rmi.FriendRequestService;
 import rmi.GetUserService;
 
-import java.awt.*;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -93,7 +92,7 @@ public class FriendRequestItemView extends HBox {
                 root = loader.load();
 
                 FriendProfileController friendProfileController = loader.getController();
-                friendProfileController.setUser(other);
+                friendProfileController.setFriendUser(other, me);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -223,7 +222,7 @@ public class FriendRequestItemView extends HBox {
 
         SVGPath correctMarkIcon = new SVGPath();
         correctMarkIcon.setContent("m16 11 2 2 4-4");
-        bodyIcon.getStyleClass().add("icon-black");
+        correctMarkIcon.getStyleClass().add("icon-black");
 
         Group acceptRequestIcon = new Group();
         acceptRequestIcon.getChildren().addAll(headIcon, bodyIcon, correctMarkIcon);

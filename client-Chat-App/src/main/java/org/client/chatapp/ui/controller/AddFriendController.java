@@ -1,7 +1,6 @@
 package org.client.chatapp.ui.controller;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -21,7 +20,6 @@ import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import model.Users;
 import org.client.chatapp.ClientChatApp;
-import org.client.chatapp.model.FriendItem;
 import org.client.chatapp.ui.component.FriendRequestItemView;
 import rmi.GetUserService;
 

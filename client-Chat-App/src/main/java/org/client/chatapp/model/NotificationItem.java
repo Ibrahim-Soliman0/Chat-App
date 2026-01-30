@@ -59,14 +59,10 @@ public class NotificationItem {
         return time;
     }
 
-    public boolean isUnread() {
-        return !read;
-    }
-
     public boolean isRead() {
         return read;
     }
-     public void setRead(boolean read) { this.read = !read; }
+     public void setRead(boolean read) { this.read = read; }
 
     public String getProfilePic() {
         return profilePic;
