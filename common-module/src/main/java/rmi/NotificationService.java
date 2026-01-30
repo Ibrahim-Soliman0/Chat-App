@@ -1,6 +1,7 @@
 package rmi;
 
 import dto.NotificationDTO;
+import model.Notification;
 import model.Users;
 
 import java.rmi.Remote;
@@ -15,4 +16,6 @@ public interface NotificationService extends Remote {
     int getNotificationsCount(Users user) throws RemoteException;
 
     void markNotificationAsRead(Long notificationId) throws RemoteException;
+
+    void sendNotification(Notification notification) throws RemoteException;
 }

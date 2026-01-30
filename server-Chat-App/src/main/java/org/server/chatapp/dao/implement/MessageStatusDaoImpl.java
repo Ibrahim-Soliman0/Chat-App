@@ -59,7 +59,7 @@ public class MessageStatusDaoImpl implements MessageStatusDao {
     }
 
     @Override
-    public int insert(MessageStatus messageStatus) {
+    public long insert(MessageStatus messageStatus) {
         String sql = "INSERT INTO messagestatus (messageId, userId, seenAt) VALUES (?, ?, ?)";
         try (Connection connection = Database.getDataSource().getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {

@@ -86,7 +86,7 @@ public class RoomImpl implements RoomDao {
     }
 
     @Override
-    public int insert(Room room) {
+    public long insert(Room room) {
         int result = 0;
         try (Connection connection = Database.getDataSource().getConnection()) {
             String sql = "INSERT INTO room (type, name, description, picturePath, createdAt, lastMessageAt, createdBy) VALUES (?, ?, ?, ?, ?, ?, ?)";

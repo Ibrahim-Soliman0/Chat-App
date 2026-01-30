@@ -7,8 +7,11 @@ import java.rmi.RemoteException;
 
 public interface FriendRequestService extends Remote {
 
-    int sendFriendRequest(Users sender, Users receiver) throws RemoteException;
+    void sendFriendRequest(Users sender, Users receiver) throws RemoteException;
+
     int acceptFriendRequest(Users sender, Users receiver) throws RemoteException;
+
     int cancelFriendRequest(Users sender, Users receiver) throws RemoteException;
+
     int rejectFriendRequest(Users sender, Users receiver) throws RemoteException;
 }
