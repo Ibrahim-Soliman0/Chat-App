@@ -44,6 +44,11 @@ public class GetMessageServiceImpl extends UnicastRemoteObject implements GetMes
     @Override
     public void updateOthersGUI(ChatRoomDTO chatRoomDTO) throws RemoteException {
         ClientCallBack clientCallBack = ClientManager.getClient(chatRoomDTO.getOther().getPhoneNumber());
-        clientCallBack.receiveMessage(chatRoomDTO);
+        if (clientCallBack == null) return;
+        try {
+            clientCallBack.receiveMessage(chatRoomDTO);
+        } catch (RemoteException e) {
+            ClientManager.removeClient(chatRoomDTO.getOther().getPhoneNumber());
+        }
     }
 }
