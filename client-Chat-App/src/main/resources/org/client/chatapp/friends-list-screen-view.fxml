@@ -6,6 +6,8 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.SVGPath?>
 <?import javafx.scene.text.Font?>
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="450.0" style="-fx-background-color: #f7f9fa;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.FriendsListController">
@@ -26,5 +28,12 @@
             <Font name="System Bold" size="18.0" />
          </font>
       </Label>
+      <Group fx:id="noFriendsIcon" layoutX="215.0" layoutY="269.0" scaleX="1.5" scaleY="1.5">
+         <children>
+            <SVGPath content="M18 21a8 8 0 0 0-16 0" fill="#00ab8900" stroke="#00ab89" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="OUTSIDE" />
+            <Circle centerX="10.0" centerY="8.0" fill="#00ab8900" radius="5.0" stroke="#00ab8a" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" />
+            <SVGPath content="M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3" fill="#00ab8900" stroke="#00ab8a" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeMiterLimit="0.0" strokeType="INSIDE" />
+         </children>
+      </Group>
     </children>
 </Pane>

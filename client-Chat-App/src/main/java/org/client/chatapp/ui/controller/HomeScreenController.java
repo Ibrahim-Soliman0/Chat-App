@@ -20,6 +20,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polyline;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -74,8 +75,11 @@ public class HomeScreenController {
     @FXML
     private SVGPath chatLogo;
     @FXML
-    private Group groupIcon;
+    private Group groupIcon, emptyStateIcon;
     private Circle notificationsFound;
+    private Polyline iconPolyLine;
+    @FXML
+    private Label emptyStateLabel;
 
     public void initialize() {
         Circle profileHeadIcon = new Circle(12, 7, 4);
@@ -225,6 +229,10 @@ public class HomeScreenController {
             hLine.getStyleClass().setAll("icon");
             addFriendBody.getStyleClass().setAll("icon");
         });
+
+        iconPolyLine = new Polyline(22, 12, 16, 12, 14, 15, 10, 15, 8, 12, 2, 12);
+        iconPolyLine.setStroke(Color.web("#00ab8a"));
+        emptyStateIcon.getChildren().add(iconPolyLine);
     }
 
     @FXML
@@ -349,6 +357,11 @@ public class HomeScreenController {
                     .toList();
 
             chatsList.setItems(FXCollections.observableArrayList(userRoomsToChatItemView));
+
+            if (chatsList.getItems().size() > 0) {
+                emptyStateIcon.setVisible(false);
+                emptyStateLabel.setVisible(false);
+            }
 
             NotificationService notificationService =
                     (NotificationService) ClientChatApp.registry.lookup("NotificationService");
