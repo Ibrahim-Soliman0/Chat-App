@@ -38,6 +38,8 @@ public class FriendsListController {
     @FXML
     private Label noFriendsLabel;
     @FXML
+    private Group noFriendsIcon;
+    @FXML
     private Group goBackArrow;
     private Parent root;
     private Stage stage;
@@ -132,6 +134,7 @@ public class FriendsListController {
         List<Users> myFriendsToUser;
         if (!myFriends.isEmpty()) {
             noFriendsLabel.setVisible(false);
+            noFriendsIcon.setVisible(false);
 
             GetUserService finalGetUserService = getUserService;
             myFriendsToUser = myFriends.stream()

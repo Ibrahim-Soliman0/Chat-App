@@ -59,6 +59,8 @@ public class FriendRequestServiceImpl extends UnicastRemoteObject implements Fri
     public int rejectFriendRequest(Users sender, Users receiver) throws RemoteException {
         FriendsImpl friendsImpl = new FriendsImpl();
         Friend friendRequest = friendsImpl.getUserFriendStatus(sender.getId(), receiver.getId());
+
+        friendRequest.setResponseDate(Timestamp.from(Instant.now()));
         friendRequest.setStatus(FriendStatus.REJECTED);
 
         return friendsImpl.update(friendRequest);
