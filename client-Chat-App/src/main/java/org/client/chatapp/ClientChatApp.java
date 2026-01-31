@@ -21,7 +21,7 @@ public class ClientChatApp extends Application {
     public static ObservableList<String> allStyles = FXCollections.observableArrayList();
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(ClientChatApp.class.getResource("login-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(ClientChatApp.class.getResource("group-screen-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         allStyles.addAll(Objects.requireNonNull(getClass().getResource("/css/chat-light.css"))
                         .toExternalForm(),

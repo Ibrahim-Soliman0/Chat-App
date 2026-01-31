@@ -7,53 +7,29 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="450.0" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.CreateGroupController">
-   <children>
-      <Label layoutX="46.0" layoutY="38.0" text="Create New Group">
-         <font>
-            <Font name="System Bold" size="18.0" />
-         </font></Label>
-      <Label layoutX="46.0" layoutY="176.0" text="Group Name *">
-         <font>
-            <Font size="13.0" />
-         </font>
-      </Label>
-      <TextField layoutX="40.0" layoutY="211.0" prefHeight="33.0" prefWidth="300.0" />
-      <Label layoutX="46.0" layoutY="265.0" text="Description(optional)">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Label>
-      <TextField layoutX="40.0" layoutY="292.0" prefHeight="70.0" prefWidth="300.0" />
-      <Button fx:id="nextButton" layoutX="230.0" layoutY="450.0" mnemonicParsing="false" onMouseClicked="#onClickNextButton" prefHeight="48.0" prefWidth="138.0" text="Next">
+<AnchorPane prefHeight="650" prefWidth="450" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.CreateGroupController">
 
-         <font>
-            <Font name="System Bold" size="17.0" />
-         </font>
-      </Button>
-      <Button fx:id="cancelButton" layoutX="31.0" layoutY="450.0" mnemonicParsing="false" onMouseClicked="#onClickCancelButton" prefHeight="48.0" prefWidth="138.0" text="Cancel">
-         <font>
-            <Font name="System Bold" size="17.0" />
-         </font>
-      </Button>
-      <StackPane layoutX="140.0" layoutY="70.0">
-         <!-- Circle Border -->
-         <Circle fill="#ECEFF1" radius="50" stroke="WHITE" strokeWidth="3" />
+      <VBox alignment="TOP_CENTER" spacing="20" AnchorPane.leftAnchor="30" AnchorPane.rightAnchor="30" AnchorPane.topAnchor="20">
+         <Label text="Create New Group">
+            <font>
+               <Font name="System Bold" size="18.0" />
+            </font>
+         </Label>
 
-         <!-- Placeholder Icon -->
-         <Group fx:id="profilePlaceholder">
-            <SVGPath content="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" fill="transparent" stroke="#5e6468" strokeWidth="2" />
-            <Circle centerX="12" centerY="7" fill="transparent" radius="4" stroke="#5e6468" strokeWidth="2" />
-         </Group>
+   <VBox alignment="CENTER" spacing="8">
+      <StackPane>
+      <Circle fill="#ECEFF1" radius="50" stroke="WHITE" strokeWidth="3" />
 
-         <!-- Profile Image -->
-         <ImageView fx:id="profileImageView" fitHeight="100" fitWidth="100">
-            <clip>
-               <Circle centerX="50" centerY="50" radius="50" />
-            </clip>
-         </ImageView>
+      <Group fx:id="profilePlaceholder">
+         <SVGPath content="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" fill="transparent" stroke="#5e6468" strokeWidth="2" />
+         <Circle centerX="12" centerY="7" fill="transparent" radius="4" stroke="#5e6468" strokeWidth="2" />
+      </Group>
 
-         <!-- Camera Button -->
+      <ImageView fx:id="profileImageView" fitHeight="100" fitWidth="100">
+         <clip>
+            <Circle centerX="50" centerY="50" radius="50" />
+         </clip>
+      </ImageView>
          <StackPane onMouseClicked="#handleUploadPhoto" style="-fx-cursor: hand;" translateX="15" translateY="15" StackPane.alignment="BOTTOM_RIGHT">
             <Circle fill="#00ab8a" radius="18" translateX="30.0" translateY="20.0" />
             <Group translateX="30.0" translateY="20.0">
@@ -62,6 +38,25 @@
             </Group>
          </StackPane>
       </StackPane>
+   </VBox>
+         <VBox maxWidth="300" spacing="5">
+            <Label text="Group Name *" />
+            <TextField fx:id="groupName" />
+            <Label fx:id="groupNameErrorLabel" text="Group name is required" textFill="RED" visible="false" />
+         </VBox>
 
-   </children>
-</Pane>
+         <VBox maxWidth="300" spacing="5">
+            <Label text="Description (optional)" />
+            <TextArea prefRowCount="3" />
+         </VBox>
+
+      </VBox>
+
+      <HBox alignment="CENTER" layoutX="77.0" layoutY="440.0" spacing="20">
+         <Button fx:id="cancelButton" onMouseClicked="#onClickCancelButton" prefHeight="48" prefWidth="138" text="Cancel" />
+
+         <Button fx:id="nextButton" onMouseClicked="#onClickNextButton" prefHeight="48" prefWidth="138" text="Next" />
+      </HBox>
+
+
+</AnchorPane>
