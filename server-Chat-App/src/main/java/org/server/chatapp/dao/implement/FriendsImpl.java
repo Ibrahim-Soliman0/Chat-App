@@ -110,7 +110,7 @@ public class FriendsImpl implements FriendsDao {
         try (Connection connection = Database.getDataSource().getConnection()) {
 
             String sql = """
-                    DELETE FROM friends WHERE id = ?""";
+                    UPDATE friends SET status = 'BLOCKED' WHERE id = ?""";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
