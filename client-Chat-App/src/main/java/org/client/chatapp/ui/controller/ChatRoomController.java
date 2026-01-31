@@ -92,7 +92,11 @@ public class ChatRoomController {
         loadMessages();
 
         // Auto-scroll to bottom
-        Platform.runLater(() -> messagesScrollPane.setVvalue(1.0));
+        messagesScrollPane.setFitToWidth(true);
+        messagesContainer.heightProperty().addListener((obs, oldVal, newVal) -> {
+            Platform.runLater(() -> messagesScrollPane.setVvalue(1.0));
+        });
+//        Platform.runLater(() -> messagesScrollPane.setVvalue(1.0));
     }
 
     private void updateUserStatus() {
@@ -122,7 +126,7 @@ public class ChatRoomController {
         }
     }
 
-    private void loadMessages() {
+    public void loadMessages() {
         try {
             GetMessageService getMessageService =
                     (GetMessageService) ClientChatApp.registry.lookup("GetMessageService");
@@ -186,10 +190,23 @@ public class ChatRoomController {
     private void onSendButtonClick() {
         String messageText = messageInput.getText().trim();
         if (!messageText.isEmpty()) {
-            // TODO: Implement sending message via RMI
-            // For now, just clear the input
             messageInput.clear();
+            try {
+                Message message = new Message();
+                message.setSenderId(currentUser.getId());
+                message.setText(messageText);
+                message.setRoomId(chatRoomDTO.getRoom().getId());
+                message.setSentAt(LocalDateTime.now());
+                GetMessageService getMessageService =
+                        (GetMessageService) ClientChatApp.registry.lookup("GetMessageService");
+                getMessageService.sendMessage(message);
+                addMessageToUI(message);
+//                getMessageService.updateOthersGUI(chatRoomDTO);
 
+            } catch (RemoteException | NotBoundException e) {
+                e.printStackTrace();
+                showError("Failed to send a message");
+            }
             // You would call something like:
             // SendMessageService sendMessageService =
             //     (SendMessageService) ClientChatApp.registry.lookup("SendMessageService");
@@ -197,7 +214,7 @@ public class ChatRoomController {
             //     currentUser.getId(), chatRoomDTO.getRoom().getId(), messageText);
             // addMessageToUI(newMessage);
 
-            showInfo("Message sending not yet implemented");
+//            showInfo("Message sending not yet implemented");
         }
     }
 

@@ -1,5 +1,6 @@
 package org.client.chatapp.rmi;
 
+import dto.ChatRoomDTO;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -11,6 +12,7 @@ import rmi.ClientCallBack;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import org.client.chatapp.ui.controller.ChatRoomController;
 
 public class ClientCallBackImp extends UnicastRemoteObject implements ClientCallBack {
     public ClientCallBackImp() throws RemoteException {
@@ -46,6 +48,15 @@ public class ClientCallBackImp extends UnicastRemoteObject implements ClientCall
                     });
 
             notificationBuilder.showInformation();
+        });
+    }
+
+    @Override
+    public void receiveMessage(ChatRoomDTO chatRoomDTO) throws RemoteException {
+        Platform.runLater(() -> {
+            ChatRoomController chatRoomController = new ChatRoomController();
+            chatRoomController.initializeChat(chatRoomDTO);
+            chatRoomController.loadMessages();
         });
     }
 }
