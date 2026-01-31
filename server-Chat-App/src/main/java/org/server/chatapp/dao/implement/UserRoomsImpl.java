@@ -7,6 +7,7 @@ import org.server.chatapp.dao.Database;
 import org.server.chatapp.dao.dao.UserRoomsDao;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,16 +22,7 @@ public class UserRoomsImpl implements UserRoomsDao {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return new UserRooms(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("userId"),
-                        resultSet.getLong("roomId"),
-                        resultSet.getBoolean("isAdmin"),
-                        resultSet.getTimestamp("joinedAt").toLocalDateTime(),
-                        resultSet.getTimestamp("leftAt") != null
-                                ? resultSet.getTimestamp("leftAt").toLocalDateTime() : null,
-                        resultSet.getBoolean("isActive")
-                );
+                return createObject(resultSet);
             }
         } catch (SQLException se) {
             se.printStackTrace();
@@ -51,15 +43,7 @@ public class UserRoomsImpl implements UserRoomsDao {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                allUsers.add(new UserRooms(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("userId"),
-                        resultSet.getLong("roomId"),
-                        resultSet.getBoolean("isAdmin"),
-                        resultSet.getTimestamp("joinedAt").toLocalDateTime(),
-                        resultSet.getTimestamp("leftAt").toLocalDateTime(),
-                        resultSet.getBoolean("isActive")
-                ));
+                allUsers.add(createObject(resultSet));
 
                 preparedStatement.close();
                 resultSet.close();
@@ -139,12 +123,17 @@ public class UserRoomsImpl implements UserRoomsDao {
             preparedStatement.setLong(1, userRooms.getUserId());
             preparedStatement.setLong(2, userRooms.getRoomId());
             preparedStatement.setBoolean(3, userRooms.getIsAdmin());
-            preparedStatement.setTimestamp(4, Timestamp.valueOf(userRooms.getJoinedAt()));
+            if (userRooms.getJoinedAt() == null) {
+                preparedStatement.setTimestamp(4, null);
+            }
+            else {
+                preparedStatement.setTimestamp(4, Timestamp.valueOf(userRooms.getJoinedAt()));
+            }
 
-            if (userRooms.getLeftAt() != null) {
-                preparedStatement.setTimestamp(5, Timestamp.valueOf(userRooms.getLeftAt()));
+            if (userRooms.getLeftAt() == null) {
+                preparedStatement.setTimestamp(5,null);
             } else {
-                preparedStatement.setNull(5, Types.TIMESTAMP);
+                preparedStatement.setTimestamp(5, Timestamp.valueOf(userRooms.getLeftAt()));
             }
 
             preparedStatement.setBoolean(6, userRooms.getIsActive());
@@ -295,5 +284,31 @@ public class UserRoomsImpl implements UserRoomsDao {
         }
 
         return usersInGroup;
+    }
+
+    private UserRooms createObject(ResultSet resultSet) throws SQLException {
+        UserRooms userRoom = new UserRooms();
+
+        userRoom.setRoomId(resultSet.getLong("id"));
+        userRoom.setUserId(resultSet.getLong("userId"));
+        userRoom.setRoomId(resultSet.getLong("roomId"));
+        userRoom.setIsAdmin(resultSet.getBoolean("isAdmin"));
+        if (resultSet.getTimestamp("joinedAt") == null) {
+            userRoom.setJoinedAt(null);
+        }
+        else {
+            userRoom.setJoinedAt(resultSet.getTimestamp("joinedAt").toLocalDateTime());
+        }
+
+        if (resultSet.getTimestamp("leftAt") == null) {
+            userRoom.setJoinedAt(null);
+        }
+        else {
+            userRoom.setJoinedAt(resultSet.getTimestamp("leftAt").toLocalDateTime());
+        }
+
+        userRoom.setIsActive(resultSet.getBoolean("isActive"));
+
+        return userRoom;
     }
 }
