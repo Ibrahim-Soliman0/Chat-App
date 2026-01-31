@@ -14,6 +14,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import org.client.chatapp.ui.controller.ChatRoomController;
 
+import static org.client.chatapp.ui.controller.ChatRoomController.activeControllers;
+
 public class ClientCallBackImp extends UnicastRemoteObject implements ClientCallBack {
     public ClientCallBackImp() throws RemoteException {
     }
@@ -54,9 +56,10 @@ public class ClientCallBackImp extends UnicastRemoteObject implements ClientCall
     @Override
     public void receiveMessage(ChatRoomDTO chatRoomDTO) throws RemoteException {
         Platform.runLater(() -> {
-            ChatRoomController chatRoomController = new ChatRoomController();
-            chatRoomController.initializeChat(chatRoomDTO);
-            chatRoomController.loadMessages();
+            ChatRoomController chatRoomController = activeControllers.getOrDefault(chatRoomDTO.getRoom().getId(), null);
+            if (chatRoomController != null) {
+                chatRoomController.loadMessages();
+            }
         });
     }
 }
