@@ -172,10 +172,11 @@ public class FriendsImpl implements FriendsDao {
                          WHERE
                              senderUserId = ? AND STATUS = 'ACCEPTED'
                              OR
-                             receiverUserId = 12 AND STATUS = 'ACCEPTED'""";
+                             receiverUserId = ? AND STATUS = 'ACCEPTED'""";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setLong(1, userId);
+            preparedStatement.setLong(2, userId);
 
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {

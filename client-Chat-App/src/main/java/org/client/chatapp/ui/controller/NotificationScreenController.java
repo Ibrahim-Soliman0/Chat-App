@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.SVGPath;
@@ -34,6 +35,10 @@ public class NotificationScreenController {
     private Scene scene;
     @FXML
     private ListView<NotificationItemView> notificationListView;
+    @FXML
+    private Group emptyStateIcon;
+    @FXML
+    private Label emptyStateLabel;
 
     public void initialize() {
 
@@ -103,6 +108,11 @@ public class NotificationScreenController {
                 .toList();
 
             notificationListView.setItems(FXCollections.observableArrayList(notificationToItemView));
+
+            if (notificationListView.getItems().size() > 0) {
+                emptyStateIcon.setVisible(false);
+                emptyStateLabel.setVisible(false);
+            }
         } catch (RemoteException | NotBoundException e) {
             throw new RuntimeException(e);
         }
