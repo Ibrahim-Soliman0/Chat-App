@@ -1,12 +1,14 @@
 package org.client.chatapp.rmi;
 
 import dto.ChatRoomDTO;
+import dto.NotificationDTO;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.web.WebView;
 import javafx.stage.Window;
 import javafx.util.Duration;
+import org.client.chatapp.ui.listener.NotificationListener;
 import org.controlsfx.control.Notifications;
 import rmi.ClientCallBack;
 
@@ -15,11 +17,14 @@ import java.rmi.server.UnicastRemoteObject;
 import org.client.chatapp.ui.controller.ChatRoomController;
 
 public class ClientCallBackImp extends UnicastRemoteObject implements ClientCallBack {
+
+    public static NotificationListener homeScreenListener, notificationScreenListener;
+
     public ClientCallBackImp() throws RemoteException {
     }
 
     @Override
-    public void receiveAnnouncement(String title,String htmlContent) throws RemoteException {
+    public void receiveAnnouncement(String title, String htmlContent) throws RemoteException {
         Platform.runLater(() -> {
             String readonlyHtml = htmlContent.replace("contenteditable=\"true\"", "contenteditable=\"false\"");
 
@@ -58,5 +63,33 @@ public class ClientCallBackImp extends UnicastRemoteObject implements ClientCall
             chatRoomController.initializeChat(chatRoomDTO);
             chatRoomController.loadMessages();
         });
+    }
+
+    @Override
+    public void receiveNotification() throws RemoteException {
+        Platform.runLater(() -> {
+            if (homeScreenListener != null) {
+                homeScreenListener.onNewNotification();
+            }
+            else if (notificationScreenListener != null) {
+                notificationScreenListener.onNewNotification();
+            }
+        });
+    }
+
+    public static NotificationListener getHomeScreenListener() {
+        return homeScreenListener;
+    }
+
+    public static void setHomeScreenListener(NotificationListener homeScreenListener) {
+        ClientCallBackImp.homeScreenListener = homeScreenListener;
+    }
+
+    public static NotificationListener getNotificationScreenListener() {
+        return notificationScreenListener;
+    }
+
+    public static void setNotificationScreenListener(NotificationListener notificationScreenListener) {
+        ClientCallBackImp.notificationScreenListener = notificationScreenListener;
     }
 }

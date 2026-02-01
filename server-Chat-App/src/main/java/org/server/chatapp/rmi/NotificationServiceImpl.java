@@ -5,7 +5,7 @@ import dto.NotificationDTO;
 import model.*;
 import model.enums.NotificationType;
 import model.enums.RoomType;
-import org.server.chatapp.dao.dao.MessageDao;
+import org.server.chatapp.dao.ClientManager;
 import org.server.chatapp.dao.implement.*;
 import rmi.NotificationService;
 
@@ -24,7 +24,7 @@ public class NotificationServiceImpl extends UnicastRemoteObject implements Noti
         RoomImpl roomImpl = new RoomImpl();
         NotificationDaoImpl notificationDao = new NotificationDaoImpl();
         List<Notification> userNotifications = notificationDao.getByReceiverId(user.getId());
-        List<NotificationDTO> friendSequestAndMessages = userNotifications.stream()
+        List<NotificationDTO> friendRequestAndMessages = userNotifications.stream()
                 .map((notification) -> {
                     if (notification.getType() == NotificationType.MESSAGE) {
 
@@ -46,7 +46,7 @@ public class NotificationServiceImpl extends UnicastRemoteObject implements Noti
                 })
                 .toList();
 
-        return friendSequestAndMessages;
+        return friendRequestAndMessages;
     }
 
     @Override
@@ -70,7 +70,11 @@ public class NotificationServiceImpl extends UnicastRemoteObject implements Noti
     @Override
     public void sendNotification(Notification notification) throws RemoteException {
         NotificationDaoImpl notificationDao = new NotificationDaoImpl();
-        // TODO: later send the message to the user in realtime
         notificationDao.insert(notification);
+
+        UsersImpl usersImpl = new UsersImpl();
+        Users notificationReceiver = usersImpl.get(notification.getReceiverId());
+
+        ClientManager.notifyUser(notificationReceiver.getPhoneNumber());
     }
 }

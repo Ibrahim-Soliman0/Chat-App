@@ -1,6 +1,8 @@
 package org.server.chatapp.dao.implement;
 
+import model.Friend;
 import model.Notification;
+import model.Users;
 import model.enums.NotificationStatus;
 import model.enums.NotificationType;
 import org.server.chatapp.dao.Database;
@@ -210,5 +212,24 @@ public class NotificationDaoImpl implements NotificationDao {
         notification.setRoomId(rs.wasNull() ? null : roomId);
 
         return notification;
+    }
+
+    public Notification getFriendRequestNotification(Users receiver, Friend friendRequest) {
+        String sql = "SELECT * FROM notification WHERE receiverId = ? AND friendId = ? LIMIT 1;";
+        try (Connection connection = Database.getDataSource().getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setLong(1, receiver.getId());
+            stmt.setLong(2, friendRequest.getId());
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return extractNotificationFromResultSet(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
