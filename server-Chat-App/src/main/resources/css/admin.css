@@ -393,3 +393,32 @@
 #lblAdminName:hover {
     -fx-text-fill: #0d9488;
 }
+/* Container for the table to give it rounded corners and shadow */
+.table-container {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);
+    -fx-padding: 5;
+}
+
+/* Styling the TableView itself */
+.user-mgmt-container .table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.user-mgmt-container .table-row-cell {
+    -fx-cell-size: 55px;
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f3f4f6 transparent;
+}
+
+.user-mgmt-container .table-view .virtual-flow {
+    -fx-background-color: white;
+}
+
+.user-mgmt-container .table-view .column-header-background {
+    -fx-background-color: #f9fafb;
+    -fx-border-color: transparent transparent #e5e7eb transparent;
+}

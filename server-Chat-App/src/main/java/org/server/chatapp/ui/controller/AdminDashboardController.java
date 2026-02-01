@@ -102,6 +102,17 @@ public class AdminDashboardController {
         updateActiveButton(btnAnnouncements);
     }
     @FXML
+    private void showUserManagement() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/server/chatapp/user-management-view.fxml"));
+            Parent view = loader.load();
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        updateActiveButton(btnUsers);
+    }
+    @FXML
     private void showAdminManagement(){
         try {
             FXMLLoader loader =
