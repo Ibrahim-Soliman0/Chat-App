@@ -4,16 +4,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import org.server.chatapp.util.RMIUtil;
+import model.Users;
+import model.enums.Role;
 
 import java.io.IOException;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
 
 public class AdminDashboardController {
     @FXML
@@ -25,7 +20,10 @@ public class AdminDashboardController {
     @FXML
     private Button btnAnnouncements;
     @FXML
+    private Button btnAdminManagement;
+    @FXML
     private Button btnUsers;
+    private Users currentAdmin;
 
     public void initialize() {
         try {
@@ -37,7 +35,22 @@ public class AdminDashboardController {
         }
         updateActiveButton(btnControl);
     }
-
+    public void setCurrentAdmin(Users admin) {
+        this.currentAdmin = admin;
+        configureUIBasedOnRole();
+    }
+    private void configureUIBasedOnRole() {
+        if (currentAdmin == null) {
+            return;
+        }
+        if (currentAdmin.getRole() == Role.MASTER_ADMIN) {
+            btnAdminManagement.setVisible(true);
+            btnAdminManagement.setManaged(true);
+        } else {
+            btnAdminManagement.setVisible(false);
+            btnAdminManagement.setManaged(false);
+        }
+    }
     @FXML
     private void showServerControl() {
         try {
@@ -75,14 +88,25 @@ public class AdminDashboardController {
         }
         updateActiveButton(btnAnnouncements);
     }
+    @FXML
+    private void showAdminManagement(){
+        try {
+            FXMLLoader loader =
+                    new FXMLLoader(getClass().getResource("/org/server/chatapp/admin-management-view.fxml"));
+            Parent view = loader.load();
+            contentArea.getChildren().setAll(view);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        updateActiveButton(btnAdminManagement);
+    }
 
     private void updateActiveButton(Button activeBtn) {
         btnControl.getStyleClass().remove("nav-button-active");
         btnStatistics.getStyleClass().remove("nav-button-active");
         btnAnnouncements.getStyleClass().remove("nav-button-active");
+        btnAdminManagement.getStyleClass().remove("nav-button-active");
         activeBtn.getStyleClass().add("nav-button-active");
     }
 
-
 }
-

@@ -80,6 +80,17 @@
                         </Group>
                     </graphic>
                 </Button>
+                <Button fx:id="btnAdminManagement"
+                        onAction="#showAdminManagement"
+                        alignment="BASELINE_LEFT" maxWidth="Infinity" prefHeight="45.0"
+                        styleClass="nav-button" text=" Admin Management">
+                    <graphic>
+                        <Group>
+                            <SVGPath content="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                                     fill="TRANSPARENT" stroke="#4b5563" strokeWidth="1.5"/>
+                        </Group>
+                    </graphic>
+                </Button>
             </VBox>
         </VBox>
     </left>
