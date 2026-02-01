@@ -1,13 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            prefHeight="400.0" prefWidth="600.0">
+<AnchorPane prefHeight="650" prefWidth="450" style="-fx-background-color: #ffffff;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.CreateGroupController">
+
+      <VBox alignment="TOP_CENTER" spacing="20" AnchorPane.leftAnchor="30" AnchorPane.rightAnchor="30" AnchorPane.topAnchor="20">
+         <Label text="Create New Group">
+            <font>
+               <Font name="System Bold" size="18.0" />
+            </font>
+         </Label>
+
+   <VBox alignment="CENTER" spacing="8">
+      <StackPane>
+      <Circle fill="#ECEFF1" radius="50" stroke="WHITE" strokeWidth="3" />
+
+      <Group fx:id="profilePlaceholder">
+         <SVGPath content="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" fill="transparent" stroke="#5e6468" strokeWidth="2" />
+         <Circle centerX="12" centerY="7" fill="transparent" radius="4" stroke="#5e6468" strokeWidth="2" />
+      </Group>
+
+      <ImageView fx:id="profileImageView" fitHeight="100" fitWidth="100">
+         <clip>
+            <Circle centerX="50" centerY="50" radius="50" />
+         </clip>
+      </ImageView>
+         <StackPane onMouseClicked="#handleUploadPhoto" style="-fx-cursor: hand;" translateX="15" translateY="15" StackPane.alignment="BOTTOM_RIGHT">
+            <Circle fill="#00ab8a" radius="18" translateX="30.0" translateY="20.0" />
+            <Group translateX="30.0" translateY="20.0">
+               <SVGPath content="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z" fill="WHITE" stroke="WHITE" strokeWidth="2" style="-fx-fill: transparent;" />
+               <Circle centerX="12" centerY="13" fill="transparent" radius="3" stroke="WHITE" strokeWidth="2" />
+            </Group>
+         </StackPane>
+      </StackPane>
+   </VBox>
+         <VBox maxWidth="300" spacing="5">
+            <Label text="Group Name *" />
+            <TextField fx:id="groupName" />
+            <Label fx:id="groupNameErrorLabel" text="Group name is required" textFill="RED" visible="false" />
+         </VBox>
+
+         <VBox maxWidth="300" spacing="5">
+            <Label text="Description (optional)" />
+            <TextArea fx:id="description" prefRowCount="3" />
+         </VBox>
+
+      </VBox>
+
+      <HBox alignment="CENTER" layoutX="77.0" layoutY="440.0" spacing="20">
+         <Button fx:id="cancelButton" onMouseClicked="#onClickCancelButton" prefHeight="48" prefWidth="138" text="Cancel" />
+
+         <Button fx:id="nextButton" onMouseClicked="#onClickNextButton" prefHeight="48" prefWidth="138" text="Next" />
+      </HBox>
+
 
 </AnchorPane>
