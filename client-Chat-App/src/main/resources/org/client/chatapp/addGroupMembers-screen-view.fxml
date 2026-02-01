@@ -12,7 +12,7 @@
          </font>
       </Label>
       <TextField fx:id="searchField" layoutX="35.0" layoutY="72.0" prefHeight="34.0" prefWidth="377.0" promptText="Type Name Or Phone  Number" />
-      <Button fx:id="createGroupButton" layoutX="259.0" layoutY="530.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="148.0" text="Create Group" onMouseClicked="#createGroup">
+      <Button fx:id="createGroupButton" layoutX="259.0" layoutY="530.0" mnemonicParsing="false" onMouseClicked="#createGroup" prefHeight="48.0" prefWidth="148.0" text="Create Group">
          <font>
             <Font name="System Bold" size="15.0" />
          </font>
@@ -33,7 +33,12 @@
          </font></Label>
       <VBox fx:id="containerBox" layoutX="40.0" layoutY="110.0" prefHeight="400.0" prefWidth="350.0">
          <children>
-            <ListView fx:id="FriendListView" prefHeight="400.0" prefWidth="200.0" />
+            <ListView fx:id="friendListView" prefHeight="400.0" prefWidth="200.0" />
+            <Label fx:id="addMemberFlag" text="select at least one member" textFill="#ba2b44" visible="false">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
          </children>
       </VBox>
    </children>

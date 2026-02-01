@@ -47,7 +47,7 @@
 
          <VBox maxWidth="300" spacing="5">
             <Label text="Description (optional)" />
-            <TextArea prefRowCount="3" />
+            <TextArea fx:id="description" prefRowCount="3" />
          </VBox>
 
       </VBox>

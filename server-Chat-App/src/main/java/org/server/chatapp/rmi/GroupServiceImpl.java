@@ -10,6 +10,9 @@ import org.server.chatapp.dao.implement.RoomImpl;
 import org.server.chatapp.dao.implement.UserRoomsImpl;
 import rmi.GroupService;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.time.LocalDateTime;
@@ -25,7 +28,7 @@ public class GroupServiceImpl extends UnicastRemoteObject implements GroupServic
     }
 
     @Override
-    public Room createGroup(GroupDTO groupDTO) throws RemoteException {
+    public void createGroup(GroupDTO groupDTO) throws RemoteException {
         Room room = new Room();
         room.setName(groupDTO.getGroupName());
         room.setDescription(groupDTO.getDescription());
@@ -35,6 +38,31 @@ public class GroupServiceImpl extends UnicastRemoteObject implements GroupServic
         room.setLastMessageAt(null);
 
         long roomId = roomDao.insert(room);
+        room.setId(roomId);
+
+        if (groupDTO.getGroupImage() != null && groupDTO.getGroupImage().length > 0) {
+            File uploadDir = new File("server-Chat-App/uploads/profiles");
+
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+
+            String fileName = "room_" + groupDTO.getCreatorId() +
+                    roomId + System.currentTimeMillis() + ".jpg";
+
+            File destinationFile = new File(uploadDir, fileName);
+
+            try (FileOutputStream fos = new FileOutputStream(destinationFile)) {
+                fos.write(groupDTO.getGroupImage());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            String relativePath = "server-Chat-App/uploads/profiles/" + fileName;
+            room.setPicturePath(relativePath);
+        }
+
+        roomDao.update(room);
 
         groupDTO.getMembersId().forEach(userId -> {
             UserRooms member = new UserRooms();
@@ -47,7 +75,5 @@ public class GroupServiceImpl extends UnicastRemoteObject implements GroupServic
 
             userRoomsDao.insert(member);
         });
-
-        return room;
     }
 }

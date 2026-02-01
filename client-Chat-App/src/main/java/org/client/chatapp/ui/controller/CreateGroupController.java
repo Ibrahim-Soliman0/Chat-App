@@ -1,5 +1,6 @@
 package org.client.chatapp.ui.controller;
 
+import dto.GroupDTO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
@@ -8,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -20,16 +22,12 @@ import org.client.chatapp.ClientChatApp;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Objects;
 
 public class CreateGroupController {
     private Users user;
-    @FXML
-    ImageView groupProfile;
-    @FXML
-    private Button cancelButton;
-    @FXML
-    private Button nextButton;
+    private GroupDTO groupDTO=new GroupDTO();
     @FXML
     private Parent root;
     private Stage stage;
@@ -42,15 +40,15 @@ public class CreateGroupController {
     @FXML
     private TextField groupName;
     @FXML
+    private TextArea description;
+    @FXML
     private Label groupNameErrorLabel;
     private String name;
-
-    public void initialize() {
-
-    }
+    private String groupDescription;
 
     private boolean validateGroupName() {
-         name = groupName.getText();
+        name = groupName.getText();
+        groupDescription = description.getText();
         if (name == null || name.trim().isEmpty()) {
             groupNameErrorLabel.setVisible(true);
             return false;
@@ -86,18 +84,14 @@ public class CreateGroupController {
         if (!validateGroupName()) {
             return;
         }
-        if (this.user == null) {
-            this.user = new Users();
-            this.user.setId(1L);
 
-        }
-            try {
+        try {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
                     "/org/client/chatapp/addGroupMembers-screen-view.fxml")));
 
             root = loader.load();
             AddGroupMemberController addGroupMemberController = loader.getController();
-            addGroupMemberController.setUser(this.user);
+            addGroupMemberController.setUser(user);
             addGroupMemberController.setCreateGroupController(this);
         } catch (IOException e) {
             e.printStackTrace();
@@ -138,6 +132,20 @@ public class CreateGroupController {
             profileImageView.setImage(image);
 
             profilePlaceholder.setVisible(false);
+            byte[] imageBytes=  getGroupImages(selectedImageFile);
+            if(imageBytes!=null) {
+                groupDTO.setGroupImage(imageBytes);
+            }
+        }
+
+    }
+
+    private byte[] getGroupImages(File file) {
+        try {
+            return Files.readAllBytes(file.toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
@@ -148,6 +156,15 @@ public class CreateGroupController {
     public String getName() {
         return name;
     }
+
+    public String getGroupDescription() {
+        return groupDescription;
+    }
+
+    public GroupDTO getGroupDTO() {
+        return groupDTO;
+    }
+
 }
 
 

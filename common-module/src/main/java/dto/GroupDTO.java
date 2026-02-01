@@ -5,19 +5,23 @@ import java.util.List;
 
 public class GroupDTO implements Serializable {
 
-    private List<Long>membersId;
+    private List<Long> membersId;
     private String groupName;
     private Long creatorId;
     private String description;
+    private byte[] groupImage;
+    ;
 
     public GroupDTO() {
     }
 
-    public GroupDTO(List<Long> membersId, String groupName, Long creatorId,String description) {
+    public GroupDTO(List<Long> membersId, String groupName, Long creatorId,
+                    String description, byte[] groupImage) {
         this.membersId = membersId;
         this.groupName = groupName;
         this.creatorId = creatorId;
-        this.description=description;
+        this.description = description;
+        this.groupImage = groupImage;
     }
 
     public List<Long> getMembersId() {
@@ -33,7 +37,7 @@ public class GroupDTO implements Serializable {
     }
 
     public void setGroupName(String groupName) {
-       this.groupName = groupName;
+        this.groupName = groupName;
     }
 
     public Long getCreatorId() {
@@ -51,4 +55,13 @@ public class GroupDTO implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public byte[] getGroupImage() {
+        return groupImage;
+    }
+
+    public void setGroupImage(byte[] groupImage) {
+        this.groupImage = groupImage;
+    }
+
 }

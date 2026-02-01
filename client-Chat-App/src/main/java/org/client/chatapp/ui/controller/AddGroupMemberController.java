@@ -42,7 +42,9 @@ public class AddGroupMemberController {
     @FXML
     private Button backButton;
     @FXML
-    private ListView FriendListView;
+    private Button createGroupButton;
+    @FXML
+    private ListView friendListView;
     @FXML
     private Label noFriendsLabel;
     @FXML
@@ -55,12 +57,14 @@ public class AddGroupMemberController {
     private TextField searchField;
     @FXML
     private Label notFoundLabel;
+    @FXML
+    private Label addMemberFlag;
 
     private final ObservableList<HBox> allFriendRows = FXCollections.observableArrayList();
     private String search;
 
     private Users user;
-    private List<Users>friendUsers=new ArrayList<>();
+    private List<Users> friendUsers = new ArrayList<>();
     private CreateGroupController createGroupController;
 
     public void initialize() {
@@ -73,11 +77,15 @@ public class AddGroupMemberController {
     }
 
     @FXML
-    private void onClickBackButton(MouseEvent mouseEvent){
+    private void onClickBackButton(MouseEvent mouseEvent) {
         try {
-            root = FXMLLoader.load(
+            FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource(
                             "/org/client/chatapp/group-screen-view.fxml")));
+
+            root = loader.load();
+            CreateGroupController createGroupController = loader.getController();
+            createGroupController.setUser(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -90,16 +98,9 @@ public class AddGroupMemberController {
         stage.show();
     }
 
-    public void loadUser() {
-        if (this.user == null) {
-            this.user = new Users();
-            this.user.setId(2L); // default/fallback user
-        }
-    }
 
     public void setUser(Users user) {
         this.user = user;
-       loadUser();
 
         List<Friend> myFriends = new ArrayList<>();
         GetUserService getUserService = null;
@@ -124,11 +125,11 @@ public class AddGroupMemberController {
             for (Friend friend : myFriends) {
                 try {
                     Users friendUser = finalGetUserService.getUser(friend.getReceiverUserId());
-                    FriendItemView friendView = new FriendItemView(friendUser);
+                    FriendItemView friendView = new FriendItemView(friendUser, user);
                     CheckBox checkBox = new CheckBox();
                     checkBox.setFocusTraversable(false);
-                    checkBox.setOnMouseClicked(e->e.consume());
-                    friendView.setOnMouseClicked(e->e.consume());
+                    checkBox.setOnMouseClicked(e -> e.consume());
+                    friendView.setOnMouseClicked(e -> e.consume());
 
                     HBox row = new HBox(12);
                     row.setAlignment(Pos.CENTER_LEFT);
@@ -136,11 +137,11 @@ public class AddGroupMemberController {
 
                     HBox.setHgrow(friendView, Priority.ALWAYS);
 
-                    row.getChildren().addAll(friendView,checkBox);
+                    row.getChildren().addAll(friendView, checkBox);
 
                     allFriendRows.add(row);
                     friendUsers.add(friendUser);
-                    FriendListView.setItems(allFriendRows);
+                    friendListView.setItems(allFriendRows);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -148,23 +149,15 @@ public class AddGroupMemberController {
         }
     }
 
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
     private void filterFriends(String text) {
 
         if (text == null || text.isBlank()) {
-            FriendListView.setItems(allFriendRows);
+            friendListView.setItems(allFriendRows);
             notFoundLabel.setVisible(false);
             return;
         }
 
-         search = text.toLowerCase();
+        search = text.toLowerCase();
 
         ObservableList<HBox> filtered = allFriendRows.stream()
                 .filter(row -> {
@@ -174,46 +167,68 @@ public class AddGroupMemberController {
                 })
                 .collect(Collectors.toCollection(FXCollections::observableArrayList));
 
-        FriendListView.setItems(filtered);
+        friendListView.setItems(filtered);
         notFoundLabel.setVisible(filtered.isEmpty());
     }
 
     @FXML
-    private void createGroup(){
-        List<Long> selectedUserId =new ArrayList<>();
-        for(int i=0;i<FriendListView.getItems().size();i++){
-            HBox row = (HBox) FriendListView.getItems().get(i);
-            CheckBox checkBox=(CheckBox) row.getChildren().get(1);
+    private void createGroup() {
+        List<Long> selectedUserId = new ArrayList<>();
+        for (int i = 0; i < friendListView.getItems().size(); i++) {
+            HBox row = (HBox) friendListView.getItems().get(i);
+            CheckBox checkBox = (CheckBox) row.getChildren().get(1);
 
-            if(checkBox.isSelected()){
+            if (checkBox.isSelected()) {
                 selectedUserId.add(friendUsers.get(i).getId());
 
             }
         }
-        if(selectedUserId.isEmpty()){
-            showError("Select at least one memeber");
+        if (selectedUserId.isEmpty()) {
+            addMemberFlag.setVisible(true);
             return;
         }
         createGroupOnServer(selectedUserId);
-
+        openHomeScreen();
 
     }
-    private void createGroupOnServer(List<Long>memberId){
-        GroupDTO groupDTO=new GroupDTO();
+
+    private void createGroupOnServer(List<Long> memberId) {
+        GroupDTO groupDTO = new GroupDTO();
         groupDTO.setGroupName(createGroupController.getName());
         groupDTO.setCreatorId(user.getId());
         groupDTO.setMembersId(memberId);
+        groupDTO.setDescription(createGroupController.getGroupDescription());
+        groupDTO.setGroupImage(createGroupController.getGroupDTO().getGroupImage());
 
-        try{
-            GroupService groupService=
+        try {
+            GroupService groupService =
                     (GroupService) ClientChatApp.registry.lookup("GroupService");
-
-            Room room = groupService.createGroup(groupDTO);
+            groupService.createGroup(groupDTO);
 
         } catch (NotBoundException | RemoteException e) {
-        e.printStackTrace();
+            e.printStackTrace();
         }
 
+    }
+
+    private void openHomeScreen(){
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
+                    "/org/client/chatapp/home-screen-view.fxml")));
+
+            root = loader.load();
+            HomeScreenController homeScreenController = loader.getController();
+            homeScreenController.setUser(user);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        stage = (Stage) createGroupButton .getScene().getWindow();
+        scene = new Scene(root);
+        scene.getStylesheets().addAll(ClientChatApp.allStyles);
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
     }
 
     public void setCreateGroupController(CreateGroupController controller) {
