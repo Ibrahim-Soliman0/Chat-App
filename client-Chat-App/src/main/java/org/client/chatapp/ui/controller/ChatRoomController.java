@@ -10,9 +10,12 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -21,6 +24,7 @@ import javafx.stage.Stage;
 import model.Users;
 import model.Message;
 import org.client.chatapp.ClientChatApp;
+import org.client.chatapp.ui.utils.ImageUtil;
 import rmi.GetMessageService;
 
 import javafx.scene.input.MouseEvent;
@@ -42,6 +46,9 @@ public class ChatRoomController {
 
     @FXML
     public Group ellipsisButton;
+
+    @FXML
+    public Circle profileImage;
 
     @FXML
     private Group backButton;
@@ -82,6 +89,11 @@ public class ChatRoomController {
         this.currentUser = chatRoomDTO.getMe();
         this.chatRoomDTO = chatRoomDTO;
         this.otherUser = chatRoomDTO.getOther();
+
+        // Set another user's profile picture
+        updateProfilePicture();
+
+        // Save the current object in the active controllers map to be used in the callback
         activeControllers.put(chatRoomDTO.getRoom().getId(), this);
 
         // Set the other user's name
@@ -98,18 +110,25 @@ public class ChatRoomController {
         messagesContainer.heightProperty().addListener((obs, oldVal, newVal) -> {
             Platform.runLater(() -> messagesScrollPane.setVvalue(1.0));
         });
-//        Platform.runLater(() -> messagesScrollPane.setVvalue(1.0));
 
         Platform.runLater(() -> {
             Stage currentStage = (Stage) messagesScrollPane.getScene().getWindow();
             if (currentStage != null) {
                 currentStage.setOnCloseRequest(event -> {
-//                    activeControllers.remove(chatRoomDTO.getRoom().getId());
+                    activeControllers.remove(chatRoomDTO.getRoom().getId());
                     Platform.exit();
                     System.exit(0);
                 });
             }
         });
+    }
+
+    private void updateProfilePicture() {
+        Image image = ImageUtil.getImageFromByteArray(
+                chatRoomDTO.getOther() != null ?
+                        chatRoomDTO.getOther().getPictureBytes() :
+                        chatRoomDTO.getRoom().getPictureBytes());
+        profileImage.setFill(new ImagePattern(image));
     }
 
     private void updateUserStatus() {
