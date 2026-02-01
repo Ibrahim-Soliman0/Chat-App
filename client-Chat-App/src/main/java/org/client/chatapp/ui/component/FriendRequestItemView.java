@@ -28,6 +28,7 @@ import org.client.chatapp.ui.utils.ImageUtil;
 import rmi.FriendRequestService;
 import rmi.GetUserService;
 
+import java.awt.*;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;

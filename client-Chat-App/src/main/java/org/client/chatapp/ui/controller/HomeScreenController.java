@@ -292,9 +292,13 @@ public class HomeScreenController implements NotificationListener {
     private void onGroupIconClick(MouseEvent actionEvent) {
         ClientCallBackImp.setHomeScreenListener(null);
         try {
-            root = FXMLLoader.load(
+            FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource(
                             "/org/client/chatapp/group-screen-view.fxml")));
+
+            root = loader.load();
+            CreateGroupController createGroupController = loader.getController();
+            createGroupController.setUser(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
