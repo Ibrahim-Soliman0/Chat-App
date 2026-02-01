@@ -6,6 +6,7 @@ import model.enums.NotificationStatus;
 import model.enums.NotificationType;
 import model.enums.RoomType;
 import org.server.chatapp.dao.implement.FriendsImpl;
+import org.server.chatapp.dao.implement.NotificationDaoImpl;
 import org.server.chatapp.dao.implement.RoomImpl;
 import org.server.chatapp.dao.implement.UserRoomsImpl;
 import rmi.FriendRequestService;
@@ -34,8 +35,6 @@ public class FriendRequestServiceImpl extends UnicastRemoteObject implements Fri
 
         NotificationServiceImpl notificationService = new NotificationServiceImpl();
         notificationService.sendNotification(friendRequestNotification);
-
-        // TODO: later send the notification realtime
     }
 
     @Override
@@ -82,6 +81,14 @@ public class FriendRequestServiceImpl extends UnicastRemoteObject implements Fri
     public int cancelFriendRequest(Users sender, Users receiver) throws RemoteException {
         FriendsImpl friendsImpl = new FriendsImpl();
         Friend friendRequest = friendsImpl.getUserFriendStatus(sender.getId(), receiver.getId());
+
+        NotificationDaoImpl notificationDao = new NotificationDaoImpl();
+        Notification friendRequestNotification =
+                notificationDao.getFriendRequestNotification(receiver, friendRequest);
+
+        friendRequestNotification.setStatus(NotificationStatus.DELETED);
+
+        notificationDao.update(friendRequestNotification);
 
         return friendsImpl.delete(friendRequest);
     }

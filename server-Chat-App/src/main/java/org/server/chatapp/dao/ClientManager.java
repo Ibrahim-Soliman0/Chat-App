@@ -2,6 +2,7 @@ package org.server.chatapp.dao;
 
 import rmi.ClientCallBack;
 
+import java.rmi.RemoteException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,5 +24,19 @@ public class ClientManager {
 
     public static Map<String, ClientCallBack> getAllOnlineClients() {
         return Collections.unmodifiableMap(onlineClients);
+    }
+
+    public static void notifyUser(String phone) {
+        ClientCallBack clientToNotify = onlineClients.get(phone);
+
+        if (clientToNotify == null) {
+            return;
+        }
+
+        try {
+            clientToNotify.receiveNotification();
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
