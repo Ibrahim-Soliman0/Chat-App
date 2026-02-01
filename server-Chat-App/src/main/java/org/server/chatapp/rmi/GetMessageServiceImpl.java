@@ -1,7 +1,11 @@
 package org.server.chatapp.rmi;
 
+import dto.ChatRoomDTO;
 import model.Message;
+import model.Users;
+import org.server.chatapp.dao.ClientManager;
 import org.server.chatapp.dao.implement.MessageDaoImpl;
+import rmi.ClientCallBack;
 import rmi.GetMessageService;
 
 import java.rmi.RemoteException;
@@ -24,6 +28,27 @@ public class GetMessageServiceImpl extends UnicastRemoteObject implements GetMes
         } catch (Exception e) {
             e.printStackTrace();
             throw new RemoteException("Failed to retrieve messages for room: " + roomId, e);
+        }
+    }
+
+    @Override
+    public long sendMessage(Message message) throws RemoteException {
+        try {
+            return messageDao.insert(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public void updateOthersGUI(ChatRoomDTO chatRoomDTO) throws RemoteException {
+        ClientCallBack clientCallBack = ClientManager.getClient(chatRoomDTO.getOther().getPhoneNumber());
+        if (clientCallBack == null) return;
+        try {
+            clientCallBack.receiveMessage(chatRoomDTO);
+        } catch (RemoteException e) {
+            ClientManager.removeClient(chatRoomDTO.getOther().getPhoneNumber());
         }
     }
 }

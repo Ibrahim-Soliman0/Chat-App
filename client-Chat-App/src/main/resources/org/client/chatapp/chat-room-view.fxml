@@ -8,7 +8,7 @@
 <?import javafx.scene.shape.*?>
 <?import javafx.scene.text.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="450.0" style="-fx-background-color: #f7f9fa;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.ChatRoomController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="450.0" style="-fx-background-color: #f7f9fa;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.ChatRoomController">
     <children>
         <!-- Header -->
         <Pane prefHeight="75.0" prefWidth="450.0" style="-fx-background-color: #ffffff;">
@@ -25,14 +25,14 @@
                 </Group>
 
                 <!-- User Name -->
-                <Label fx:id="chatUserName" layoutX="55.0" layoutY="16.0" text="User Name">
+                <Label fx:id="chatUserName" layoutX="101.0" layoutY="13.0" text="User Name">
                     <font>
                         <Font name="System Bold" size="24.0" />
                     </font>
                 </Label>
 
                 <!-- User Status -->
-                <Label fx:id="userStatus" layoutX="55.0" layoutY="45.0" text="Online" textFill="#25D366">
+                <Label fx:id="userStatus" layoutX="101.0" layoutY="46.0" text="Online" textFill="#25D366">
                     <font>
                         <Font size="12.0" />
                     </font>
@@ -51,11 +51,12 @@
                         <Circle centerX="12" centerY="19" radius="1.5" style="-fx-fill: #000000;" />
                     </children>
                 </Group>
+            <Circle fx:id="profileImage" fill="#e0e0e0" layoutX="68.0" layoutY="38.0" radius="24.0" stroke="#25D366" strokeWidth="3" />
             </children>
         </Pane>
 
         <!-- Messages List -->
-        <ScrollPane fx:id="messagesScrollPane" fitToWidth="true" hbarPolicy="NEVER" layoutY="75.0" prefHeight="500.0" prefWidth="450.0" style="-fx-background-color: #f7f9fa;" vbarPolicy="ALWAYS">
+        <ScrollPane fx:id="messagesScrollPane" fitToWidth="true" hbarPolicy="NEVER" layoutY="75.0" prefHeight="500.0" prefWidth="450.0" style="-fx-background-color: #f7f9fa;" styleClass="list-view" vbarPolicy="ALWAYS">
             <content>
                 <VBox fx:id="messagesContainer" prefWidth="430.0" spacing="10.0" style="-fx-padding: 10;" />
             </content>
@@ -67,7 +68,7 @@
                 <DropShadow blurType="ONE_PASS_BOX" height="15.0" radius="3.25" spread="0.5" width="0.0" />
             </effect>
             <children>
-                <TextField fx:id="messageInput" layoutX="50.0" layoutY="20.0" prefHeight="35.0" prefWidth="315.0" promptText="Type a message..." style="-fx-background-color: #f0f0f0; -fx-background-radius: 18; -fx-padding: 0 15 0 15;" />
+                <TextField fx:id="messageInput" layoutX="50.0" layoutY="20.0" onAction="#onSendButtonClick" prefHeight="35.0" prefWidth="315.0" promptText="Type a message..." style="-fx-background-color: #f0f0f0; -fx-background-radius: 18; -fx-padding: 0 15 0 15;" />
 
                 <Button fx:id="sendButton" layoutX="380.0" layoutY="20.0" onAction="#onSendButtonClick" prefHeight="35.0" prefWidth="55.0" style="-fx-background-color: #00ab8a; -fx-background-radius: 18; -fx-text-fill: white; -fx-cursor: hand;">
                     <font>

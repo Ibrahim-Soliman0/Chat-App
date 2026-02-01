@@ -10,9 +10,12 @@ import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -21,6 +24,7 @@ import javafx.stage.Stage;
 import model.Users;
 import model.Message;
 import org.client.chatapp.ClientChatApp;
+import org.client.chatapp.ui.utils.ImageUtil;
 import rmi.GetMessageService;
 
 import javafx.scene.input.MouseEvent;
@@ -29,8 +33,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatRoomController {
 
@@ -42,6 +46,9 @@ public class ChatRoomController {
 
     @FXML
     public Group ellipsisButton;
+
+    @FXML
+    public Circle profileImage;
 
     @FXML
     private Group backButton;
@@ -76,11 +83,18 @@ public class ChatRoomController {
     private Stage stage;
     private Scene scene;
     private Parent root;
+    public static Map<Long, ChatRoomController> activeControllers = new ConcurrentHashMap<>();
 
     public void initializeChat(ChatRoomDTO chatRoomDTO) {
         this.currentUser = chatRoomDTO.getMe();
         this.chatRoomDTO = chatRoomDTO;
         this.otherUser = chatRoomDTO.getOther();
+
+        // Set another user's profile picture
+        updateProfilePicture();
+
+        // Save the current object in the active controllers map to be used in the callback
+        activeControllers.put(chatRoomDTO.getRoom().getId(), this);
 
         // Set the other user's name
         chatUserName.setText(otherUser.getName());
@@ -92,7 +106,29 @@ public class ChatRoomController {
         loadMessages();
 
         // Auto-scroll to bottom
-        Platform.runLater(() -> messagesScrollPane.setVvalue(1.0));
+        messagesScrollPane.setFitToWidth(true);
+        messagesContainer.heightProperty().addListener((obs, oldVal, newVal) -> {
+            Platform.runLater(() -> messagesScrollPane.setVvalue(1.0));
+        });
+
+        Platform.runLater(() -> {
+            Stage currentStage = (Stage) messagesScrollPane.getScene().getWindow();
+            if (currentStage != null) {
+                currentStage.setOnCloseRequest(event -> {
+                    activeControllers.remove(chatRoomDTO.getRoom().getId());
+                    Platform.exit();
+                    System.exit(0);
+                });
+            }
+        });
+    }
+
+    private void updateProfilePicture() {
+        Image image = ImageUtil.getImageFromByteArray(
+                chatRoomDTO.getOther() != null ?
+                        chatRoomDTO.getOther().getPictureBytes() :
+                        chatRoomDTO.getRoom().getPictureBytes());
+        profileImage.setFill(new ImagePattern(image));
     }
 
     private void updateUserStatus() {
@@ -122,7 +158,7 @@ public class ChatRoomController {
         }
     }
 
-    private void loadMessages() {
+    public void loadMessages() {
         try {
             GetMessageService getMessageService =
                     (GetMessageService) ClientChatApp.registry.lookup("GetMessageService");
@@ -183,27 +219,33 @@ public class ChatRoomController {
     }
 
     @FXML
-    private void onSendButtonClick() {
+    private void onSendButtonClick() throws RemoteException {
         String messageText = messageInput.getText().trim();
         if (!messageText.isEmpty()) {
-            // TODO: Implement sending message via RMI
-            // For now, just clear the input
             messageInput.clear();
-
-            // You would call something like:
-            // SendMessageService sendMessageService =
-            //     (SendMessageService) ClientChatApp.registry.lookup("SendMessageService");
-            // Message newMessage = sendMessageService.sendMessage(
-            //     currentUser.getId(), chatRoomDTO.getRoom().getId(), messageText);
-            // addMessageToUI(newMessage);
-
-            showInfo("Message sending not yet implemented");
+            GetMessageService getMessageService = null;
+            try {
+                Message message = new Message();
+                message.setSenderId(currentUser.getId());
+                message.setText(messageText);
+                message.setRoomId(chatRoomDTO.getRoom().getId());
+                message.setSentAt(LocalDateTime.now());
+                getMessageService = (GetMessageService) ClientChatApp.registry.lookup("GetMessageService");
+                getMessageService.sendMessage(message);
+                addMessageToUI(message);
+                System.out.println(activeControllers);
+                getMessageService.updateOthersGUI(chatRoomDTO);
+            } catch (RemoteException | NotBoundException e) {
+                e.printStackTrace();
+                showError("Failed to send a message");
+            }
         }
     }
 
     @FXML
     private void onBackButtonClick(MouseEvent event) {
         try {
+            activeControllers.remove(chatRoomDTO.getRoom().getId());
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
                     "/org/client/chatapp/home-screen-view.fxml")));
             root = loader.load();

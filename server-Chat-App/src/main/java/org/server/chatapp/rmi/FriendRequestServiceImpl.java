@@ -1,18 +1,21 @@
 package org.server.chatapp.rmi;
 
-import model.Friend;
-import model.Notification;
-import model.Users;
+import model.*;
 import model.enums.FriendStatus;
 import model.enums.NotificationStatus;
 import model.enums.NotificationType;
+import model.enums.RoomType;
 import org.server.chatapp.dao.implement.FriendsImpl;
+import org.server.chatapp.dao.implement.NotificationDaoImpl;
+import org.server.chatapp.dao.implement.RoomImpl;
+import org.server.chatapp.dao.implement.UserRoomsImpl;
 import rmi.FriendRequestService;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 public class FriendRequestServiceImpl extends UnicastRemoteObject implements FriendRequestService {
 
@@ -32,25 +35,60 @@ public class FriendRequestServiceImpl extends UnicastRemoteObject implements Fri
 
         NotificationServiceImpl notificationService = new NotificationServiceImpl();
         notificationService.sendNotification(friendRequestNotification);
-
-        // TODO: later send the notification realtime
     }
 
     @Override
-    public int acceptFriendRequest(Users sender, Users receiver) throws RemoteException {
+    public void acceptFriendRequest(Users sender, Users receiver) throws RemoteException {
         FriendsImpl friendsImpl = new FriendsImpl();
         Friend friendRequest = friendsImpl.getUserFriendStatus(receiver.getId(), sender.getId());
 
         friendRequest.setResponseDate(Timestamp.from(Instant.now()));
         friendRequest.setStatus(FriendStatus.ACCEPTED);
 
-        return friendsImpl.update(friendRequest);
+        Room room = new Room(
+                RoomType.ONE_TO_ONE,
+                null,
+                null,
+                null,
+                LocalDateTime.now(),
+                null,
+                sender.getId()
+        );
+
+        RoomImpl roomImpl = new RoomImpl();
+
+        long roomId = roomImpl.insert(room);
+
+        if (roomId == -1) {
+            System.out.println("Failed to Create Room");
+            return;
+        }
+
+        UserRoomsImpl userRoomsImpl = new UserRoomsImpl();
+
+        UserRooms addMeToRoom = new UserRooms(sender.getId(), roomId,
+                false, null, null, true);
+        UserRooms addOtherToRoom = new UserRooms(receiver.getId(), roomId,
+                false, null, null, true);
+
+        userRoomsImpl.insert(addMeToRoom);
+        userRoomsImpl.insert(addOtherToRoom);
+
+        friendsImpl.update(friendRequest);
     }
 
     @Override
     public int cancelFriendRequest(Users sender, Users receiver) throws RemoteException {
         FriendsImpl friendsImpl = new FriendsImpl();
         Friend friendRequest = friendsImpl.getUserFriendStatus(sender.getId(), receiver.getId());
+
+        NotificationDaoImpl notificationDao = new NotificationDaoImpl();
+        Notification friendRequestNotification =
+                notificationDao.getFriendRequestNotification(receiver, friendRequest);
+
+        friendRequestNotification.setStatus(NotificationStatus.DELETED);
+
+        notificationDao.update(friendRequestNotification);
 
         return friendsImpl.delete(friendRequest);
     }

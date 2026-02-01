@@ -28,7 +28,9 @@ import model.Users;
 import model.enums.RoomType;
 import org.client.chatapp.ClientChatApp;
 import org.client.chatapp.model.ChatItem;
+import org.client.chatapp.rmi.ClientCallBackImp;
 import org.client.chatapp.ui.component.ChatItemView;
+import org.client.chatapp.ui.listener.NotificationListener;
 import rmi.GetUserService;
 import rmi.NotificationService;
 
@@ -39,7 +41,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-public class HomeScreenController {
+public class HomeScreenController implements NotificationListener {
 
     private Users user;
     @FXML
@@ -170,6 +172,7 @@ public class HomeScreenController {
                         "-fx-padding: 0 0 0 35px; " +
                         "-fx-prompt-text-fill: #abacad;"
         );
+
         StackPane.setAlignment(searchIconGroup, Pos.CENTER_LEFT);
         StackPane.setMargin(searchIconGroup, new Insets(0, 0, 0, 8));
 
@@ -183,22 +186,25 @@ public class HomeScreenController {
         SVGPath otherBodyIcon = new SVGPath();
         otherBodyIcon.setContent("M18 21a8 8 0 0 0-16 0");
         otherBodyIcon.getStyleClass().add("icon");
+
         groupIcon.getChildren().addAll(groupHeadIcon, groupBodyIcon, otherBodyIcon);
+
         groupIcon.setScaleX(1.1);
         groupIcon.setScaleY(1.1);
+
         groupIcon.setOnMouseEntered(e -> {
             groupHeadIcon.getStyleClass().setAll("onIconHover");
             groupBodyIcon.getStyleClass().setAll("onIconHover");
             otherBodyIcon.getStyleClass().setAll("onIconHover");
 
         });
+
         groupIcon.setOnMouseExited(e -> {
             groupHeadIcon.getStyleClass().setAll("icon");
             groupBodyIcon.getStyleClass().setAll("icon");
             otherBodyIcon.getStyleClass().setAll("icon");
 
         });
-
 
         Circle addFriendHead = new Circle(9, 7, 4);
         addFriendHead.getStyleClass().add("icon");
@@ -214,8 +220,10 @@ public class HomeScreenController {
         addFriendBody.getStyleClass().add("icon");
 
         addFriend.getChildren().addAll(addFriendHead, vLine, hLine, addFriendBody);
+
         addFriend.setScaleX(1.1);
         addFriend.setScaleY(1.1);
+
         addFriend.setOnMouseEntered(e -> {
             addFriendHead.getStyleClass().setAll("onIconHover");
             vLine.getStyleClass().setAll("onIconHover");
@@ -233,10 +241,13 @@ public class HomeScreenController {
         iconPolyLine = new Polyline(22, 12, 16, 12, 14, 15, 10, 15, 8, 12, 2, 12);
         iconPolyLine.setStroke(Color.web("#00ab8a"));
         emptyStateIcon.getChildren().add(iconPolyLine);
+
+        ClientCallBackImp.setHomeScreenListener(this);
     }
 
     @FXML
     private void onProfileIconClick(MouseEvent actionEvent) {
+        ClientCallBackImp.setHomeScreenListener(null);
         try {
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
                     "/org/client/chatapp/profile-screen-view.fxml")));
@@ -256,7 +267,7 @@ public class HomeScreenController {
 
     @FXML
     private void onBellIconClick(MouseEvent actionEvent) {
-
+        ClientCallBackImp.setHomeScreenListener(null);
         try {
             FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource(
@@ -279,7 +290,7 @@ public class HomeScreenController {
 
     @FXML
     private void onGroupIconClick(MouseEvent actionEvent) {
-
+        ClientCallBackImp.setHomeScreenListener(null);
         try {
             root = FXMLLoader.load(
                     Objects.requireNonNull(getClass().getResource(
@@ -298,7 +309,7 @@ public class HomeScreenController {
 
     @FXML
     private void onAddFriendIconClick(MouseEvent actionEvent) {
-
+        ClientCallBackImp.setHomeScreenListener(null);
         try {
             FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource(
@@ -358,7 +369,7 @@ public class HomeScreenController {
 
             chatsList.setItems(FXCollections.observableArrayList(userRoomsToChatItemView));
 
-            if (chatsList.getItems().size() > 0) {
+            if (!chatsList.getItems().isEmpty()) {
                 emptyStateIcon.setVisible(false);
                 emptyStateLabel.setVisible(false);
             }
@@ -379,5 +390,10 @@ public class HomeScreenController {
 
     public void clearNotifications() {
         notificationsFound.setVisible(false);
+    }
+
+    @Override
+    public void onNewNotification() {
+        notificationsFound.setVisible(true);
     }
 }

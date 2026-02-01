@@ -9,7 +9,7 @@ public interface FriendRequestService extends Remote {
 
     void sendFriendRequest(Users sender, Users receiver) throws RemoteException;
 
-    int acceptFriendRequest(Users sender, Users receiver) throws RemoteException;
+    void acceptFriendRequest(Users sender, Users receiver) throws RemoteException;
 
     int cancelFriendRequest(Users sender, Users receiver) throws RemoteException;
 
