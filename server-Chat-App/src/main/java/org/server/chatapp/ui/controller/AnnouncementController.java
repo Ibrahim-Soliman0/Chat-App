@@ -9,8 +9,11 @@ import model.ServerAnnouncement;
 import org.server.chatapp.dao.dao.ServerAnnouncementDao;
 import org.server.chatapp.dao.implement.ServerAnnouncementImpl;
 import org.server.chatapp.rmi.LoginServiceImpl;
+import org.server.chatapp.util.AdminSession;
 import rmi.LoginService;
 
+import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -29,7 +32,7 @@ public class AnnouncementController {
         try {
             Registry registry = LocateRegistry.getRegistry(5000);
             this.loginService = (LoginService) registry.lookup("LoginService");
-        } catch (Exception e) {
+        } catch (IOException |NotBoundException e) {
             e.printStackTrace();
         }
     }
@@ -48,7 +51,7 @@ public class AnnouncementController {
             ServerAnnouncement announcement = new ServerAnnouncement();
             announcement.setTitle(title);
             announcement.setContent(htmlContent);
-            announcement.setCreatedBy("Admin");
+            announcement.setCreatedBy(AdminSession.getInstance().getName());
             announcement.setCreatedAt(LocalDateTime.now());
             announcement.setExpireAt(LocalDateTime.now().plusDays(7));
             announcement.setActive(true);

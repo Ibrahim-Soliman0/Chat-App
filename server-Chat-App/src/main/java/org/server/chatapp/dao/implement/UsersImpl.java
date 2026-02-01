@@ -487,4 +487,21 @@ public class UsersImpl implements UsersDao {
         }
         return Role.USER;
     }
+    @Override
+    public boolean updatePasswordAndClearFirstLogin(Long userId, String newHashedPassword) {
+        String sql = "UPDATE users SET password = ?, isFirstLogin = ? WHERE id = ?";
+        try (Connection connection = Database.getDataSource().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setString(1, newHashedPassword);
+            preparedStatement.setBoolean(2, false); // خلاص ميبقاش أول دخول
+            preparedStatement.setLong(3, userId);
+
+            int result = preparedStatement.executeUpdate();
+            return result > 0;
+        } catch (SQLException se) {
+            se.printStackTrace();
+            return false;
+        }
+    }
 }

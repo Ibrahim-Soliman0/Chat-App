@@ -12,36 +12,43 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<StackPane prefHeight="700" prefWidth="900" style="-fx-background-color: #f3f4f6;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.server.chatapp.ui.controller.LoginController">
+<StackPane
+        stylesheets="@../../../css/admin.css"
+        prefHeight="700" prefWidth="900" style="-fx-background-color: #f3f4f6;" xmlns="http://javafx.com/javafx/25"
+        xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.server.chatapp.ui.controller.LoginController">
 
     <children>
-        <VBox alignment="CENTER" maxWidth="450" spacing="30" style="-fx-background-color: white; -fx-background-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 20, 0, 0, 10);">
+        <VBox alignment="CENTER" maxWidth="450" spacing="30"
+              style="-fx-background-color: white; -fx-background-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 20, 0, 0, 10);">
             <padding>
-                <Insets bottom="50" left="40" right="40" top="50" />
+                <Insets bottom="50" left="40" right="40" top="50"/>
             </padding>
 
             <children>
                 <VBox alignment="CENTER" spacing="10">
                     <Text fill="#14b8a6" text="Admin Login">
                         <font>
-                            <Font name="System Bold" size="32" />
+                            <Font name="System Bold" size="32"/>
                         </font>
                     </Text>
-                    <Label style="-fx-text-fill: #6b7280; -fx-font-size: 14;" text="Secure Server Access" />
+                    <Label style="-fx-text-fill: #6b7280; -fx-font-size: 14;" text="Secure Server Access"/>
                 </VBox>
 
                 <VBox spacing="20">
                     <children>
                         <VBox spacing="8">
-                            <Label style="-fx-text-fill: #374151; -fx-font-weight: bold;" text="Phone Number" />
-                            <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #f9fafb; -fx-background-radius: 10; -fx-border-color: #e5e7eb; -fx-border-radius: 10; -fx-padding: 12;">
+                            <Label style="-fx-text-fill: #374151; -fx-font-weight: bold;" text="Phone Number"/>
+                            <HBox alignment="CENTER_LEFT" spacing="10"
+                                  style="-fx-background-color: #f9fafb; -fx-background-radius: 10; -fx-border-color: #e5e7eb; -fx-border-radius: 10; -fx-padding: 12;">
                                 <children>
-                                    <Label style="-fx-font-size: 18;" text="🇪🇬" />
-                                    <Label style="-fx-text-fill: #6b7280; -fx-font-weight: bold;" text="+20" />
-                                    <Separator orientation="VERTICAL" prefHeight="20" />
-                                    <TextField fx:id="phoneField" promptText="1234567890" style="-fx-background-color: transparent; -fx-border-width: 0;" HBox.hgrow="ALWAYS">
+                                    <Label style="-fx-font-size: 18;" text="🇪🇬"/>
+                                    <Label style="-fx-text-fill: #6b7280; -fx-font-weight: bold;" text="+20"/>
+                                    <Separator orientation="VERTICAL" prefHeight="20"/>
+                                    <TextField fx:id="phoneField" promptText="1234567890"
+                                               style="-fx-background-color: transparent; -fx-border-width: 0;"
+                                               HBox.hgrow="ALWAYS">
                                         <font>
-                                            <Font size="15" />
+                                            <Font size="15"/>
                                         </font>
                                     </TextField>
                                 </children>
@@ -49,29 +56,33 @@
                         </VBox>
 
                         <VBox spacing="8">
-                            <Label style="-fx-text-fill: #374151; -fx-font-weight: bold;" text="Password" />
-                            <PasswordField fx:id="passwordField" promptText="••••••••" style="-fx-background-color: #f9fafb; -fx-background-radius: 10; -fx-border-color: #e5e7eb; -fx-border-radius: 10; -fx-padding: 12;">
+                            <Label style="-fx-text-fill: #374151; -fx-font-weight: bold;" text="Password"/>
+                            <PasswordField fx:id="passwordField" promptText="••••••••"
+                                           style="-fx-background-color: #f9fafb; -fx-background-radius: 10; -fx-border-color: #e5e7eb; -fx-border-radius: 10; -fx-padding: 12;">
                                 <font>
-                                    <Font size="15" />
+                                    <Font size="15"/>
                                 </font>
                             </PasswordField>
                         </VBox>
 
                         <Label fx:id="errorLabel" textFill="#ef4444" visible="false" wrapText="true">
                             <font>
-                                <Font size="13" />
+                                <Font size="13"/>
                             </font>
                         </Label>
 
-                        <Button fx:id="loginButton" maxWidth="Infinity" onAction="#handleLogin" style="-fx-background-color: #14b8a6; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 14; -fx-font-weight: bold; -fx-cursor: hand;" text="LOG IN TO SERVER">
+                        <Button fx:id="loginButton" maxWidth="Infinity" onAction="#handleLogin"
+                                style="-fx-background-color: #14b8a6; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 14; -fx-font-weight: bold; -fx-cursor: hand;"
+                                text="LOG IN TO SERVER">
                             <font>
-                                <Font size="16" />
+                                <Font size="16"/>
                             </font>
                         </Button>
                     </children>
                 </VBox>
 
-                <Label style="-fx-text-fill: #9ca3af; -fx-font-size: 11; -fx-font-style: italic;" text="Authorized Personnel Only" />
+                <Label style="-fx-text-fill: #9ca3af; -fx-font-size: 11; -fx-font-style: italic;"
+                       text="Authorized Personnel Only"/>
             </children>
         </VBox>
     </children>

@@ -23,4 +23,5 @@ public interface UsersDao extends Dao<Users> {
     List<Users> getAllAdmins();
     Role getUserRole(Long userId);
 
+    boolean updatePasswordAndClearFirstLogin(Long userId, String newHashedPassword);
 }

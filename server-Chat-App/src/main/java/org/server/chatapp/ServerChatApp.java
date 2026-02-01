@@ -13,7 +13,7 @@ public class ServerChatApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        FXMLLoader fxmlLoader = new FXMLLoader(ServerChatApp.class.getResource("main-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(ServerChatApp.class.getResource("login-server-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         String css = this.getClass().getResource("/css/admin.css").toExternalForm();
 

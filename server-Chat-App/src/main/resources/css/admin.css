@@ -295,7 +295,6 @@
 
 /* --- Custom Alert Styling --- */
 
-/* الخلفية الرئيسية للـ Dialog */
 .dialog-pane {
     -fx-background-color: white;
     -fx-background-radius: 15;
@@ -316,14 +315,12 @@
     -fx-font-size: 16px;
 }
 
-/* جزء الرسالة */
 .dialog-pane .content {
     -fx-text-fill: #4b5563;
     -fx-font-size: 14px;
     -fx-padding: 20;
 }
 
-/* تظبيط الزراير (OK / Cancel) */
 .dialog-pane .button-bar .button {
     -fx-background-color: #e5e7eb;
     -fx-text-fill: #374151;
@@ -344,4 +341,55 @@
 
 .dialog-pane .button-bar .button:default:hover {
     -fx-background-color: #0d9488;
+}
+/* --- Custom Progress Bar --- */
+
+.password-input {
+    -fx-background-color: #f9fafb;
+    -fx-background-radius: 10;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 10;
+    -fx-padding: 12;
+}
+
+.primary-button {
+    -fx-background-color: #14b8a6;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-padding: 14;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.strength-bar .bar {
+    -fx-background-radius: 5;
+}
+.strength-bar.weak .bar { -fx-background-color: #ef4444; }
+.strength-bar.medium .bar { -fx-background-color: #f59e0b; }
+.strength-bar.strong .bar { -fx-background-color: #10b981; }
+/*--- logout ---*/
+.logout-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ef4444;
+    -fx-font-weight: bold;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.logout-button:hover {
+    -fx-background-color: #fef2f2;
+    -fx-cursor: hand;
+}
+
+.logout-button .svg-path {
+    -fx-stroke: #ef4444;
+}
+
+#lblAdminName {
+    -fx-effect: dropshadow(gaussian, rgba(20, 184, 166, 0.2), 5, 0, 0, 0);
+    -fx-cursor: hand;
+}
+
+#lblAdminName:hover {
+    -fx-text-fill: #0d9488;
 }

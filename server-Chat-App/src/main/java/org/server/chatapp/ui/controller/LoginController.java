@@ -11,6 +11,7 @@ import model.enums.Role;
 import org.server.chatapp.dao.dao.UsersDao;
 import org.server.chatapp.dao.implement.UsersImpl;
 import org.server.chatapp.rmi.LoginServiceImpl;
+import org.server.chatapp.util.AdminSession;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -28,6 +29,19 @@ public class LoginController {
 
     private final UsersDao usersDao = new UsersImpl();
     private final LoginServiceImpl loginService = new LoginServiceImpl();
+    @FXML
+    public void initialize() {
+        errorLabel.setVisible(false);
+        phoneField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                phoneField.setText(newValue.replaceAll("[^\\d]", ""));
+            }
+            if (newValue.length() > 11) {
+                phoneField.setText(newValue.substring(0, 11));
+            }
+        });
+        passwordField.setOnAction(event -> handleLogin());
+    }
 
     public LoginController() throws RemoteException {
     }
@@ -37,13 +51,11 @@ public class LoginController {
         String phone = phoneField.getText().trim();
         String password = passwordField.getText();
 
-        if (phone.isEmpty() || password.isEmpty()) {
-            showError("Please fill in all fields.");
+        if (validateLogin(phone, password))
             return;
-        }
 
         try {
-            Users user = loginService.login(phone, password , null);
+            Users user = loginService.login(phone, password, null);
 
             if (user != null) {
                 if (user.getRole() == Role.ADMIN || user.getRole() == Role.MASTER_ADMIN) {
@@ -65,6 +77,25 @@ public class LoginController {
         }
     }
 
+    private boolean validateLogin(String phone, String password) {
+        if (phone.isEmpty() || password.isEmpty()) {
+            showError("Please fill in all fields.");
+            return true;
+        }
+        String egyptPhoneRegex = "^01[0125][0-9]{8}$";
+
+        if (!phone.matches(egyptPhoneRegex)) {
+            showError("Please enter a valid Egyptian phone number (e.g., 01012345678).");
+            return true;
+        }
+
+        if (password.length() < 6) {
+            showError("Password is too short.");
+            return true;
+        }
+        return false;
+    }
+
     private void showError(String message) {
         errorLabel.setText(message);
         errorLabel.setVisible(true);
@@ -74,9 +105,10 @@ public class LoginController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/server/chatapp/main-view.fxml"));
             Parent root = loader.load();
+            AdminSession.setInstance(admin);
 
-             AdminDashboardController controller = loader.getController();
-             controller.setCurrentAdmin(admin);
+            AdminDashboardController controller = loader.getController();
+            controller.setCurrentAdmin(admin);
 
             Stage stage = (Stage) loginButton.getScene().getWindow();
             Scene scene = new Scene(root);
@@ -91,6 +123,22 @@ public class LoginController {
     }
 
     private void moveToForceChange(Users admin) {
-        // هنا الكود اللي بيعمل Load لصفحة تغيير الباسورد
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/server/chatapp/reset-password-view.fxml"));
+            Parent root = loader.load();
+            AdminSession.setInstance(admin);
+
+
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            Scene scene = new Scene(root);
+
+            stage.setScene(scene);
+            stage.centerOnScreen();
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Failed to load Reset Password.");
+        }
     }
+
 }

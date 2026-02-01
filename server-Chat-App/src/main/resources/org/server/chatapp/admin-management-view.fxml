@@ -13,6 +13,7 @@
 <?import javafx.scene.shape.SVGPath?>
 
 <ScrollPane
+        stylesheets="@../../../css/admin.css"
         fx:id="rootPane"
         fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
@@ -36,11 +37,11 @@
                         <HBox spacing="15.0" alignment="CENTER_LEFT">
                             <children>
                                 <TextField fx:id="searchField" promptText="Enter phone number or name..." styleClass="search-input" HBox.hgrow="ALWAYS"/>
-                                <Button fx:id="btnSearch" onAction="#handleSearch" styleClass="search-button" text="SEARCH">
-                                    <graphic>
-                                        <SVGPath content="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" fill="TRANSPARENT" stroke="WHITE" strokeWidth="2"/>
-                                    </graphic>
-                                </Button>
+<!--                                <Button fx:id="btnSearch" onAction="#handleSearch" styleClass="search-button" text="SEARCH">-->
+<!--                                    <graphic>-->
+<!--                                        <SVGPath content="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" fill="TRANSPARENT" stroke="WHITE" strokeWidth="2"/>-->
+<!--                                    </graphic>-->
+<!--                                </Button>-->
                             </children>
                         </HBox>
                     </children>

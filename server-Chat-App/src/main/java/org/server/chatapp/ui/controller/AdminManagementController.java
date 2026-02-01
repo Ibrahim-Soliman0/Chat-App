@@ -154,7 +154,7 @@ public class AdminManagementController {
         adminsTable.setItems(adminsList);
     }
 
-    @FXML
+//    @FXML
     private void handleSearch() {
         String searchQuery = searchField.getText().trim();
 
