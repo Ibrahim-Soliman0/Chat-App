@@ -17,29 +17,28 @@ import javafx.stage.Stage;
 import model.Friend;
 import model.Users;
 import org.client.chatapp.ClientChatApp;
-import org.client.chatapp.model.FriendItem;
 import org.client.chatapp.ui.component.FriendItemView;
 import rmi.GetUserService;
 import rmi.LoadFriendsListService;
-import rmi.LoginService;
 
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class FriendsListController {
 
+    private Users user;
     @FXML
     private Button addFriendButton;
     @FXML
     private ListView<FriendItemView> friendsList;
     @FXML
     private Label noFriendsLabel;
+    @FXML
+    private Group noFriendsIcon;
     @FXML
     private Group goBackArrow;
     private Parent root;
@@ -69,52 +68,19 @@ public class FriendsListController {
             arrowTail.getStyleClass().setAll("icon");
             arrowHead.getStyleClass().setAll("icon");
         }));
-
-        List<Friend> myFriends = new ArrayList<>();
-        GetUserService getUserService = null;
-        try {
-            // TODO: change the id to the actual logged in user's id
-            GetMyFriendsListDTO getMyFriends = new GetMyFriendsListDTO(1);
-            LoadFriendsListService friendsListService =
-                    (LoadFriendsListService) ClientChatApp.registry.lookup("LoadFriendsListService");
-            getUserService = (GetUserService) ClientChatApp.registry.lookup("GetUserService");
-            myFriends = friendsListService.getUserFriendsList(getMyFriends);
-        } catch (RemoteException | NotBoundException e) {
-            e.printStackTrace();
-        }
-
-        List<Users> myFriendsToUser;
-        if (!myFriends.isEmpty()) {
-            noFriendsLabel.setVisible(false);
-
-            GetUserService finalGetUserService = getUserService;
-            myFriendsToUser = myFriends.stream()
-                    .map((friend) -> {
-                        try {
-                            return finalGetUserService.getUser(friend.getReceiverUserId());
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    })
-                    .toList();
-
-            List<FriendItemView> userListToFriendItemView = myFriendsToUser.stream()
-                    .map((user) ->
-                        new FriendItemView(new FriendItem(user.getPicturePath(), user.getName()), user))
-                    .toList();
-
-            friendsList.getItems().addAll(userListToFriendItemView);
-        }
     }
 
     @FXML
     private void onAddFriendButtonClick(ActionEvent actionEvent) {
 
         try {
-            root = FXMLLoader.load(
+            FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource(
                             "/org/client/chatapp/addFriend-screen-view.fxml")));
+
+            root = loader.load();
+            AddFriendController addFriendController = loader.getController();
+            addFriendController.setUser(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -131,9 +97,13 @@ public class FriendsListController {
     private void onGoBackArrowClick(MouseEvent mouseEvent) {
 
         try {
-            root = FXMLLoader.load(
+            FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource(
                             "/org/client/chatapp/home-screen-view.fxml")));
+
+            root = loader.load();
+            HomeScreenController homeScreenController = loader.getController();
+            homeScreenController.setUser(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -144,5 +114,49 @@ public class FriendsListController {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
+
+        List<Friend> myFriends = new ArrayList<>();
+        GetUserService getUserService = null;
+        try {
+            GetMyFriendsListDTO getMyFriends = new GetMyFriendsListDTO(user.getId());
+            LoadFriendsListService friendsListService =
+                    (LoadFriendsListService) ClientChatApp.registry.lookup("LoadFriendsListService");
+            getUserService = (GetUserService) ClientChatApp.registry.lookup("GetUserService");
+            myFriends = friendsListService.getUserFriendsList(getMyFriends);
+        } catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
+        }
+
+        List<Users> myFriendsToUser;
+        if (!myFriends.isEmpty()) {
+            noFriendsLabel.setVisible(false);
+            noFriendsIcon.setVisible(false);
+
+            GetUserService finalGetUserService = getUserService;
+            myFriendsToUser = myFriends.stream()
+                    .map((friend) -> {
+                        try {
+                            if (friend.getReceiverUserId() == user.getId()) {
+                                return finalGetUserService.getUser(friend.getSenderUserId());
+                            }
+
+                            return finalGetUserService.getUser(friend.getReceiverUserId());
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    })
+                    .toList();
+
+            List<FriendItemView> userListToFriendItemView = myFriendsToUser.stream()
+                    .map(friend -> new FriendItemView(friend, user))
+                    .toList();
+
+            friendsList.getItems().addAll(userListToFriendItemView);
+        }
     }
 }

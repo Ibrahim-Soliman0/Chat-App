@@ -1,8 +1,11 @@
 package org.server.chatapp.dao.implement;
+
 import model.Room;
 import model.enums.RoomType;
 import org.server.chatapp.dao.Database;
 import org.server.chatapp.dao.dao.RoomDao;
+import org.server.chatapp.util.ImageUtil;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +29,8 @@ public class RoomImpl implements RoomDao {
                 room.setDescription(rs.getString("description"));
                 room.setPicturePath(rs.getString("picturePath"));
 
+                ImageUtil.setImageBytes(room);
+
                 Timestamp createdAt = rs.getTimestamp("createdAt");
                 if (createdAt != null) room.setCreatedAt(createdAt.toLocalDateTime());
 
@@ -41,6 +46,7 @@ public class RoomImpl implements RoomDao {
         } catch (SQLException se) {
             se.printStackTrace();
         }
+
         return null;
     }
 
@@ -59,6 +65,8 @@ public class RoomImpl implements RoomDao {
                 room.setDescription(rs.getString("description"));
                 room.setPicturePath(rs.getString("picturePath"));
 
+                ImageUtil.setImageBytes(room);
+
                 Timestamp createdAt = rs.getTimestamp("createdAt");
                 if (createdAt != null) room.setCreatedAt(createdAt.toLocalDateTime());
 
@@ -73,15 +81,16 @@ public class RoomImpl implements RoomDao {
         } catch (SQLException se) {
             se.printStackTrace();
         }
+
         return allRooms;
     }
 
     @Override
-    public int insert(Room room) {
-        int result = 0;
-        try (Connection connection = Database.getDataSource().getConnection()) {
-            String sql = "INSERT INTO room (type, name, description, picturePath, createdAt, lastMessageAt, createdBy) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement ps = connection.prepareStatement(sql);
+    public long insert(Room room) {
+        String sql = "INSERT INTO room (type, name, description, picturePath, createdAt, lastMessageAt, createdBy) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (Connection connection = Database.getDataSource().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             ps.setString(1, room.getType().name());
             ps.setString(2, room.getName());
             ps.setString(3, room.getDescription());
@@ -91,16 +100,30 @@ public class RoomImpl implements RoomDao {
             ps.setTimestamp(5, Timestamp.valueOf(createdAt));
 
             LocalDateTime lastMessageAt = room.getLastMessageAt();
-            if (lastMessageAt == null) lastMessageAt = LocalDateTime.now();
-            ps.setTimestamp(6, Timestamp.valueOf(lastMessageAt));
+            if (lastMessageAt == null) {
+                ps.setTimestamp(6, null);
+            }
+            else {
+                ps.setTimestamp(6, Timestamp.valueOf(lastMessageAt));
+            }
+
             ps.setLong(7, room.getCreatedBy());
 
-            result = ps.executeUpdate();
+            ps.executeUpdate();
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getLong(1);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return result;
+
+        return -1;
     }
 
     @Override
@@ -123,6 +146,7 @@ public class RoomImpl implements RoomDao {
         } catch (SQLException se) {
             se.printStackTrace();
         }
+
         return result;
     }
 
@@ -139,10 +163,11 @@ public class RoomImpl implements RoomDao {
         } catch (SQLException se) {
             se.printStackTrace();
         }
+
         return result;
     }
 
-    }
+}
 
 
 

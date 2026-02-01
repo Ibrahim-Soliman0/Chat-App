@@ -1,11 +1,14 @@
 package org.client.chatapp.ui.component;
 
+import dto.ChatRoomDTO;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -14,8 +17,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import model.Room;
+import model.Users;
 import org.client.chatapp.ClientChatApp;
 import org.client.chatapp.model.ChatItem;
+import org.client.chatapp.ui.controller.ChatRoomController;
+import org.client.chatapp.ui.utils.ImageUtil;
 import org.client.chatapp.ui.utils.TimeUtils;
 
 import java.io.IOException;
@@ -23,13 +30,19 @@ import java.util.Objects;
 
 public class ChatItemView extends HBox {
 
+    private ChatRoomDTO dataToBeUsedInChat;
     private final ChatItem chatItem;
+    private Users me;
+    private Room chatRoom;
     private Label time;
     private VBox rightBox;
     private StackPane unreadBadge;
 
-    public ChatItemView(ChatItem chatItem) {
+    public ChatItemView(ChatItem chatItem, Users me, Room chatRoom, ChatRoomDTO dataToBeUsedInChat) {
         this.chatItem = chatItem;
+        this.me = me;
+        this.chatRoom = chatRoom;
+        this.dataToBeUsedInChat = dataToBeUsedInChat;
 
         time = new Label(TimeUtils.formatChatTimestamp(chatItem.getMessageTime()));
         time.getStyleClass().add("chat-time");
@@ -42,20 +55,29 @@ public class ChatItemView extends HBox {
         getStyleClass().add("chat-item");
         int characterLimit = 50;
 
-        ImageView avatar = new ImageView(chatItem.getProfilePic());
+        Image profileImage = ImageUtil.getImageFromByteArray(
+                dataToBeUsedInChat.getOther() != null ?
+                        dataToBeUsedInChat.getOther().getPictureBytes() :
+                        chatRoom.getPictureBytes());
+
+        ImageView avatar = new ImageView(profileImage);
         avatar.setFitWidth(60);
         avatar.setFitHeight(60);
-        avatar.setPreserveRatio(true);
+//        avatar.setPreserveRatio(true);
+        avatar.setSmooth(true);
 
-        Circle clip = new Circle(30, 30, 24);
+        Circle clip = new Circle();
+        clip.centerXProperty().bind(avatar.fitWidthProperty().divide(2));
+        clip.centerYProperty().bind(avatar.fitHeightProperty().divide(2));
+        clip.radiusProperty().bind(avatar.fitWidthProperty().divide(2));
         avatar.setClip(clip);
 
         Label name = new Label(chatItem.getName());
         name.getStyleClass().add("chat-name");
 
-        Label lastMessage = new Label(chatItem.getLastMessage().length() <= characterLimit
-                ? chatItem.getLastMessage() :
-                chatItem.getLastMessage().substring(0, characterLimit + 1) + "...");
+        String messageText = (chatItem.isIncoming() ? "" : "You: ") + chatItem.getLastMessage();
+        Label lastMessage = new Label(messageText.length() <= characterLimit ? messageText
+                : messageText.substring(0, characterLimit + 1) + "...");
         lastMessage.getStyleClass().add("chat-last-message");
 
         VBox textBox = new VBox(name, lastMessage);
@@ -102,12 +124,14 @@ public class ChatItemView extends HBox {
             chatItem.setUnreadMessageCount(0);
             rightBox.getChildren().remove(unreadBadge);
 
-            System.out.println("Open chat: " + chatItem.getName());
-
             Parent root = null;
             try {
-                root = FXMLLoader.load(
-                        Objects.requireNonNull(getClass().getResource("chat-room-view.fxml")));
+                FXMLLoader loader = new FXMLLoader(
+                        Objects.requireNonNull(getClass().getResource("/org/client/chatapp/chat-room-view.fxml")));
+
+                root = loader.load();
+                ChatRoomController chatRoomController = loader.getController();
+                chatRoomController.initializeChat(dataToBeUsedInChat);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -126,6 +150,22 @@ public class ChatItemView extends HBox {
 
     public void updateTimestamp() {
         time.setText(TimeUtils.formatChatTimestamp(chatItem.getMessageTime()));
+    }
+
+    public Users getMe() {
+        return me;
+    }
+
+    public void setMe(Users me) {
+        this.me = me;
+    }
+
+    public Room getChatRoom() {
+        return chatRoom;
+    }
+
+    public void setChatRoom(Room chatRoom) {
+        this.chatRoom = chatRoom;
     }
 }
 

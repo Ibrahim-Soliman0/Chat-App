@@ -54,7 +54,7 @@ public class RegisterServiceImpl extends UnicastRemoteObject implements Register
             user.setPassword(hashedPassword);
             user.setStatus(Status.OFFLINE);
             user.setLastSeen(null);
-            int result = usersDao.insert(user);
+            long result = usersDao.insert(user);
 
             if (result > 0) {
                 user.setPassword(null);

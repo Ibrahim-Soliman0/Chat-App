@@ -1,10 +1,13 @@
 package org.server.chatapp.dao.implement;
 
+import dto.ChatRoomDTO;
 import model.UserRooms;
+import model.Users;
 import org.server.chatapp.dao.Database;
 import org.server.chatapp.dao.dao.UserRoomsDao;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,15 +22,7 @@ public class UserRoomsImpl implements UserRoomsDao {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                return new UserRooms(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("userId"),
-                        resultSet.getLong("roomId"),
-                        resultSet.getBoolean("isAdmin"),
-                        resultSet.getTimestamp("joinedAt").toLocalDateTime(),
-                        resultSet.getTimestamp("leftAt").toLocalDateTime(),
-                        resultSet.getBoolean("isActive")
-                );
+                return createObject(resultSet);
             }
         } catch (SQLException se) {
             se.printStackTrace();
@@ -48,15 +43,7 @@ public class UserRoomsImpl implements UserRoomsDao {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                allUsers.add(new UserRooms(
-                        resultSet.getLong("id"),
-                        resultSet.getLong("userId"),
-                        resultSet.getLong("roomId"),
-                        resultSet.getBoolean("isAdmin"),
-                        resultSet.getTimestamp("joinedAt").toLocalDateTime(),
-                        resultSet.getTimestamp("leftAt").toLocalDateTime(),
-                        resultSet.getBoolean("isActive")
-                ));
+                allUsers.add(createObject(resultSet));
 
                 preparedStatement.close();
                 resultSet.close();
@@ -76,14 +63,14 @@ public class UserRoomsImpl implements UserRoomsDao {
         try (Connection connection = Database.getDataSource().getConnection()) {
 
             String sql = """
-            UPDATE userrooms SET
-                userId   = ?,
-                roomId   = ?,
-                isAdmin  = ?,
-                joinedAt = ?,
-                leftAt   = ?,
-                isActive = ?
-            WHERE id = ?;""";
+                    UPDATE userrooms SET
+                        userId   = ?,
+                        roomId   = ?,
+                        isAdmin  = ?,
+                        joinedAt = ?,
+                        leftAt   = ?,
+                        isActive = ?
+                    WHERE id = ?;""";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
@@ -114,34 +101,39 @@ public class UserRoomsImpl implements UserRoomsDao {
 
 
     @Override
-    public int insert(UserRooms userRooms) {
+    public long insert(UserRooms userRooms) {
 
         int result = 0;
 
         try (Connection connection = Database.getDataSource().getConnection()) {
 
             String sql = """
-            INSERT INTO userrooms (
-                userId,
-                roomId,
-                isAdmin,
-                joinedAt,
-                leftAt,
-                isActive
-            ) VALUES (?, ?, ?, ?, ?, ?);
-        """;
+                        INSERT INTO userrooms (
+                            userId,
+                            roomId,
+                            isAdmin,
+                            joinedAt,
+                            leftAt,
+                            isActive
+                        ) VALUES (?, ?, ?, ?, ?, ?);
+                    """;
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             preparedStatement.setLong(1, userRooms.getUserId());
             preparedStatement.setLong(2, userRooms.getRoomId());
             preparedStatement.setBoolean(3, userRooms.getIsAdmin());
-            preparedStatement.setTimestamp(4, Timestamp.valueOf(userRooms.getJoinedAt()));
+            if (userRooms.getJoinedAt() == null) {
+                preparedStatement.setTimestamp(4, null);
+            }
+            else {
+                preparedStatement.setTimestamp(4, Timestamp.valueOf(userRooms.getJoinedAt()));
+            }
 
-            if (userRooms.getLeftAt() != null) {
-                preparedStatement.setTimestamp(5, Timestamp.valueOf(userRooms.getLeftAt()));
+            if (userRooms.getLeftAt() == null) {
+                preparedStatement.setTimestamp(5,null);
             } else {
-                preparedStatement.setNull(5, Types.TIMESTAMP);
+                preparedStatement.setTimestamp(5, Timestamp.valueOf(userRooms.getLeftAt()));
             }
 
             preparedStatement.setBoolean(6, userRooms.getIsActive());
@@ -176,5 +168,147 @@ public class UserRoomsImpl implements UserRoomsDao {
         }
 
         return result;
+    }
+
+    @Override
+    public List<ChatRoomDTO> getUserRooms(Users user) {
+
+        List<ChatRoomDTO> allUserRooms = new ArrayList<>();
+
+        try (Connection connection = Database.getDataSource().getConnection()) {
+            String sql = """
+                    SELECT
+                    	ur.id AS userRoomsId,
+                        r.id AS roomId
+                    FROM
+                    	USERROOMS as ur
+                    JOIN
+                    	USERS as u
+                        ON
+                        ur.userId = u.id
+                    JOIN
+                    	ROOM as r
+                        ON
+                        ur.roomId = r.id
+                    WHERE
+                    	u.id = ?""";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, user.getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                long userRoomId = resultSet.getLong("userRoomsId");
+                long roomId = resultSet.getLong("roomId");
+
+                allUserRooms.add(new ChatRoomDTO(user, get(userRoomId), new RoomImpl().get(roomId)));
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        return allUserRooms;
+    }
+
+    @Override
+    public Users getSingleUserInRoom(ChatRoomDTO chatRoomDTO) {
+
+        try (Connection connection = Database.getDataSource().getConnection()) {
+            String sql = """
+                    SELECT
+                        userId
+                    FROM
+                        USERROOMS as ur
+                    JOIN
+                        USERS as u
+                        ON
+                            ur.userId = u.id
+                    JOIN
+                        ROOM as r
+                        ON
+                            ur.roomId = r.id
+                    WHERE
+                        roomId = ?
+                    AND
+                        u.id <> ?
+                    LIMIT 1;""";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, chatRoomDTO.getRoom().getId());
+            preparedStatement.setLong(2, chatRoomDTO.getMe().getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return new UsersImpl().get(resultSet.getLong("userId"));
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<Users> getUsersInRoom(ChatRoomDTO chatRoomDTO) {
+
+        List<Users> usersInGroup = new ArrayList<>();
+        try (Connection connection = Database.getDataSource().getConnection()) {
+            String sql = """
+                    SELECT
+                        userId
+                    FROM
+                        USERROOMS as ur
+                    JOIN
+                        USERS as u
+                        ON
+                            ur.userId = u.id
+                    JOIN
+                        ROOM as r
+                        ON
+                            ur.roomId = r.id
+                    WHERE
+                        roomId = ?
+                    AND
+                        u.id <> ?""";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, chatRoomDTO.getRoom().getId());
+            preparedStatement.setLong(2, chatRoomDTO.getMe().getId());
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                usersInGroup.add(new UsersImpl().get(resultSet.getLong("userId")));
+            }
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        return usersInGroup;
+    }
+
+    private UserRooms createObject(ResultSet resultSet) throws SQLException {
+        UserRooms userRoom = new UserRooms();
+
+        userRoom.setRoomId(resultSet.getLong("id"));
+        userRoom.setUserId(resultSet.getLong("userId"));
+        userRoom.setRoomId(resultSet.getLong("roomId"));
+        userRoom.setIsAdmin(resultSet.getBoolean("isAdmin"));
+        if (resultSet.getTimestamp("joinedAt") == null) {
+            userRoom.setJoinedAt(null);
+        }
+        else {
+            userRoom.setJoinedAt(resultSet.getTimestamp("joinedAt").toLocalDateTime());
+        }
+
+        if (resultSet.getTimestamp("leftAt") == null) {
+            userRoom.setJoinedAt(null);
+        }
+        else {
+            userRoom.setJoinedAt(resultSet.getTimestamp("leftAt").toLocalDateTime());
+        }
+
+        userRoom.setIsActive(resultSet.getBoolean("isActive"));
+
+        return userRoom;
     }
 }

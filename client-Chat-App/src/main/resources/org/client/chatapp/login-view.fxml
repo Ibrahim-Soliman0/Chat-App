@@ -5,6 +5,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.Group?>
 <VBox alignment="CENTER" prefHeight="650" prefWidth="450" spacing="20" style="-fx-background-color: #f5f5f5;" stylesheets="@../../../css/login.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.LoginController">
 
     <padding>
@@ -22,6 +24,33 @@
        </VBox>
    
        <Region maxHeight="40" minHeight="20" VBox.vgrow="SOMETIMES" />
+       <VBox fx:id="savedAccountsContainer" alignment="CENTER" spacing="15" visible="false" managed="false">
+           <Label text="Welcome back! Select your account" style="-fx-text-fill: #666666; -fx-font-size: 14;" />
+           <ScrollPane fx:id="accountsScrollPane"
+                       fitToHeight="true"
+                       vbarPolicy="NEVER"
+                       prefHeight="140.0"
+                       minHeight="140.0">
+           <HBox fx:id="accountsList" alignment="CENTER" spacing="20">
+               <VBox alignment="CENTER" spacing="5" styleClass="account-card">
+                   <StackPane>
+                       <Group>
+                           <Circle radius="35" fill="#ECEFF1" stroke="WHITE" strokeWidth="2" />
+                           <Circle fx:id="userAvatar" radius="35" fill="#00ab8a"/>
+                       </Group>
+
+                       <Button text="×" StackPane.alignment="TOP_RIGHT" styleClass="remove-account-btn" />
+                   </StackPane>
+                   <Label text="Ahmed" styleClass="account-name-label"/>
+               </VBox>
+           </HBox>
+           </ScrollPane>
+           <HBox alignment="CENTER" spacing="10">
+               <Separator prefWidth="100" />
+               <Label text="OR" style="-fx-text-fill: #999999;" />
+               <Separator prefWidth="100" />
+           </HBox>
+       </VBox>
    
        <!-- Login Form -->
        <VBox alignment="CENTER" maxWidth="350" spacing="15">

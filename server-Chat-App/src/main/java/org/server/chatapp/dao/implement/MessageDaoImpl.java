@@ -1,6 +1,8 @@
 package org.server.chatapp.dao.implement;
 
 import model.Message;
+import model.Room;
+import model.Users;
 import org.server.chatapp.dao.Database;
 import org.server.chatapp.dao.dao.MessageDao;
 
@@ -129,7 +131,7 @@ public class MessageDaoImpl implements MessageDao {
 
 
     @Override
-    public int insert(Message message) {
+    public long insert(Message message) {
         String sql = """
         INSERT INTO Message
         (senderId, roomId, text, fontFamily, fontSize, fontColor, backgroundColor,
@@ -205,7 +207,7 @@ public class MessageDaoImpl implements MessageDao {
         String sql = """
         SELECT * FROM Message
         WHERE roomId = ? AND isDeleted = false
-        ORDER BY sentAt
+        ORDER BY sentAt ASC
         """;
         try (Connection connection = Database.getDataSource().getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -216,6 +218,117 @@ public class MessageDaoImpl implements MessageDao {
                 while (rs.next()) {
                     Message message = createMessageObject(rs);
                     messages.add(message);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return messages;
+    }
+
+    @Override
+    public Message getLastMessageInRoom(long roomId) {
+
+        String sql = """
+                    SELECT
+                        *
+                    FROM
+                        Message
+                    WHERE
+                        roomId = ?
+                        AND
+                        isDeleted = false
+                    ORDER BY sentAt DESC
+                    LIMIT 1""";
+        try (Connection connection = Database.getDataSource().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setLong(1, roomId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return createMessageObject(rs);
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return null;
+    }
+
+    @Override
+    public int getUnreadMessagesCount(Users user, Room room) {
+
+        String sql = """
+                  SELECT
+                      COUNT(*) AS unreadCount
+                  FROM
+                      Message AS m
+                  WHERE
+                      senderId <> ?
+                      AND
+                      roomId = ?
+                      AND m.id IN (
+                        SELECT
+                            messageId
+                        FROM
+                            MessageStatus
+                        WHERE
+                            seenAt IS NULL
+                      );""";
+        try (Connection connection = Database.getDataSource().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setLong(1, user.getId());
+            ps.setLong(2, room.getId());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("unreadCount");
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return 0;
+    }
+
+    @Override
+    public List<Message> getUnreadMessages(Users user, Room room) {
+
+        List<Message> messages = new ArrayList<>();
+        String sql = """
+                  SELECT
+                      *
+                  FROM
+                      Message AS m
+                  WHERE
+                      senderId <> ?
+                      AND
+                      roomId = ?
+                      AND m.id IN (
+                        SELECT
+                            messageId
+                        FROM
+                            MessageStatus
+                        WHERE
+                            seenAt IS NULL
+                      );""";
+        try (Connection connection = Database.getDataSource().getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setLong(1, user.getId());
+            ps.setLong(2, room.getId());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    messages.add(createMessageObject(rs));
                 }
             }
 

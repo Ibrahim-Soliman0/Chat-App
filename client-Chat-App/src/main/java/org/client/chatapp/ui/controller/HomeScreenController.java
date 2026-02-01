@@ -1,9 +1,9 @@
 package org.client.chatapp.ui.controller;
 
+import dto.ChatRoomDTO;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -20,19 +20,30 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polyline;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.Users;
+import model.enums.RoomType;
 import org.client.chatapp.ClientChatApp;
 import org.client.chatapp.model.ChatItem;
+import org.client.chatapp.rmi.ClientCallBackImp;
 import org.client.chatapp.ui.component.ChatItemView;
+import org.client.chatapp.ui.listener.NotificationListener;
+import rmi.GetUserService;
+import rmi.NotificationService;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
-public class HomeScreenController {
+public class HomeScreenController implements NotificationListener {
 
+    private Users user;
     @FXML
     private Group profileIcon, chatsIcon;
     @FXML
@@ -66,7 +77,11 @@ public class HomeScreenController {
     @FXML
     private SVGPath chatLogo;
     @FXML
-    private Group groupIcon;
+    private Group groupIcon, emptyStateIcon;
+    private Circle notificationsFound;
+    private Polyline iconPolyLine;
+    @FXML
+    private Label emptyStateLabel;
 
     public void initialize() {
         Circle profileHeadIcon = new Circle(12, 7, 4);
@@ -98,50 +113,6 @@ public class HomeScreenController {
         chatsIcon.setScaleX(1.5);
         chatsIcon.setScaleY(1.5);
 
-        ObservableList<ChatItemView> chats = FXCollections.observableArrayList();
-
-        chats.add(new ChatItemView(new ChatItem(
-                "Alice",
-                "Hey!",
-                true,
-                LocalDateTime.now().minusDays(7),
-                3
-        )));
-
-        chats.add(new ChatItemView(new ChatItem(
-                "Alice",
-                "Heyyy",
-                true,
-                LocalDateTime.now().minusDays(7),
-                3
-        )));
-
-        chats.add(new ChatItemView(new ChatItem(
-                "Bob",
-                "See you later",
-                false,
-                LocalDateTime.now().minusMinutes(5),
-                0
-        )));
-
-        chats.add(new ChatItemView(new ChatItem(
-                "Ibrahim",
-                "See you later ajsdlkja lasd jaslkdj alkslk asd asd asdas as",
-                false,
-                LocalDateTime.now().minusMinutes(5),
-                90
-        )));
-
-        chats.add(new ChatItemView(new ChatItem(
-                "Ibrahim",
-                "See you later ajsdlkja lasd jaslkdj alkslk asd asd asdas as",
-                true,
-                LocalDateTime.now(),
-                100
-        )));
-
-        chatsList.setItems(chats);
-
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(60),
                 e -> chatsList.getItems().forEach(ChatItemView::updateTimestamp)));
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -158,7 +129,13 @@ public class HomeScreenController {
         bellLine.setContent("M10.268 21a2 2 0 0 0 3.464 0");
         bellLine.getStyleClass().add("icon");
 
-        bellIcon.getChildren().addAll(bell, bellLine);
+        notificationsFound = new Circle(12, 7, 3);
+        notificationsFound.setFill(Color.web("#00ab8a"));
+        notificationsFound.setVisible(false);
+
+        notificationsFound.setTranslateX(11);
+
+        bellIcon.getChildren().addAll(bell, bellLine, notificationsFound);
         bellIcon.setScaleX(1.1);
         bellIcon.setScaleY(1.1);
 
@@ -195,6 +172,7 @@ public class HomeScreenController {
                         "-fx-padding: 0 0 0 35px; " +
                         "-fx-prompt-text-fill: #abacad;"
         );
+
         StackPane.setAlignment(searchIconGroup, Pos.CENTER_LEFT);
         StackPane.setMargin(searchIconGroup, new Insets(0, 0, 0, 8));
 
@@ -208,22 +186,25 @@ public class HomeScreenController {
         SVGPath otherBodyIcon = new SVGPath();
         otherBodyIcon.setContent("M18 21a8 8 0 0 0-16 0");
         otherBodyIcon.getStyleClass().add("icon");
+
         groupIcon.getChildren().addAll(groupHeadIcon, groupBodyIcon, otherBodyIcon);
+
         groupIcon.setScaleX(1.1);
         groupIcon.setScaleY(1.1);
+
         groupIcon.setOnMouseEntered(e -> {
             groupHeadIcon.getStyleClass().setAll("onIconHover");
             groupBodyIcon.getStyleClass().setAll("onIconHover");
             otherBodyIcon.getStyleClass().setAll("onIconHover");
 
         });
+
         groupIcon.setOnMouseExited(e -> {
             groupHeadIcon.getStyleClass().setAll("icon");
             groupBodyIcon.getStyleClass().setAll("icon");
             otherBodyIcon.getStyleClass().setAll("icon");
 
         });
-
 
         Circle addFriendHead = new Circle(9, 7, 4);
         addFriendHead.getStyleClass().add("icon");
@@ -239,14 +220,15 @@ public class HomeScreenController {
         addFriendBody.getStyleClass().add("icon");
 
         addFriend.getChildren().addAll(addFriendHead, vLine, hLine, addFriendBody);
+
         addFriend.setScaleX(1.1);
         addFriend.setScaleY(1.1);
+
         addFriend.setOnMouseEntered(e -> {
             addFriendHead.getStyleClass().setAll("onIconHover");
             vLine.getStyleClass().setAll("onIconHover");
             hLine.getStyleClass().setAll("onIconHover");
             addFriendBody.getStyleClass().setAll("onIconHover");
-
         });
 
         addFriend.setOnMouseExited(e -> {
@@ -254,56 +236,46 @@ public class HomeScreenController {
             vLine.getStyleClass().setAll("icon");
             hLine.getStyleClass().setAll("icon");
             addFriendBody.getStyleClass().setAll("icon");
-
         });
 
+        iconPolyLine = new Polyline(22, 12, 16, 12, 14, 15, 10, 15, 8, 12, 2, 12);
+        iconPolyLine.setStroke(Color.web("#00ab8a"));
+        emptyStateIcon.getChildren().add(iconPolyLine);
+
+        ClientCallBackImp.setHomeScreenListener(this);
     }
 
     @FXML
     private void onProfileIconClick(MouseEvent actionEvent) {
-
+        ClientCallBackImp.setHomeScreenListener(null);
         try {
-            root = FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource(
-                            "/org/client/chatapp/profile-screen-view.fxml")));
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
+                    "/org/client/chatapp/profile-screen-view.fxml")));
+            root = loader.load();
+            ProfileScreenController profileScreenController = loader.getController();
+            profileScreenController.setUser(user);
+            stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            scene.getStylesheets().addAll(ClientChatApp.allStyles);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        scene.getStylesheets().addAll(ClientChatApp.allStyles);
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
-    }
-
-    @FXML
-    private void onChatsIconClick(MouseEvent actionEvent) {
-
-        try {
-            root = FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource(
-                            "/org/client/chatapp/home-screen-view.fxml")));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        scene.getStylesheets().addAll(ClientChatApp.allStyles);
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
     }
 
     @FXML
     private void onBellIconClick(MouseEvent actionEvent) {
-
+        ClientCallBackImp.setHomeScreenListener(null);
         try {
-            root = FXMLLoader.load(
+            FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource(
                             "/org/client/chatapp/notification-screen-view.fxml")));
+
+            root = loader.load();
+            NotificationScreenController notificationScreenController = loader.getController();
+            notificationScreenController.setUser(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -318,7 +290,7 @@ public class HomeScreenController {
 
     @FXML
     private void onGroupIconClick(MouseEvent actionEvent) {
-
+        ClientCallBackImp.setHomeScreenListener(null);
         try {
             root = FXMLLoader.load(
                     Objects.requireNonNull(getClass().getResource(
@@ -337,11 +309,15 @@ public class HomeScreenController {
 
     @FXML
     private void onAddFriendIconClick(MouseEvent actionEvent) {
-
+        ClientCallBackImp.setHomeScreenListener(null);
         try {
-            root = FXMLLoader.load(
+            FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource(
                             "/org/client/chatapp/friends-list-screen-view.fxml")));
+
+            root = loader.load();
+            FriendsListController friendsListController = loader.getController();
+            friendsListController.setUser(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -352,5 +328,72 @@ public class HomeScreenController {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
+
+        try {
+            GetUserService getUserService =
+                    (GetUserService) ClientChatApp.registry.lookup("GetUserService");
+            List<ChatRoomDTO> allUserRooms = getUserService.getUserRooms(user);
+            List<ChatItemView> userRoomsToChatItemView = allUserRooms.stream()
+                    .map(chatRoomDTO -> {
+                                try {
+                                    return new ChatItemView(
+                                            new ChatItem(
+                                                    chatRoomDTO.getRoom().getType() == RoomType.ONE_TO_ONE
+                                                            ? chatRoomDTO.getOther().getName()
+                                                            : chatRoomDTO.getRoom().getName(),
+                                                    chatRoomDTO.getLastMessage() == null
+                                                            ? "No Messages in This Chat Yet!"
+                                                            : chatRoomDTO.getLastMessage().getText(),
+                                                    chatRoomDTO.getLastMessage() == null ||
+                                                            chatRoomDTO.getLastMessage().getSenderId()
+                                                                    != chatRoomDTO.getMe().getId(),
+                                                    chatRoomDTO.getLastMessage() == null
+                                                    ? LocalDateTime.now() : chatRoomDTO.getLastMessage().getSentAt(),
+                                                    getUserService.getUnreadMessagesCount
+                                                            (chatRoomDTO.getMe(), chatRoomDTO.getRoom())
+                                            ),
+                                            chatRoomDTO.getOther(),
+                                            chatRoomDTO.getRoom(),
+                                            chatRoomDTO
+                                    );
+                                } catch (RemoteException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                    )
+                    .toList();
+
+            chatsList.setItems(FXCollections.observableArrayList(userRoomsToChatItemView));
+
+            if (!chatsList.getItems().isEmpty()) {
+                emptyStateIcon.setVisible(false);
+                emptyStateLabel.setVisible(false);
+            }
+
+            NotificationService notificationService =
+                    (NotificationService) ClientChatApp.registry.lookup("NotificationService");
+
+            int notificationsCount = notificationService.getNotificationsCount(user);
+
+            if (notificationsCount > 0) {
+                notificationsFound.setVisible(true);
+            }
+
+        } catch (RemoteException | NotBoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void clearNotifications() {
+        notificationsFound.setVisible(false);
+    }
+
+    @Override
+    public void onNewNotification() {
+        notificationsFound.setVisible(true);
     }
 }

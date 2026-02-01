@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.SVGPath?>
+
+<VBox spacing="20.0"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.server.chatapp.ui.controller.ServerControlController">
+    <children>
+        <HBox alignment="CENTER_LEFT">
+            <children>
+                <VBox spacing="2">
+                    <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #111827;" text="Dashboard Overview" />
+                    <Label style="-fx-text-fill: #6b7280; -fx-font-size: 13px;" text="Welcome back, Administrator." />
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <HBox alignment="CENTER" spacing="10.0" style="-fx-background-color: white; -fx-padding: 8 20; -fx-background-radius: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);">
+                    <children>
+                        <Circle fx:id="statusCircle" fill="#ef4444" radius="5.0" />
+                        <Label fx:id="lblStatus" style="-fx-font-weight: bold; -fx-text-fill: #374151; -fx-font-size: 12px;" text="SERVER OFFLINE" />
+                    </children>
+                </HBox>
+            </children>
+        </HBox>
+
+        <StackPane VBox.vgrow="ALWAYS">
+            <children>
+                <VBox alignment="CENTER" maxHeight="450.0" maxWidth="450.0" spacing="25.0" style="-fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);">
+                    <padding>
+                        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+                    </padding>
+                    <children>
+                        <StackPane prefHeight="80" prefWidth="80">
+                            <Circle radius="40.0" style="-fx-fill: #f3f4f6;" />
+                            <SVGPath content="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="#14b8a6" scaleX="2.0" scaleY="2.0" />
+                        </StackPane>
+                        <VBox alignment="CENTER" spacing="8">
+                            <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="RMI Service Control" />
+                            <Label style="-fx-text-fill: #6b7280; -fx-text-alignment: center; -fx-font-size: 14px;" text="Click the button below to initialize the RMI Registry and allow users to login to the ChatApp." wrapText="true" />
+                        </VBox>
+                        <Button fx:id="btnStartStop" maxWidth="Infinity" onAction="#handleStartStop" prefHeight="50.0" styleClass="service-button, btn-start" text="START SERVICE" />
+                    </children>
+                </VBox>
+            </children>
+        </StackPane>
+    </children>
+</VBox>

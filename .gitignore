@@ -6,8 +6,9 @@ client-Chat-App/target/
 server-Chat-App/src/main/resources/db.properties
 server-Chat-App/target/
 common-module/target/
+**/target/
 
-server-Chat-App/uploads/profiles/*
+client-Chat-App/config.xml
 ### IntelliJ IDEA ###
 .idea/modules.xml
 .idea/jarRepositories.xml

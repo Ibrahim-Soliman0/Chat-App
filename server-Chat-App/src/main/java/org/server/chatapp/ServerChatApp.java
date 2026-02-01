@@ -15,7 +15,7 @@ public class ServerChatApp extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(ServerChatApp.class.getResource("main-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
-        String css = this.getClass().getResource("/css/button.css").toExternalForm();
+        String css = this.getClass().getResource("/css/admin.css").toExternalForm();
         scene.getStylesheets().add(css);
 
         stage.setTitle("Admin Dashboard");

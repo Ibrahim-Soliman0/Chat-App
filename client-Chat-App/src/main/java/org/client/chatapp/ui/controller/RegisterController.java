@@ -9,6 +9,7 @@ import javafx.scene.control.Button;
 
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.client.chatapp.ClientChatApp;
 
 import java.io.IOException;
 
@@ -40,37 +41,33 @@ public class RegisterController {
     }
 
 
-
     public void handleContinue() {
         String phoneNumber = phoneField.getText().trim();
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/client/chatapp/setup-profile-view.fxml"));
-            Parent root = loader.load();
-            SetupProfileController controller = loader.getController();
-            controller.setPhoneNumber(phoneNumber);
+        if (isValidPhoneNumber(phoneNumber)) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/client/chatapp/setup-profile-view.fxml"));
+                Parent root = loader.load();
+                SetupProfileController controller = loader.getController();
+                controller.setPhoneNumber(phoneNumber);
 
-            Stage stage = (Stage) continueButton.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+                Stage stage = (Stage) continueButton.getScene().getWindow();
+                Scene scene = new Scene(root);
+                scene.getStylesheets().addAll(ClientChatApp.allStyles);
+                stage.setScene(scene);
+                stage.show();
 
-        } catch (IOException e) {
-            showError("Error loading registration page: " + e.getMessage());
+            } catch (IOException e) {
+                showError("Error loading registration page: " + e.getMessage());
+            }
         }
     }
 
     private boolean isValidPhoneNumber(String phone) {
+        if (phone == null) return false;
 
-        if (phone == null || phone.isEmpty()) {
-            return false;
-        }
-
-        if (phone.length() != 11) {
-            return false;
-        }
-
-        return phone.startsWith("01");
+        return phone.matches("^01[0125][0-9]{8}$");
     }
+
     private void showError(String message) {
 
         Alert alert = new Alert(

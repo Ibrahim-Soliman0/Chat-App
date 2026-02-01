@@ -1,13 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            prefHeight="400.0" prefWidth="600.0">
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.HBox?>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="450.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.NotificationScreenController">
+   <children>
+      <HBox prefHeight="100.0" prefWidth="450.0" style="-fx-background-color: #ffffff;" />
+      <Label layoutX="70.0" layoutY="30.0" text="Notifications">
+         <font>
+            <Font name="System Bold" size="26.0" />
+         </font></Label>
+      <Separator layoutY="100" prefWidth="450" style="-fx-background-color: #000000;" />
 
-</AnchorPane>
+      <ListView fx:id="notificationListView" layoutY="100.0" prefHeight="500.0" prefWidth="450.0" style="-fx-background-color: #f7f8fa;" />
+
+      <Group fx:id="backArrow" layoutX="30.0" layoutY="40.0" onMouseClicked="#onBackArrowClick" />
+   </children>
+   <Label fx:id="emptyStateLabel" layoutX="108.0" layoutY="336.0" prefHeight="27.0" prefWidth="234.0" text="You Have No Notifications" textFill="#00ab8a">
+      <font>
+         <Font name="System Bold" size="18.0" />
+      </font>
+   </Label>
+   <Group fx:id="emptyStateIcon" layoutX="215.0" layoutY="282.0" scaleX="1.5" scaleY="1.5">
+      <children>
+         <SVGPath content="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" fill="#00ab8900" stroke="#00ab89" strokeLineCap="ROUND" strokeLineJoin="ROUND" />
+         <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="16.0" stroke="#00ab8a" strokeLineCap="ROUND" strokeLineJoin="ROUND" strokeType="INSIDE" width="22.0" x="1.5" y="4.0" />
+      </children>
+   </Group>
+</Pane>

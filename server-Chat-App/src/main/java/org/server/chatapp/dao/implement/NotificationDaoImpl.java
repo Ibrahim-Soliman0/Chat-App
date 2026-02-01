@@ -1,6 +1,8 @@
 package org.server.chatapp.dao.implement;
 
+import model.Friend;
 import model.Notification;
+import model.Users;
 import model.enums.NotificationStatus;
 import model.enums.NotificationType;
 import org.server.chatapp.dao.Database;
@@ -78,7 +80,7 @@ public class NotificationDaoImpl implements NotificationDao {
     }
 
     @Override
-    public int insert(Notification notification) {
+    public long insert(Notification notification) {
         String sql = "INSERT INTO notification (receiverId, type, content, friendId, createdAt, status, roomId) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = Database.getDataSource().getConnection();
@@ -133,7 +135,7 @@ public class NotificationDaoImpl implements NotificationDao {
 
     @Override
     public List<Notification> getByReceiverId(long receiverId) {
-        String sql = "SELECT * FROM notification WHERE receiverId = ? ORDER BY createdAt DESC";
+        String sql = "SELECT * FROM notification WHERE receiverId = ? AND status = 'UNREAD' ORDER BY createdAt DESC";
         List<Notification> notifications = new ArrayList<>();
         try (Connection connection = Database.getDataSource().getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -146,6 +148,25 @@ public class NotificationDaoImpl implements NotificationDao {
             e.printStackTrace();
         }
         return notifications;
+    }
+
+    @Override
+    public int getCountByReceiverId(long receiverId) {
+        String sql = "SELECT COUNT(*) AS notifications_count FROM notification WHERE receiverId = ? AND status = 'UNREAD' ORDER BY createdAt DESC";
+        int result = 0;
+        try (Connection connection = Database.getDataSource().getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, receiverId);
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                result = rs.getInt("notifications_count");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     @Override
@@ -191,5 +212,24 @@ public class NotificationDaoImpl implements NotificationDao {
         notification.setRoomId(rs.wasNull() ? null : roomId);
 
         return notification;
+    }
+
+    public Notification getFriendRequestNotification(Users receiver, Friend friendRequest) {
+        String sql = "SELECT * FROM notification WHERE receiverId = ? AND friendId = ? LIMIT 1;";
+        try (Connection connection = Database.getDataSource().getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setLong(1, receiver.getId());
+            stmt.setLong(2, friendRequest.getId());
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return extractNotificationFromResultSet(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

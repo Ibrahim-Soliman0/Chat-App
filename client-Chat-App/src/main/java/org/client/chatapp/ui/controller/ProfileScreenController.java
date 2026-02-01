@@ -1,5 +1,6 @@
 package org.client.chatapp.ui.controller;
 
+import dto.GetMyFriendsListDTO;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,9 +14,15 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
+import model.Users;
 import org.client.chatapp.ClientChatApp;
+import rmi.GetUserService;
+import rmi.LoadFriendsListService;
+import rmi.LoginService;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -23,6 +30,7 @@ import java.util.Optional;
 
 public class ProfileScreenController {
 
+    private Users user = new Users();
     @FXML
     private Group profileIcon, chatsIcon, editIcon, passwordIcon;
 
@@ -57,7 +65,7 @@ public class ProfileScreenController {
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
     @FXML
-    public void initialize() {
+    public void initialize() throws RemoteException {
         // Initialize bottom navigation icons
         initializeNavigationIcons();
 
@@ -70,8 +78,7 @@ public class ProfileScreenController {
         // Initialize ComboBoxes and DatePicker
         initializeFormControls();
 
-        // Load user profile data (placeholder for now)
-        loadProfileData();
+        Platform.runLater(() -> scrollPane.setVvalue(0.0));
     }
 
     private void initializeNavigationIcons() {
@@ -174,14 +181,14 @@ public class ProfileScreenController {
         });
     }
 
-    private void loadProfileData() {
+    private void loadProfileData(Users user) {
         // Placeholder data - in a real app, this would load from a database or service
-        fullNameLabel.setText("Eslam Magdy");
-        emailLabel.setText("eslam@email.com");
-        genderLabel.setText("Male");
-        countryLabel.setText("Egypt");
-        dobLabel.setText("01/01/1990");
-        bioLabel.setText("No bio yet...");
+        fullNameLabel.setText(user.getName());
+        emailLabel.setText(user.getEmail());
+        genderLabel.setText(user.getGender().toString());
+        countryLabel.setText(user.getCountry());
+        dobLabel.setText(user.getDob().toString());
+        bioLabel.setText(user.getBio());
 
         // Set initial values for form controls
         fullNameField.setText(fullNameLabel.getText());
@@ -365,6 +372,10 @@ public class ProfileScreenController {
         if (result.isPresent() && result.get() == yesButton) {
             // Navigate to login screen
             try {
+                LoginService loginService = (LoginService) ClientChatApp.registry.lookup("LoginService");
+//                TODO: Remove currentUser from onlineUsersMap
+//                  loginService.logout(user.getPhoneNumber());
+
                 root = FXMLLoader.load(
                         Objects.requireNonNull(getClass().getResource(
                                 "/org/client/chatapp/login-view.fxml")));
@@ -377,23 +388,20 @@ public class ProfileScreenController {
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (NotBoundException e) {
+                throw new RuntimeException(e);
             }
         }
     }
 
     @FXML
-    private void onProfileIconClick(MouseEvent event) {
-        // Already on profile screen, do nothing or refresh
-        System.out.println("Already on profile screen");
-    }
-
-    @FXML
     private void onChatsIconClick(MouseEvent event) {
         try {
-            root = FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource(
-                            "/org/client/chatapp/home-screen-view.fxml")));
-
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
+                    "/org/client/chatapp/home-screen-view.fxml")));
+            root = loader.load();
+            HomeScreenController homeScreenController = loader.getController();
+            homeScreenController.setUser(user);
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             scene.getStylesheets().addAll(ClientChatApp.allStyles);
@@ -403,5 +411,10 @@ public class ProfileScreenController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
+        loadProfileData(user);
     }
 }

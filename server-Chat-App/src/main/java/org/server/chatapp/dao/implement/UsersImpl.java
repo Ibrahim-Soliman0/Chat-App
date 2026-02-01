@@ -5,6 +5,7 @@ import model.enums.Gender;
 import model.enums.Status;
 import org.server.chatapp.dao.Database;
 import org.server.chatapp.dao.dao.UsersDao;
+import org.server.chatapp.util.ImageUtil;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class UsersImpl implements UsersDao {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 Timestamp lastSeenTimestamp = resultSet.getTimestamp("lastSeen");
-                return new Users(
+                Users user = new Users(
                         resultSet.getLong("id"),
                         resultSet.getString("phoneNumber"),
                         resultSet.getString("name"),
@@ -37,6 +38,10 @@ public class UsersImpl implements UsersDao {
                         Status.valueOf(resultSet.getString("status").toUpperCase()),
                         lastSeenTimestamp != null ? lastSeenTimestamp.toLocalDateTime() : null
                 );
+
+                ImageUtil.setImageBytes(user);
+
+                return user;
             }
         } catch (SQLException se) {
             se.printStackTrace();
@@ -56,7 +61,7 @@ public class UsersImpl implements UsersDao {
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 Timestamp lastSeenTimestamp = resultSet.getTimestamp("lastSeen");
-                return new Users(
+                Users user = new Users(
                         resultSet.getLong("id"),
                         resultSet.getString("phoneNumber"),
                         resultSet.getString("name"),
@@ -70,6 +75,10 @@ public class UsersImpl implements UsersDao {
                         Status.valueOf(resultSet.getString("status").toUpperCase()),
                         lastSeenTimestamp != null ? lastSeenTimestamp.toLocalDateTime() : null
                 );
+
+                ImageUtil.setImageBytes(user);
+
+                return user;
             }
         } catch (SQLException se) {
             se.printStackTrace();
@@ -91,7 +100,7 @@ public class UsersImpl implements UsersDao {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Timestamp lastSeenTimestamp = resultSet.getTimestamp("lastSeen");
-                allUsers.add(new Users(
+                Users user = new Users(
                         resultSet.getLong("id"),
                         resultSet.getString("phoneNumber"),
                         resultSet.getString("name"),
@@ -104,7 +113,11 @@ public class UsersImpl implements UsersDao {
                         resultSet.getString("bio"),
                         Status.valueOf(resultSet.getString("status").toUpperCase()),
                         lastSeenTimestamp != null ? lastSeenTimestamp.toLocalDateTime() : null
-                ));
+                );
+
+                ImageUtil.setImageBytes(user);
+
+                allUsers.add(user);
 
                 preparedStatement.close();
                 resultSet.close();
@@ -165,7 +178,7 @@ public class UsersImpl implements UsersDao {
     }
 
     @Override
-    public int insert(Users users) {
+    public long insert(Users users) {
         int result = 0;
         try (Connection connection = Database.getDataSource().getConnection()) {
             String sql = """
@@ -273,29 +286,29 @@ public class UsersImpl implements UsersDao {
         List<Users> matchedUsers = new ArrayList<>();
         try (Connection connection = Database.getDataSource().getConnection()) {
             String sql = """
-                      SELECT
-                        *
-                      FROM
-                        USERS AS u
-                      WHERE
-                        u.phoneNumber LIKE ?
-                        AND
-                        u.id NOT IN (
-                              SELECT
-                                  CASE
-                                      WHEN f.senderUserId = ? THEN f.receiverUserId
-                                      ELSE f.senderUserId
-                                  END
-                              FROM
-                                  FRIENDS AS f
-                              WHERE
-                                  (senderUserId = u.id AND f.status = 'ACCEPTED')
-                                      OR
-                                  (receiverUserId = u.id AND f.status = 'ACCEPTED')
-                            )
-                        AND
-                          u.id <> ?
-                      LIMIT 20;""";
+                    SELECT
+                      *
+                    FROM
+                      USERS AS u
+                    WHERE
+                      u.phoneNumber LIKE ?
+                      AND
+                      u.id NOT IN (
+                            SELECT
+                                CASE
+                                    WHEN f.senderUserId = ? THEN f.receiverUserId
+                                    ELSE f.senderUserId
+                                END
+                            FROM
+                                FRIENDS AS f
+                            WHERE
+                                (senderUserId = u.id AND f.status = 'ACCEPTED')
+                                    OR
+                                (receiverUserId = u.id AND f.status = 'ACCEPTED')
+                          )
+                      AND
+                        u.id <> ?
+                    LIMIT 20;""";
 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, phoneNumber);
@@ -304,7 +317,7 @@ public class UsersImpl implements UsersDao {
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Timestamp lastSeenTimestamp = resultSet.getTimestamp("lastSeen");
-                matchedUsers.add(new Users(
+                Users user = new Users(
                         resultSet.getLong("id"),
                         resultSet.getString("phoneNumber"),
                         resultSet.getString("name"),
@@ -317,7 +330,11 @@ public class UsersImpl implements UsersDao {
                         resultSet.getString("bio"),
                         Status.valueOf(resultSet.getString("status").toUpperCase()),
                         lastSeenTimestamp != null ? lastSeenTimestamp.toLocalDateTime() : null
-                ));
+                );
+
+                ImageUtil.setImageBytes(user);
+
+                matchedUsers.add(user);
             }
         } catch (SQLException se) {
             se.printStackTrace();

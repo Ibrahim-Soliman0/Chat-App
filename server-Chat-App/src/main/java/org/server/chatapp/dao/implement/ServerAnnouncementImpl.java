@@ -72,7 +72,7 @@ public class ServerAnnouncementImpl implements ServerAnnouncementDao {
 
     }
     @Override
-    public int insert(ServerAnnouncement announcement) {
+    public long insert(ServerAnnouncement announcement) {
         int result = 0;
         try (Connection connection = Database.getDataSource().getConnection()) {
             String sql = "INSERT INTO serverannouncement (title, content, createdBy, createdAt, expiresAt, isActive) VALUES (?, ?, ?, ?, ?, ?)";
