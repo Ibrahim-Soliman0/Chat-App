@@ -9,6 +9,7 @@ module org.client.chatapp {
     requires jakarta.xml.bind;
     requires com.sun.xml.bind;
     requires javafx.media;
+    requires jbcrypt;
 
     exports org.client.chatapp;
     exports org.client.chatapp.ui.utils;

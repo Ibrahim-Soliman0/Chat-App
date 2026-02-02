@@ -1,5 +1,6 @@
 package org.client.chatapp.ui.controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
@@ -13,8 +14,12 @@ import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import model.Users;
 import org.client.chatapp.ClientChatApp;
+import org.mindrot.jbcrypt.BCrypt;
+import rmi.GetUserService;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -70,15 +75,15 @@ public class ChangePasswordController {
     }
 
     @FXML
-    private void onUpdatePasswordClick() {
+    private void onUpdatePasswordClick(ActionEvent actionEvent) throws NotBoundException, RemoteException {
         // Clear previous errors
         clearErrors();
 
         boolean valid = true;
 
         // Validate old password
-        if (oldPasswordField.getText() == null || oldPasswordField.getText().isEmpty()) {
-            oldPasswordError.setText("Please enter your old password");
+        if (oldPasswordField.getText() == null || oldPasswordField.getText().isEmpty() || !verifyPassword(oldPasswordField.getText(), user.getPassword())) {
+            oldPasswordError.setText("Please enter your correct old password");
             oldPasswordError.setVisible(true);
             valid = false;
         }
@@ -110,11 +115,15 @@ public class ChangePasswordController {
 
         // Here you would normally verify the old password and update to the new one
         // For now, we'll just show a success message
-        updatePassword();
+        updatePassword(actionEvent, newPasswordField.getText());
     }
 
-    private void updatePassword() {
-        // TODO: Implement actual password update logic with database
+    private void updatePassword(ActionEvent actionEvent, String newPassword) throws NotBoundException, RemoteException {
+        // Password update logic with the database
+        String newHashedPassword = hashPassword(newPassword);
+        user.setPassword(newHashedPassword);
+        GetUserService getUserService = (GetUserService) ClientChatApp.registry.lookup("GetUserService");
+        getUserService.updateUser(user);
 
         Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
         successAlert.setTitle("Success");
@@ -125,23 +134,39 @@ public class ChangePasswordController {
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
             // Navigate back to profile screen
-            navigateToProfile();
+            navigateToProfile(actionEvent, user);
         }
     }
 
     @FXML
-    private void onCancelClick() {
+    private void onCancelClick(ActionEvent actionEvent) {
         // Navigate back to profile screen without saving
-        navigateToProfile();
+        try {
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
+                    "/org/client/chatapp/profile-screen-view.fxml")));
+            root = loader.load();
+            ProfileScreenController profileScreenController = loader.getController();
+            profileScreenController.setUser(user);
+            stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            scene = new Scene(root);
+            scene.getStylesheets().addAll(ClientChatApp.allStyles);
+            stage.setScene(scene);
+            stage.setResizable(false);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("here");
+        }
     }
 
-    private void navigateToProfile() {
+    private void navigateToProfile(ActionEvent actionEvent, Users user) {
         try {
-            root = FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource(
-                            "/org/client/chatapp/profile-screen-view.fxml")));
-
-            stage = (Stage) updatePasswordButton.getScene().getWindow();
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
+                    "/org/client/chatapp/profile-screen-view.fxml")));
+            root = loader.load();
+            ProfileScreenController profileScreenController = loader.getController();
+            profileScreenController.setUser(user);
+            stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             scene = new Scene(root);
             scene.getStylesheets().addAll(ClientChatApp.allStyles);
             stage.setScene(scene);
@@ -156,11 +181,6 @@ public class ChangePasswordController {
         oldPasswordError.setVisible(false);
         newPasswordError.setVisible(false);
         confirmPasswordError.setVisible(false);
-    }
-
-    @FXML
-    private void onProfileIconClick(MouseEvent event) {
-        navigateToProfile();
     }
 
     @FXML
@@ -180,6 +200,14 @@ public class ChangePasswordController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean verifyPassword(String plainPassword, String hashedPassword) {
+        return BCrypt.checkpw(plainPassword, hashedPassword);
+    }
+
+    public static String hashPassword(String plainPassword) {
+        return BCrypt.hashpw(plainPassword, BCrypt.gensalt(12));
     }
 
     public void setUser(Users user) {
