@@ -8,6 +8,7 @@ module org.client.chatapp {
     requires java.desktop;
     requires jakarta.xml.bind;
     requires com.sun.xml.bind;
+    requires javafx.media;
 
     exports org.client.chatapp;
     exports org.client.chatapp.ui.utils;
