@@ -2,6 +2,7 @@ package org.server.chatapp.dao.implement;
 
 import model.Users;
 import model.enums.Gender;
+import model.enums.Role;
 import model.enums.Status;
 import org.server.chatapp.dao.Database;
 import org.server.chatapp.dao.dao.UsersDao;
@@ -38,6 +39,8 @@ public class UsersImpl implements UsersDao {
                         Status.valueOf(resultSet.getString("status").toUpperCase()),
                         lastSeenTimestamp != null ? lastSeenTimestamp.toLocalDateTime() : null
                 );
+                user.setRole(Role.valueOf(resultSet.getString("role")));
+                user.setFirstLogin(resultSet.getBoolean("isFirstLogin"));
 
                 ImageUtil.setImageBytes(user);
 
@@ -75,6 +78,8 @@ public class UsersImpl implements UsersDao {
                         Status.valueOf(resultSet.getString("status").toUpperCase()),
                         lastSeenTimestamp != null ? lastSeenTimestamp.toLocalDateTime() : null
                 );
+                user.setRole(Role.valueOf(resultSet.getString("role")));
+                user.setFirstLogin(resultSet.getBoolean("isFirstLogin"));
 
                 ImageUtil.setImageBytes(user);
 
@@ -114,14 +119,16 @@ public class UsersImpl implements UsersDao {
                         Status.valueOf(resultSet.getString("status").toUpperCase()),
                         lastSeenTimestamp != null ? lastSeenTimestamp.toLocalDateTime() : null
                 );
-
+                user.setRole(Role.valueOf(resultSet.getString("role")));
+                user.setFirstLogin(resultSet.getBoolean("isFirstLogin"));
                 ImageUtil.setImageBytes(user);
 
                 allUsers.add(user);
 
-                preparedStatement.close();
-                resultSet.close();
             }
+
+            preparedStatement.close();
+            resultSet.close();
         } catch (SQLException se) {
             se.printStackTrace();
         }
@@ -333,6 +340,8 @@ public class UsersImpl implements UsersDao {
                         Status.valueOf(resultSet.getString("status").toUpperCase()),
                         lastSeenTimestamp != null ? lastSeenTimestamp.toLocalDateTime() : null
                 );
+                user.setRole(Role.valueOf(resultSet.getString("role")));
+                user.setFirstLogin(resultSet.getBoolean("isFirstLogin"));
 
                 ImageUtil.setImageBytes(user);
 
@@ -343,5 +352,158 @@ public class UsersImpl implements UsersDao {
         }
 
         return matchedUsers;
+    }
+
+    @Override
+    public boolean updateStatus(String phoneNumber, Status status) {
+        Users user = getUserByPhoneNumber(phoneNumber);
+        if (user != null) {
+            user.setStatus(status);
+            update(user);
+            return true;
+        }
+        return false;
+
+    }
+
+    @Override
+    public boolean updateUserRole(Long userId, Role role) {
+        try (Connection connection = Database.getDataSource().getConnection()) {
+            String sql = "UPDATE users SET role = ? WHERE id = ?";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, role.name());
+            preparedStatement.setLong(2, userId);
+
+            int result = preparedStatement.executeUpdate();
+            preparedStatement.close();
+
+            return result > 0;
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateFirstLoginFlag(Long userId, boolean isFirstLogin) {
+        try (Connection connection = Database.getDataSource().getConnection()) {
+            String sql = "UPDATE users SET isFirstLogin = ? WHERE id = ?";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setBoolean(1, isFirstLogin);
+            preparedStatement.setLong(2, userId);
+
+            int result = preparedStatement.executeUpdate();
+            preparedStatement.close();
+
+            return result > 0;
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isAdmin(Long userId) {
+        try (Connection connection = Database.getDataSource().getConnection()) {
+            String sql = "SELECT role FROM users WHERE id = ?";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                String roleStr = resultSet.getString("role");
+                Role role = Role.valueOf(roleStr);
+                return role == Role.ADMIN || role == Role.MASTER_ADMIN;
+            }
+
+            preparedStatement.close();
+            resultSet.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public List<Users> getAllAdmins() {
+        List<Users> adminUsers = new ArrayList<>();
+        try (Connection connection = Database.getDataSource().getConnection()) {
+            String sql = "SELECT * FROM users WHERE role IN ('ADMIN', 'MASTER_ADMIN')";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Timestamp lastSeenTimestamp = resultSet.getTimestamp("lastSeen");
+                Users user = new Users(
+                        resultSet.getLong("id"),
+                        resultSet.getString("phoneNumber"),
+                        resultSet.getString("name"),
+                        resultSet.getString("email"),
+                        resultSet.getString("picturePath"),
+                        resultSet.getString("password"),
+                        Gender.valueOf(resultSet.getString("gender").toUpperCase()),
+                        resultSet.getString("country"),
+                        resultSet.getDate("DOB").toLocalDate(),
+                        resultSet.getString("bio"),
+                        Status.valueOf(resultSet.getString("status").toUpperCase()),
+                        lastSeenTimestamp != null ? lastSeenTimestamp.toLocalDateTime() : null
+                );
+
+                user.setRole(Role.valueOf(resultSet.getString("role")));
+                user.setFirstLogin(resultSet.getBoolean("isFirstLogin"));
+
+                ImageUtil.setImageBytes(user);
+                adminUsers.add(user);
+            }
+
+            preparedStatement.close();
+            resultSet.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+
+        return adminUsers;
+    }
+
+    @Override
+    public Role getUserRole(Long userId) {
+        try (Connection connection = Database.getDataSource().getConnection()) {
+            String sql = "SELECT role FROM users WHERE id = ?";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setLong(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                String roleStr = resultSet.getString("role");
+                return Role.valueOf(roleStr);
+            }
+
+            preparedStatement.close();
+            resultSet.close();
+        } catch (SQLException se) {
+            se.printStackTrace();
+        }
+        return Role.USER;
+    }
+    @Override
+    public boolean updatePasswordAndClearFirstLogin(Long userId, String newHashedPassword) {
+        String sql = "UPDATE users SET password = ?, isFirstLogin = ? WHERE id = ?";
+        try (Connection connection = Database.getDataSource().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setString(1, newHashedPassword);
+            preparedStatement.setBoolean(2, false); // خلاص ميبقاش أول دخول
+            preparedStatement.setLong(3, userId);
+
+            int result = preparedStatement.executeUpdate();
+            return result > 0;
+        } catch (SQLException se) {
+            se.printStackTrace();
+            return false;
+        }
     }
 }

@@ -37,6 +37,7 @@ public class LoginServiceImpl extends UnicastRemoteObject implements LoginServic
             Users user = usersDao.getUserByPhoneNumber(phoneNumber);
             if (PasswordUtil.verifyPassword(password, user.getPassword())) {
                 ClientManager.addClient(phoneNumber, callBack);
+                usersDao.updateStatus(phoneNumber , Status.ONLINE);
                 return user;
             } else
                 return null;
@@ -47,6 +48,8 @@ public class LoginServiceImpl extends UnicastRemoteObject implements LoginServic
     @Override
     public void logout(String phoneNumber) throws RemoteException {
         ClientManager.removeClient(phoneNumber);
+        usersDao.updateStatus(phoneNumber , Status.OFFLINE);
+
     }
 
     @Override

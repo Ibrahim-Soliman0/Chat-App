@@ -170,4 +170,255 @@
 .html-editor .web-view {
     -fx-background-color: white;
     -fx-padding: 10;
-}}
+}
+/* --- Admin Management Section (The Master Piece) --- */
+
+/* الكروت البيضاء (Containers) */
+.card-panel {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-padding: 25;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);
+}
+
+/* العناوين والـ Labels */
+.header-title {
+    -fx-font-size: 26px;
+    -fx-font-family: "Segoe UI Semibold";
+    -fx-text-fill: #111827;
+}
+
+.header-subtitle {
+    -fx-text-fill: #6b7280;
+    -fx-font-size: 13px;
+}
+
+.section-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2937;
+}
+
+.search-input {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 8;
+    -fx-padding: 10;
+    -fx-font-size: 14px;
+}
+
+.search-input:focused {
+    -fx-border-color: #14b8a6;
+}
+
+.search-button {
+    -fx-background-color: #14b8a6;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.table-view {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 10;
+    -fx-padding: 0;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #f9fafb;
+    -fx-background-radius: 10 10 0 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-size: 50;
+    -fx-border-color: transparent transparent #e5e7eb transparent;
+}
+
+.table-view .table-column {
+    -fx-border-color: transparent;
+}
+
+.table-row-cell .text,
+.table-row-cell .label {
+    -fx-fill: #111827;
+    -fx-text-fill: #111827;
+}
+
+.table-row-cell {
+    -fx-cell-size: 55;
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f3f4f6 transparent;
+}
+
+.table-row-cell:odd { -fx-background-color: #ffffff; }
+.table-row-cell:even { -fx-background-color: #fafafa; }
+
+.table-row-cell:selected {
+    -fx-background-color: #f3f4f6 !important;
+}
+
+.table-row-cell:selected .text,
+.table-row-cell:selected .label {
+    -fx-fill: #111827 !important;
+    -fx-text-fill: #111827 !important;
+}
+
+.btn-promote, .btn-demote {
+    -fx-text-fill: white !important;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6;
+    -fx-padding: 8 18;
+    -fx-cursor: hand;
+}
+
+.btn-promote .text, .btn-demote .text,
+.table-row-cell:selected .btn-promote .text,
+.table-row-cell:selected .btn-demote .text {
+    -fx-fill: white !important;
+}
+
+.btn-promote { -fx-background-color: #14b8a6; }
+.btn-promote:hover { -fx-background-color: #0d9488; }
+
+.btn-demote { -fx-background-color: #ef4444; }
+.btn-demote:hover { -fx-background-color: #dc2626; }
+
+.no-scroll .scroll-bar {
+    -fx-opacity: 0;
+    -fx-padding: -7;
+}
+
+/* --- Custom Alert Styling --- */
+
+.dialog-pane {
+    -fx-background-color: white;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-padding: 10;
+}
+
+/* جزء العناوين */
+.dialog-pane .header-panel {
+    -fx-background-color: #f9fafb;
+    -fx-background-radius: 15 15 0 0;
+    -fx-padding: 15;
+}
+
+.dialog-pane .header-panel .label {
+    -fx-text-fill: #111827;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+.dialog-pane .content {
+    -fx-text-fill: #4b5563;
+    -fx-font-size: 14px;
+    -fx-padding: 20;
+}
+
+.dialog-pane .button-bar .button {
+    -fx-background-color: #e5e7eb;
+    -fx-text-fill: #374151;
+    -fx-background-radius: 8;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-padding: 8 20;
+}
+
+.dialog-pane .button-bar .button:hover {
+    -fx-background-color: #d1d5db;
+}
+
+.dialog-pane .button-bar .button:default {
+    -fx-background-color: #14b8a6;
+    -fx-text-fill: white;
+}
+
+.dialog-pane .button-bar .button:default:hover {
+    -fx-background-color: #0d9488;
+}
+/* --- Custom Progress Bar --- */
+
+.password-input {
+    -fx-background-color: #f9fafb;
+    -fx-background-radius: 10;
+    -fx-border-color: #e5e7eb;
+    -fx-border-radius: 10;
+    -fx-padding: 12;
+}
+
+.primary-button {
+    -fx-background-color: #14b8a6;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-padding: 14;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.strength-bar .bar {
+    -fx-background-radius: 5;
+}
+.strength-bar.weak .bar { -fx-background-color: #ef4444; }
+.strength-bar.medium .bar { -fx-background-color: #f59e0b; }
+.strength-bar.strong .bar { -fx-background-color: #10b981; }
+/*--- logout ---*/
+.logout-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ef4444;
+    -fx-font-weight: bold;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+}
+
+.logout-button:hover {
+    -fx-background-color: #fef2f2;
+    -fx-cursor: hand;
+}
+
+.logout-button .svg-path {
+    -fx-stroke: #ef4444;
+}
+
+#lblAdminName {
+    -fx-effect: dropshadow(gaussian, rgba(20, 184, 166, 0.2), 5, 0, 0, 0);
+    -fx-cursor: hand;
+}
+
+#lblAdminName:hover {
+    -fx-text-fill: #0d9488;
+}
+/* Container for the table to give it rounded corners and shadow */
+.table-container {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 5);
+    -fx-padding: 5;
+}
+
+/* Styling the TableView itself */
+.user-mgmt-container .table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.user-mgmt-container .table-row-cell {
+    -fx-cell-size: 55px;
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f3f4f6 transparent;
+}
+
+.user-mgmt-container .table-view .virtual-flow {
+    -fx-background-color: white;
+}
+
+.user-mgmt-container .table-view .column-header-background {
+    -fx-background-color: #f9fafb;
+    -fx-border-color: transparent transparent #e5e7eb transparent;
+}

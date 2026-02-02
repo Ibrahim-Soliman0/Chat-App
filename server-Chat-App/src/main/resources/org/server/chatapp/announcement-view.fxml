@@ -9,7 +9,9 @@
 <?import javafx.scene.web.HTMLEditor?>
 
 <?import javafx.scene.control.TextField?>
-<VBox spacing="20.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
+<VBox
+        stylesheets="@../../../css/admin.css"
+        spacing="20.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.server.chatapp.ui.controller.AnnouncementController">
     <padding>
         <Insets bottom="30.0" left="40.0" right="40.0" top="30.0"/>

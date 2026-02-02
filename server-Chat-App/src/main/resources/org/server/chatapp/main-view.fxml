@@ -9,8 +9,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.layout.Region?>
 
-<BorderPane fx:id="root" prefHeight="700.0" prefWidth="1050.0"
+<BorderPane
+        stylesheets="@../../../css/admin.css"
+        fx:id="root" prefHeight="700.0" prefWidth="1050.0"
             style="-fx-background-color: #f5f5f5;"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.server.chatapp.ui.controller.AdminDashboardController">
@@ -18,65 +21,46 @@
     <left>
         <VBox prefWidth="250.0" spacing="5.0"
               style="-fx-background-color: white; -fx-border-color: #e5e7eb; -fx-border-width: 0 1 0 0;">
+
             <VBox alignment="CENTER" spacing="10.0">
-                <padding>
-                    <Insets bottom="30.0" top="30.0"/>
-                </padding>
+                <padding><Insets bottom="30.0" top="30.0"/></padding>
                 <StackPane>
                     <Circle radius="30.0" style="-fx-fill: #14b8a6;"/>
                     <SVGPath content="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" fill="WHITE"/>
                 </StackPane>
-                <Label style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1f2937;"
-                       text="Admin Dashboard"/>
+                <Label style="-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1f2937;" text="Admin Dashboard"/>
             </VBox>
 
             <VBox spacing="8.0" VBox.vgrow="ALWAYS">
                 <padding>
-                    <Insets left="15.0" right="15.0"/>
+                    <Insets left="15.0" right="15.0" bottom="20.0"/>
                 </padding>
-                <Button fx:id="btnControl"
-                        onAction="#showServerControl"
-                        alignment="BASELINE_LEFT" maxWidth="Infinity" prefHeight="45.0"
-                        styleClass="nav-button, nav-button-active" text=" Start/Stop">
-                    <graphic>
-                        <Group>
-                            <SVGPath
-                                    content="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
-                                    fill="TRANSPARENT" stroke="#4b5563" strokeWidth="1.5"/>
-                        </Group>
-                    </graphic>
+
+                <Button fx:id="btnControl" onAction="#showServerControl" alignment="BASELINE_LEFT" maxWidth="Infinity" prefHeight="45.0" styleClass="nav-button, nav-button-active" text=" Start/Stop">
+                    <graphic><Group><SVGPath content="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" fill="TRANSPARENT" stroke="#4b5563" strokeWidth="1.5"/></Group></graphic>
                 </Button>
 
-                <Button fx:id="btnStatistics" onAction="#showStatistics" alignment="BASELINE_LEFT"
-                        maxWidth="Infinity" prefHeight="45.0"
-                        styleClass="nav-button" text=" Statistics">
-                    <graphic>
-                        <Group>
-                            <SVGPath content="M21.21 15.89A10 10 0 1 1 8 2.83M22 12A10 10 0 0 0 12 2v10z"
-                                     fill="TRANSPARENT" stroke="#4b5563" strokeWidth="1.5"/>
-                        </Group>
-                    </graphic>
+                <Button fx:id="btnStatistics" onAction="#showStatistics" alignment="BASELINE_LEFT" maxWidth="Infinity" prefHeight="45.0" styleClass="nav-button" text=" Statistics">
+                    <graphic><Group><SVGPath content="M21.21 15.89A10 10 0 1 1 8 2.83M22 12A10 10 0 0 0 12 2v10z" fill="TRANSPARENT" stroke="#4b5563" strokeWidth="1.5"/></Group></graphic>
                 </Button>
 
-                <Button fx:id="btnAnnouncements" onAction="#showAnnouncement" alignment="BASELINE_LEFT" maxWidth="Infinity" prefHeight="45.0"
-                        styleClass="nav-button" text=" Announcements">
-                    <graphic>
-                        <Group>
-                            <SVGPath
-                                    content="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14 M8 6v8"
-                                    fill="TRANSPARENT" stroke="#4b5563" strokeWidth="1.5"/>
-                        </Group>
-                    </graphic>
+                <Button fx:id="btnAnnouncements" onAction="#showAnnouncement" alignment="BASELINE_LEFT" maxWidth="Infinity" prefHeight="45.0" styleClass="nav-button" text=" Announcements">
+                    <graphic><Group><SVGPath content="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14 M8 6v8" fill="TRANSPARENT" stroke="#4b5563" strokeWidth="1.5"/></Group></graphic>
                 </Button>
 
-                <Button fx:id="btnUsers" alignment="BASELINE_LEFT" maxWidth="Infinity" prefHeight="45.0"
-                        styleClass="nav-button" text=" User Management">
+                <Button fx:id="btnUsers" onAction="#showUserManagement" alignment="BASELINE_LEFT" maxWidth="Infinity" prefHeight="45.0" styleClass="nav-button" text=" User Management">
+                    <graphic><Group><SVGPath content="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" fill="TRANSPARENT" stroke="#4b5563" strokeWidth="1.5"/><SVGPath content="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" fill="TRANSPARENT" stroke="#4b5563" strokeWidth="1.5"/></Group></graphic>
+                </Button>
+
+                <Button fx:id="btnAdminManagement" onAction="#showAdminManagement" alignment="BASELINE_LEFT" maxWidth="Infinity" prefHeight="45.0" styleClass="nav-button" text=" Admin Management">
+                    <graphic><Group><SVGPath content="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" fill="TRANSPARENT" stroke="#4b5563" strokeWidth="1.5"/></Group></graphic>
+                </Button>
+
+                <Region VBox.vgrow="ALWAYS" />
+                <Button fx:id="btnLogout" onAction="#handleLogout" alignment="BASELINE_LEFT" maxWidth="Infinity" prefHeight="45.0" styleClass="logout-button" text=" Logout">
                     <graphic>
                         <Group>
-                            <SVGPath content="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" fill="TRANSPARENT"
-                                     stroke="#4b5563" strokeWidth="1.5"/>
-                            <SVGPath content="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" fill="TRANSPARENT"
-                                     stroke="#4b5563" strokeWidth="1.5"/>
+                            <SVGPath content="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4 M16 17l5-5-5-5 M21 12H9" fill="TRANSPARENT" stroke="#ef4444" strokeWidth="1.5"/>
                         </Group>
                     </graphic>
                 </Button>

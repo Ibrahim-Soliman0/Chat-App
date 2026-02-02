@@ -2,6 +2,7 @@ package model;
 
 
 import model.enums.Gender;
+import model.enums.Role;
 import model.enums.Status;
 
 import java.io.Serializable;
@@ -23,6 +24,8 @@ public class Users implements Serializable {
     private String bio;
     private Status status;
     private LocalDateTime lastSeen;
+    private Role role = Role.USER;
+    private boolean isFirstLogin = true;
 
     public Users() {
     }
@@ -165,6 +168,30 @@ public class Users implements Serializable {
 
     public void setPictureBytes(byte[] pictureBytes) {
         this.pictureBytes = pictureBytes;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public boolean isFirstLogin() {
+        return isFirstLogin;
+    }
+
+    public void setFirstLogin(boolean firstLogin) {
+        isFirstLogin = firstLogin;
+    }
+
+    public boolean isAdmin() {
+        return role == Role.ADMIN || role == Role.MASTER_ADMIN;
+    }
+
+    public boolean isMasterAdmin() {
+        return role == Role.MASTER_ADMIN;
     }
 
     @Override

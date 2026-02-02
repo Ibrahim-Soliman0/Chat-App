@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import org.server.chatapp.util.AdminSession;
 import org.server.chatapp.util.RMIUtil;
 
 import java.rmi.NotBoundException;
@@ -12,12 +13,19 @@ import java.rmi.RemoteException;
 
 public class ServerControlController {
     @FXML
+    private Label lblAdminName;
+    @FXML
     private Circle statusCircle;
     @FXML
     private Label lblStatus;
     @FXML
     private Button btnStartStop;
     public void initialize() {
+        if (AdminSession.getInstance() != null) {
+            String fullName = AdminSession.getInstance().getName();
+            String firstName = fullName.split(" ")[0];
+            lblAdminName.setText(firstName + "!");
+        }
         updateUI(RMIUtil.isRunning());
     }
     public void handleStartStop() {

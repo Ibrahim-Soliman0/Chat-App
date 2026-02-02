@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox
+        spacing="20.0" stylesheets="@../../../css/admin.css"
+        styleClass="user-mgmt-container"
+      xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.server.chatapp.ui.controller.UserManagementController">
+    <children>
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <children>
+                <VBox spacing="2">
+                    <Label style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #111827;" text="User Management" />
+                    <Label style="-fx-text-fill: #6b7280; -fx-font-size: 13px;" text="Double-click on any cell to edit user information directly." />
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <TextField fx:id="searchField" prefWidth="250.0" promptText="Search by name or phone..." styleClass="search-field" />
+            </children>
+        </HBox>
+
+        <VBox VBox.vgrow="ALWAYS" styleClass="table-container">
+            <children>
+                <TableView fx:id="usersTable" editable="true" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colPhone" prefWidth="150.0" text="Phone Number" />
+                        <TableColumn fx:id="colName" prefWidth="180.0" text="Full Name" />
+                        <TableColumn fx:id="colEmail" prefWidth="200.0" text="Email Address" />
+                        <TableColumn fx:id="colCountry" prefWidth="120.0" text="Country" />
+                        <TableColumn fx:id="colGender" prefWidth="100.0" text="Gender" />
+                        <TableColumn fx:id="colStatus" prefWidth="100.0" text="Status" />
+                    </columns>
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
+                </TableView>
+            </children>
+        </VBox>
+
+        <HBox alignment="CENTER_RIGHT" spacing="15">
+            <Label fx:id="lblTotalUsers" style="-fx-text-fill: #6b7280;" text="Total Users: 0"/>
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button fx:id="btnCancel" onAction="#handleCancelChanges"
+                    text="Discard Changes"
+                    style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand;"/>
+
+            <Button fx:id="btnApply" onAction="#handleApplyChanges"
+                    styleClass="action-button" text="Apply Changes"
+                    style="-fx-background-color: #14b8a6; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand;"/>
+        </HBox>
+    </children>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+</VBox>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.SVGPath?>
+
+<ScrollPane
+        stylesheets="@../../../css/admin.css"
+        fx:id="rootPane"
+        fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.server.chatapp.ui.controller.AdminManagementController">
+
+    <content>
+        <VBox spacing="20.0" styleClass="main-content-area">
+            <padding>
+                <Insets bottom="30.0" left="40.0" right="40.0" top="30.0"/>
+            </padding>
+
+            <children>
+                <VBox spacing="5">
+                    <Label styleClass="header-title" text="Admin Management"/>
+                    <Label styleClass="header-subtitle" text="Search for users and manage admin privileges. Only Master Admins can access this page."/>
+                </VBox>
+
+                <VBox spacing="15.0" styleClass="card-panel">
+                    <children>
+                        <Label styleClass="section-label" text="Search for User"/>
+                        <HBox spacing="15.0" alignment="CENTER_LEFT">
+                            <children>
+                                <TextField fx:id="searchField" promptText="Enter phone number or name..." styleClass="search-input" HBox.hgrow="ALWAYS"/>
+<!--                                <Button fx:id="btnSearch" onAction="#handleSearch" styleClass="search-button" text="SEARCH">-->
+<!--                                    <graphic>-->
+<!--                                        <SVGPath content="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" fill="TRANSPARENT" stroke="WHITE" strokeWidth="2"/>-->
+<!--                                    </graphic>-->
+<!--                                </Button>-->
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+
+                <VBox spacing="15.0" styleClass="card-panel">
+                    <children>
+                        <HBox alignment="CENTER_LEFT">
+                            <children>
+                                <Label styleClass="section-label" text="Search Results"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label fx:id="lblResultCount" styleClass="count-label" text="0 users found"/>
+                            </children>
+                        </HBox>
+                        <TableView fx:id="searchResultsTable" prefHeight="300.0">
+                            <columns>
+                                <TableColumn fx:id="colPhone" text="Phone Number" prefWidth="150.0"/>
+                                <TableColumn fx:id="colName" text="Name" prefWidth="200.0"/>
+                                <TableColumn fx:id="colEmail" text="Email" prefWidth="220.0"/>
+                                <TableColumn fx:id="colRole" text="Current Role" prefWidth="120.0"/>
+                                <TableColumn fx:id="colAction" text="Action" prefWidth="150.0"/>
+                            </columns>
+                        </TableView>
+                    </children>
+                </VBox>
+
+                <VBox spacing="15.0" styleClass="card-panel">
+                    <children>
+                        <HBox alignment="CENTER_LEFT">
+                            <children>
+                                <Label styleClass="section-label" text="Current Admins"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label fx:id="lblAdminCount" styleClass="count-label" text="0 admins"/>
+                            </children>
+                        </HBox>
+                        <TableView fx:id="adminsTable" prefHeight="250.0">
+                            <columns>
+                                <TableColumn fx:id="colAdminPhone" text="Phone Number" prefWidth="150.0"/>
+                                <TableColumn fx:id="colAdminName" text="Name" prefWidth="200.0"/>
+                                <TableColumn fx:id="colAdminEmail" text="Email" prefWidth="220.0"/>
+                                <TableColumn fx:id="colAdminRole" text="Role" prefWidth="120.0"/>
+                                <TableColumn fx:id="colAdminAction" text="Action" prefWidth="150.0"/>
+                            </columns>
+                        </TableView>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </content>
+</ScrollPane>
