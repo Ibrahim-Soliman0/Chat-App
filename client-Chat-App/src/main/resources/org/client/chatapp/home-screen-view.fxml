@@ -1,17 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.Group?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.effect.DropShadow?>
-<?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.shape.SVGPath?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="450.0" style="-fx-background-color: #f7f9fa;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.HomeScreenController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="450.0" style="-fx-background-color: #f7f9fa;" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.HomeScreenController">
     <children>
         <ListView fx:id="chatsList" layoutY="125.0" prefHeight="450.0" prefWidth="450.0" style="-fx-background-color: #f7f8fa;" />
         <Pane layoutY="575.0" prefHeight="75.0" prefWidth="450.0" style="-fx-background-color: #ffffff;">
@@ -68,5 +64,10 @@
             <SVGPath content="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" fill="#00ab8900" stroke="#00ab89" strokeLineCap="ROUND" strokeLineJoin="ROUND" />
          </children>
       </Group>
+      <Label fx:id="searchLabel" layoutX="137.0" layoutY="146.0" text="No Contact Found" textFill="#41bf2d" visible="false">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Label>
     </children>
 </Pane>
