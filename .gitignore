@@ -48,3 +48,5 @@ build/
 
 # Ignore all profile pictures
 server-Chat-App/uploads/profiles/*
+server-Chat-App/uploads/message files/*
+client-Chat-App/src/main/resources/Message Downloads/*
