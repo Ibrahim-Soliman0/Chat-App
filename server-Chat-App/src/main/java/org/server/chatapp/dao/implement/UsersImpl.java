@@ -302,9 +302,9 @@ public class UsersImpl implements UsersDao {
                             FROM
                                 FRIENDS AS f
                             WHERE
-                                (senderUserId = u.id AND f.status = 'ACCEPTED')
+                                (senderUserId = ? AND f.status = 'ACCEPTED')
                                     OR
-                                (receiverUserId = u.id AND f.status = 'ACCEPTED')
+                                (receiverUserId = ? AND f.status = 'ACCEPTED')
                           )
                       AND
                         u.id <> ?
@@ -314,6 +314,8 @@ public class UsersImpl implements UsersDao {
             preparedStatement.setString(1, phoneNumber);
             preparedStatement.setLong(2, searchingUserId);
             preparedStatement.setLong(3, searchingUserId);
+            preparedStatement.setLong(4, searchingUserId);
+            preparedStatement.setLong(5, searchingUserId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Timestamp lastSeenTimestamp = resultSet.getTimestamp("lastSeen");
