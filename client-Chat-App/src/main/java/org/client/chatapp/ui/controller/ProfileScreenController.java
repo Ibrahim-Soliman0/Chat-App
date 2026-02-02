@@ -9,13 +9,18 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import model.Users;
+import model.enums.Gender;
 import org.client.chatapp.ClientChatApp;
+import org.client.chatapp.ui.utils.ImageUtil;
+import rmi.GetMessageService;
 import org.client.chatapp.config.ConfigManager;
 import org.client.chatapp.config.UserConfig;
 import org.client.chatapp.ui.utils.SavedUserUtil;
@@ -23,11 +28,13 @@ import rmi.GetUserService;
 import rmi.LoadFriendsListService;
 import rmi.LoginService;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -67,7 +74,7 @@ public class ProfileScreenController {
     private Stage stage;
     private Scene scene;
     private boolean isEditMode = false;
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 
     @FXML
     public void initialize() throws RemoteException {
@@ -187,32 +194,26 @@ public class ProfileScreenController {
     }
 
     private void loadProfileData(Users user) {
-        // Placeholder data - in a real app, this would load from a database or service
+        // Load from the database through RMI
         fullNameLabel.setText(user.getName());
         emailLabel.setText(user.getEmail());
-        genderLabel.setText(user.getGender().toString());
+        genderLabel.setText(user.getGender().toString().equals("MALE") ? "Male" : "Female");
         countryLabel.setText(user.getCountry());
         dobLabel.setText(user.getDob().toString());
         bioLabel.setText(user.getBio());
+        Image image = ImageUtil.getImageFromByteArray(user.getPictureBytes());
+        profileImage.setFill(new ImagePattern(image));
 
         // Set initial values for form controls
         fullNameField.setText(fullNameLabel.getText());
         emailField.setText(emailLabel.getText());
         genderComboBox.setValue(genderLabel.getText());
         countryComboBox.setValue(countryLabel.getText());
-
-        // Parse and set date
-        try {
-            LocalDate dob = LocalDate.parse(dobLabel.getText(), dateFormatter);
-            dobPicker.setValue(dob);
-        } catch (Exception e) {
-            dobPicker.setValue(LocalDate.of(1990, 1, 1));
-        }
-
+        dobPicker.setValue(LocalDate.parse(dobLabel.getText()));
         bioField.setText(bioLabel.getText());
 
         // Set initials
-        updateInitials(fullNameLabel.getText());
+//        updateInitials(fullNameLabel.getText());
     }
 
     private void updateInitials(String fullName) {
@@ -230,13 +231,13 @@ public class ProfileScreenController {
     }
 
     @FXML
-    private void onEditIconClick(MouseEvent event) {
+    private void onEditIconClick(MouseEvent event) throws NotBoundException, RemoteException {
         if (!isEditMode) {
             // Switch to edit mode
             enterEditMode();
         } else {
             // Save changes and exit edit mode
-            saveProfileChanges();
+            saveProfileChanges(user);
             exitEditMode();
         }
     }
@@ -281,6 +282,8 @@ public class ProfileScreenController {
         checkPath.setContent("M20 6L9 17l-5-5");
         checkPath.getStyleClass().add("icon");
         editIcon.getChildren().add(checkPath);
+        editIcon.setOnMouseEntered(e -> checkPath.getStyleClass().setAll("onIconHover"));
+        editIcon.setOnMouseExited(e -> checkPath.getStyleClass().setAll("icon"));
     }
 
     private void exitEditMode() {
@@ -321,34 +324,30 @@ public class ProfileScreenController {
         initializeEditIcon();
     }
 
-    private void saveProfileChanges() {
-        // Update labels with new values
-        fullNameLabel.setText(fullNameField.getText());
-        emailLabel.setText(emailField.getText());
-        genderLabel.setText(genderComboBox.getValue());
-        countryLabel.setText(countryComboBox.getValue());
+    private void saveProfileChanges(Users user) throws NotBoundException, RemoteException {
+        // Update in the database through RMI
+        user.setName(fullNameField.getText());
+        user.setEmail(emailField.getText());
+        user.setGender(Gender.valueOf(genderComboBox.getValue().toUpperCase()));
+        user.setCountry(countryComboBox.getValue());
+        user.setDob(dobPicker.getValue());
+        user.setBio(bioField.getText());
 
-        // Format and update date of birth
-        if (dobPicker.getValue() != null) {
-            dobLabel.setText(dobPicker.getValue().format(dateFormatter));
-        }
+        GetUserService getUserService = (GetUserService) ClientChatApp.registry.lookup("GetUserService");
+        getUserService.updateUser(user);
 
-        bioLabel.setText(bioField.getText());
-
-        // Update initials
-        updateInitials(fullNameField.getText());
-
-        // Here, save to database/service
-        System.out.println("Profile updated successfully");
+        // Update the current controller
+        loadProfileData(user);
     }
 
     @FXML
     private void onChangePasswordClick(MouseEvent event) {
         try {
-            root = FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource(
-                            "/org/client/chatapp/change-password-view.fxml")));
-
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
+                    "/org/client/chatapp/change-password-view.fxml")));
+            root = loader.load();
+            ChangePasswordController changePasswordController = loader.getController();
+            changePasswordController.setUser(user);
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             scene.getStylesheets().addAll(ClientChatApp.allStyles);
