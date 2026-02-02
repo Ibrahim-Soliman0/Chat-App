@@ -11,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
+import model.Users;
 import org.client.chatapp.ClientChatApp;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class ChangePasswordController {
     private Parent root;
     private Stage stage;
     private Scene scene;
+    private Users user;
 
     @FXML
     public void initialize() {
@@ -164,10 +166,11 @@ public class ChangePasswordController {
     @FXML
     private void onChatsIconClick(MouseEvent event) {
         try {
-            root = FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource(
-                            "/org/client/chatapp/home-screen-view.fxml")));
-
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
+                    "/org/client/chatapp/home-screen-view.fxml")));
+            root = loader.load();
+            HomeScreenController homeScreenController = loader.getController();
+            homeScreenController.setUser(user);
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             scene.getStylesheets().addAll(ClientChatApp.allStyles);
@@ -177,5 +180,9 @@ public class ChangePasswordController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setUser(Users user) {
+        this.user = user;
     }
 }

@@ -41,7 +41,7 @@
                         <VBox alignment="CENTER" spacing="10" style="-fx-padding: 30 0 10 0;">
                             <children>
                                 <Circle fx:id="profileImage" fill="#e0e0e0" radius="60" stroke="#25D366" strokeWidth="3" />
-                                <Label fx:id="initialsLabel" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #666666;" text="U" translateY="-75" />
+                                <Label fx:id="initialsLabel" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #666666;" translateY="-75" />
                             </children>
                         </VBox>
 

@@ -93,4 +93,10 @@ public class GetUserServiceImpl extends UnicastRemoteObject implements GetUserSe
         MessageDaoImpl messageDao = new MessageDaoImpl();
         return messageDao.getUnreadMessages(user, room);
     }
+
+    @Override
+    public void updateUser(Users user) throws RemoteException {
+        UsersImpl usersImpl = new UsersImpl();
+        usersImpl.update(user);
+    }
 }

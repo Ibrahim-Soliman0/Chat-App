@@ -27,4 +27,6 @@ public interface GetUserService extends Remote {
     int getUnreadMessagesCount(Users user, Room room) throws RemoteException;
 
     List<Message> getUnreadMessages(Users user, Room room) throws RemoteException;
+
+    void updateUser(Users user) throws RemoteException;
 }
