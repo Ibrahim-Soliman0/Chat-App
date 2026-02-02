@@ -22,6 +22,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import model.Users;
@@ -82,6 +83,11 @@ public class HomeScreenController implements NotificationListener {
     private Polyline iconPolyLine;
     @FXML
     private Label emptyStateLabel;
+    @FXML
+    private Label searchLabel;
+
+    private List<ChatItemView>allChats;
+    private String searchText;
 
     public void initialize() {
         Circle profileHeadIcon = new Circle(12, 7, 4);
@@ -243,6 +249,10 @@ public class HomeScreenController implements NotificationListener {
         emptyStateIcon.getChildren().add(iconPolyLine);
 
         ClientCallBackImp.setHomeScreenListener(this);
+
+        searchBar.textProperty().addListener((obs, oldText, newText) -> {
+            filterRoom(newText);
+        });
     }
 
     @FXML
@@ -370,6 +380,7 @@ public class HomeScreenController implements NotificationListener {
                             }
                     )
                     .toList();
+            allChats=userRoomsToChatItemView;
 
             chatsList.setItems(FXCollections.observableArrayList(userRoomsToChatItemView));
 
@@ -390,6 +401,26 @@ public class HomeScreenController implements NotificationListener {
         } catch (RemoteException | NotBoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void  filterRoom(String text){
+        if(text==null || text.isBlank() ){
+            chatsList.setItems(FXCollections.observableArrayList(allChats));
+            searchLabel.setVisible(false);
+            return;
+        }
+        searchText=text.toLowerCase();
+        List<ChatItemView>filtered=allChats.stream().filter(
+                chat ->
+                        chat.getChatItem()
+                                .getName()
+                                .toLowerCase()
+                                .startsWith(searchText)
+                )
+                .toList();
+        chatsList.setItems(FXCollections.observableArrayList(filtered));
+        searchLabel.setVisible(filtered.isEmpty());
+
     }
 
     public void clearNotifications() {
