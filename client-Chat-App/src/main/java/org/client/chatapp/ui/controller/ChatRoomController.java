@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -49,6 +50,7 @@ public class ChatRoomController {
 
     @FXML
     public Circle profileImage;
+    public SVGPath attachmentButton;
 
     @FXML
     private Group backButton;
@@ -83,7 +85,9 @@ public class ChatRoomController {
     private Stage stage;
     private Scene scene;
     private Parent root;
-    public static Map<Long, ChatRoomController> activeControllers = new ConcurrentHashMap<>();
+
+    public record UserRoomKey(long userId, long roomId) {};
+    public static Map<UserRoomKey, ChatRoomController> activeControllers = new ConcurrentHashMap<>();
 
     public void initializeChat(ChatRoomDTO chatRoomDTO) {
         this.currentUser = chatRoomDTO.getMe();
@@ -94,7 +98,9 @@ public class ChatRoomController {
         updateProfilePicture();
 
         // Save the current object in the active controllers map to be used in the callback
-        activeControllers.put(chatRoomDTO.getRoom().getId(), this);
+        UserRoomKey key = new UserRoomKey(chatRoomDTO.getMe().getId(), chatRoomDTO.getRoom().getId());
+        activeControllers.putIfAbsent(key, this);
+//        activeControllers.put(chatRoomDTO.getRoom().getId(), this);
 
         // Set the other user's name
         chatUserName.setText(otherUser.getName());
@@ -115,12 +121,83 @@ public class ChatRoomController {
             Stage currentStage = (Stage) messagesScrollPane.getScene().getWindow();
             if (currentStage != null) {
                 currentStage.setOnCloseRequest(event -> {
-                    activeControllers.remove(chatRoomDTO.getRoom().getId());
+                    activeControllers.remove(new UserRoomKey(chatRoomDTO.getMe().getId(), chatRoomDTO.getRoom().getId()));
                     Platform.exit();
                     System.exit(0);
                 });
             }
         });
+
+        // Icons Hovering
+        hoverAllIcons();
+
+        // Listener to the message input
+        listenMessageInput();
+    }
+
+    private void listenMessageInput() {
+        messageInput.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && !newValue.trim().isEmpty()) {
+                // Text entered - activate button
+                sendButton.setStyle("-fx-background-color: #00ab8a; -fx-opacity: 1; -fx-background-radius: 18; -fx-text-fill: white; -fx-cursor: hand;");
+                ((Group) sendButton.getGraphic()).getChildren().forEach(node -> {
+                    if (node instanceof SVGPath) {
+                        node.setStyle("-fx-stroke: #000000; -fx-stroke-width: 2; -fx-stroke-linecap: round; -fx-stroke-linejoin: round; -fx-fill: transparent;");
+                    }
+                });
+            } else {
+                // Text cleared - deactivate button
+                sendButton.setStyle("-fx-background-color: #00ab8a; -fx-opacity: 0.3; -fx-background-radius: 18; -fx-text-fill: white; -fx-cursor: hand;");
+                ((Group) sendButton.getGraphic()).getChildren().forEach(node -> {
+                    if (node instanceof SVGPath) {
+                        node.setStyle("-fx-stroke: #808080; -fx-stroke-width: 2; -fx-stroke-linecap: round; -fx-stroke-linejoin: round; -fx-fill: transparent;");
+                    }
+                });
+            }
+        });
+    }
+
+    private void hoverAllIcons() {
+        // Back button
+        backButton.getChildren().forEach(node -> node.getStyleClass().add("icon"));
+        backButton.setOnMouseEntered(e ->
+                backButton.getChildren().forEach(node ->
+                        node.getStyleClass().setAll("onIconHover")
+                )
+        );
+        backButton.setOnMouseExited(e ->
+                backButton.getChildren().forEach(node ->
+                        node.getStyleClass().setAll("icon")
+                )
+        );
+
+        // Video Call Button
+        videoCallButton.getStyleClass().add("icon");
+        videoCallButton.setOnMouseEntered(e -> videoCallButton.getStyleClass().setAll("onIconHover"));
+        videoCallButton.setOnMouseExited(e -> videoCallButton.getStyleClass().setAll("icon"));
+
+        // Phone Call Button
+        phoneCallButton.getStyleClass().add("icon");
+        phoneCallButton.setOnMouseEntered(e -> phoneCallButton.getStyleClass().setAll("onIconHover"));
+        phoneCallButton.setOnMouseExited(e -> phoneCallButton.getStyleClass().setAll("icon"));
+
+        // Ellipsis Button
+        ellipsisButton.getChildren().forEach(node -> node.getStyleClass().add("icon"));
+        ellipsisButton.setOnMouseEntered(e ->
+                ellipsisButton.getChildren().forEach(node ->
+                        node.getStyleClass().setAll("onIconHover")
+                )
+        );
+        ellipsisButton.setOnMouseExited(e ->
+                ellipsisButton.getChildren().forEach(node ->
+                        node.getStyleClass().setAll("icon")
+                )
+        );
+
+        // Attachment Button
+        attachmentButton.getStyleClass().add("icon");
+        attachmentButton.setOnMouseEntered(e -> attachmentButton.getStyleClass().setAll("onIconHover"));
+        attachmentButton.setOnMouseExited(e -> attachmentButton.getStyleClass().setAll("icon"));
     }
 
     private void updateProfilePicture() {
@@ -233,7 +310,7 @@ public class ChatRoomController {
                 getMessageService = (GetMessageService) ClientChatApp.registry.lookup("GetMessageService");
                 getMessageService.sendMessage(message);
                 addMessageToUI(message);
-                System.out.println(activeControllers);
+//                System.out.println(activeControllers);
                 getMessageService.updateOthersGUI(chatRoomDTO);
             } catch (RemoteException | NotBoundException e) {
                 e.printStackTrace();
@@ -245,7 +322,7 @@ public class ChatRoomController {
     @FXML
     private void onBackButtonClick(MouseEvent event) {
         try {
-            activeControllers.remove(chatRoomDTO.getRoom().getId());
+            activeControllers.remove(new UserRoomKey(chatRoomDTO.getMe().getId(), chatRoomDTO.getRoom().getId()));
             FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
                     "/org/client/chatapp/home-screen-view.fxml")));
             root = loader.load();
@@ -294,5 +371,20 @@ public class ChatRoomController {
 
     public void onEllipsisButtonClick(MouseEvent mouseEvent) {
         // TODO: Implement Options Button
+    }
+
+    public void applyHover(MouseEvent mouseEvent) {
+        mouseEvent.consume();
+        Node source = (Node) mouseEvent.getSource();
+        source.setOpacity(1);
+        source.getStyleClass().add("icon");
+        source.getStyleClass().setAll("onIconHover");
+    }
+
+    public void removeHover(MouseEvent mouseEvent) {
+        mouseEvent.consume();
+        Node source = (Node) mouseEvent.getSource();
+        source.setOpacity(0.7);
+        source.getStyleClass().setAll("icon");
     }
 }
