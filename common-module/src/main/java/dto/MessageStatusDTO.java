@@ -10,14 +10,16 @@ public class MessageStatusDTO implements Serializable {
     Users user;
     Message message;
     LocalDateTime seenAt;
+    Long roomId;
 
-    MessageStatusDTO() {
+    public MessageStatusDTO() {
     }
 
-    public MessageStatusDTO(Users user, Message message, LocalDateTime seenAt) {
+    public MessageStatusDTO(Users user, Message message, LocalDateTime seenAt, Long roomId) {
         this.user = user;
         this.message = message;
         this.seenAt = seenAt;
+        this.roomId = roomId;
     }
 
     public Users getUser() {
@@ -42,5 +44,13 @@ public class MessageStatusDTO implements Serializable {
 
     public void setSeenAt(LocalDateTime seenAt) {
         this.seenAt = seenAt;
+    }
+
+    public Long getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
     }
 }

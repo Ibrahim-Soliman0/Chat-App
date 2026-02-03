@@ -346,7 +346,7 @@ public class HomeScreenController implements NotificationListener {
         this.user = user;
 
         //* initialize home screen
-        onNewMessage();
+        onNewMessage(true);
     }
 
     private void filterRoom(String text) {
@@ -381,7 +381,7 @@ public class HomeScreenController implements NotificationListener {
     }
 
     @Override
-    public void onNewMessage() {
+    public void onNewMessage(boolean updateNotificationIcon) {
         try {
             GetUserService getUserService =
                     (GetUserService) ClientChatApp.registry.lookup("GetUserService");
@@ -430,7 +430,7 @@ public class HomeScreenController implements NotificationListener {
 
             int notificationsCount = notificationService.getNotificationsCount(user);
 
-            if (notificationsCount > 0) {
+            if (notificationsCount > 0 && updateNotificationIcon) {
                 notificationsFound.setVisible(true);
             }
 
