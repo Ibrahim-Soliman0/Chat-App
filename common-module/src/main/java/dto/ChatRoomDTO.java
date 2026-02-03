@@ -82,4 +82,12 @@ public class ChatRoomDTO implements Serializable {
     public void setLastMessage(Message lastMessage) {
         this.lastMessage = lastMessage;
     }
+
+    public List<Users> getGroupMembers() {
+        return groupMembers;
+    }
+
+    public void setGroupMembers(List<Users> groupMembers) {
+        this.groupMembers = groupMembers;
+    }
 }

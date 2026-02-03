@@ -16,4 +16,6 @@ public interface NotificationDao extends Dao<Notification> {
     int getCountByReceiverId(long receiverId);
 
     Notification getFriendRequestNotification(Users receiver, Friend friendRequest);
+
+    Notification getMessageNotification(Users receiver, Long roomId);
 }

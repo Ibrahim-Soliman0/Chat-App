@@ -11,6 +11,11 @@ public class MessageStatus implements Serializable {
 
     public MessageStatus() {}
 
+    public MessageStatus(long messageId, long userId) {
+        this.messageId = messageId;
+        this.userId = userId;
+    }
+
     public MessageStatus(long id, long messageId, long userId, Timestamp seenAt) {
         this.id = id;
         this.messageId = messageId;
