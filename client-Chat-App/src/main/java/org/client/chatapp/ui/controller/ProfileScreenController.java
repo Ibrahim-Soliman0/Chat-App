@@ -4,6 +4,7 @@ import dto.GetMyFriendsListDTO;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -11,10 +12,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.Users;
 import model.enums.Gender;
@@ -29,7 +34,9 @@ import rmi.LoadFriendsListService;
 import rmi.LoginService;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.time.LocalDate;
@@ -43,6 +50,7 @@ import static org.client.chatapp.config.ConfigManager.loadConfig;
 public class ProfileScreenController {
 
     private Users user = new Users();
+
     @FXML
     private Group profileIcon, chatsIcon, editIcon, passwordIcon;
 
@@ -70,11 +78,18 @@ public class ProfileScreenController {
     @FXML
     private Button logoutButton;
 
+    @FXML
+    private Group imageActionButton;
+
+    private byte[] newSelectedImageBytes = null;
+    private Image previousImage = null;
+
     private Parent root;
     private Stage stage;
     private Scene scene;
     private boolean isEditMode = false;
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+    private File file;
 
     @FXML
     public void initialize() throws RemoteException {
@@ -90,7 +105,13 @@ public class ProfileScreenController {
         // Initialize ComboBoxes and DatePicker
         initializeFormControls();
 
-        Platform.runLater(() -> scrollPane.setVvalue(0.0));
+        // Auto scroll to top appropriately
+        Node content = scrollPane.getContent();
+        content.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
+            if (newBounds.getHeight() > 0) {
+                Platform.runLater(() -> scrollPane.setVvalue(0.0));
+            }
+        });
     }
 
     private void initializeNavigationIcons() {
@@ -179,7 +200,7 @@ public class ProfileScreenController {
                 "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela",
                 "Vietnam", "Yemen", "Zambia", "Zimbabwe");
 
-        // Initialize DatePicker with date cell factory to disable future dates
+        // Initialize DatePicker with the date cell factory to disable future dates
         dobPicker.setDayCellFactory(picker -> new DateCell() {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
@@ -211,23 +232,6 @@ public class ProfileScreenController {
         countryComboBox.setValue(countryLabel.getText());
         dobPicker.setValue(LocalDate.parse(dobLabel.getText()));
         bioField.setText(bioLabel.getText());
-
-        // Set initials
-//        updateInitials(fullNameLabel.getText());
-    }
-
-    private void updateInitials(String fullName) {
-        if (fullName != null && !fullName.trim().isEmpty()) {
-            String[] nameParts = fullName.trim().split("\\s+");
-            String initials = "";
-            if (nameParts.length >= 2) {
-                initials = String.valueOf(nameParts[0].charAt(0)) +
-                        String.valueOf(nameParts[1].charAt(0));
-            } else if (nameParts.length == 1) {
-                initials = String.valueOf(nameParts[0].charAt(0));
-            }
-            initialsLabel.setText(initials.toUpperCase());
-        }
     }
 
     @FXML
@@ -284,6 +288,9 @@ public class ProfileScreenController {
         editIcon.getChildren().add(checkPath);
         editIcon.setOnMouseEntered(e -> checkPath.getStyleClass().setAll("onIconHover"));
         editIcon.setOnMouseExited(e -> checkPath.getStyleClass().setAll("icon"));
+
+        previousImage = ((ImagePattern) profileImage.getFill()).getImage();
+        showCameraIcon();
     }
 
     private void exitEditMode() {
@@ -320,6 +327,10 @@ public class ProfileScreenController {
         bioField.setVisible(false);
         bioField.setManaged(false);
 
+        hideImageActionButton();
+        newSelectedImageBytes = null;
+        previousImage = null;
+
         // Change checkmark back to edit icon
         initializeEditIcon();
     }
@@ -332,6 +343,11 @@ public class ProfileScreenController {
         user.setCountry(countryComboBox.getValue());
         user.setDob(dobPicker.getValue());
         user.setBio(bioField.getText());
+        if (newSelectedImageBytes != null) {
+            user.setPictureBytes(newSelectedImageBytes);
+            // TODO: Ahmed Ramadan should handle this
+            // user.setPicturePath(file.getAbsolutePath());
+        }
 
         GetUserService getUserService = (GetUserService) ClientChatApp.registry.lookup("GetUserService");
         getUserService.updateUser(user);
@@ -416,6 +432,91 @@ public class ProfileScreenController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void onImageActionClicked(MouseEvent event) {
+        if (newSelectedImageBytes == null) {
+            chooseNewProfileImage();
+        } else {
+            removeSelectedImage();
+        }
+    }
+
+    private void chooseNewProfileImage() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Choose Profile Picture");
+        chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
+
+        file = chooser.showOpenDialog(profileImage.getScene().getWindow());
+        if (file != null) {
+            try {
+                Image img = new Image(file.toURI().toString());
+                profileImage.setFill(new ImagePattern(img));
+                newSelectedImageBytes = Files.readAllBytes(file.toPath());
+                showRemoveIcon(); // switch camera → cross
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void removeSelectedImage() {
+        profileImage.setFill(new ImagePattern(previousImage));
+        newSelectedImageBytes = null;
+        showCameraIcon(); // back to camera
+    }
+
+    private void showCameraIcon() {
+        imageActionButton.getChildren().clear();
+
+        Circle bg = new Circle(18, javafx.scene.paint.Color.web("#00ab8a"));
+
+        SVGPath camera = new SVGPath();
+        camera.setContent(
+                "M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"
+        );
+        camera.setFill(Color.TRANSPARENT);
+        camera.setStroke(Color.WHITE);
+        camera.setStrokeWidth(2);
+        camera.setStyle("-fx-fill: transparent;");
+        camera.setScaleX(1.1);
+
+        Circle bgInside = new Circle(3, Color.TRANSPARENT);
+        bgInside.setStroke(Color.WHITE);
+        bgInside.setStrokeWidth(2);
+
+        StackPane iconWrapper = new StackPane(bg, camera, bgInside);
+        iconWrapper.setPrefSize(36, 36);
+
+        imageActionButton.getChildren().add(iconWrapper);
+        imageActionButton.setVisible(true);
+        imageActionButton.setManaged(true);
+    }
+
+
+    private void showRemoveIcon() {
+        imageActionButton.getChildren().clear();
+
+        Line l1 = new Line(-6, -6, 6, 6);
+        Line l2 = new Line(-6, 6, 6, -6);
+        l1.setStrokeWidth(2);
+        l2.setStrokeWidth(2);
+        l1.setStroke(javafx.scene.paint.Color.WHITE);
+        l2.setStroke(javafx.scene.paint.Color.WHITE);
+
+        Circle bg = new Circle(14, javafx.scene.paint.Color.web("#ff4444"));
+
+        imageActionButton.getChildren().addAll(bg, l1, l2);
+        imageActionButton.setVisible(true);
+        imageActionButton.setManaged(true);
+    }
+
+    private void hideImageActionButton() {
+        imageActionButton.setVisible(false);
+        imageActionButton.setManaged(false);
     }
 
     public void setUser(Users user) {

@@ -7,7 +7,7 @@
 
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.Group?>
-<VBox alignment="CENTER" prefHeight="650" prefWidth="450" spacing="20" style="-fx-background-color: #f5f5f5;" stylesheets="@../../../css/login.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.LoginController">
+<VBox alignment="CENTER" prefHeight="650" prefWidth="450" spacing="20" style="-fx-background-color: #f5f5f5;" stylesheets="@../../../css/login.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.client.chatapp.ui.controller.LoginController">
 
     <padding>
         <Insets bottom="40" left="40" right="40" top="40" />
@@ -72,7 +72,7 @@
                             <Separator orientation="VERTICAL" prefHeight="25" />
             
                             <!-- Phone Input -->
-                            <TextField fx:id="phoneField" promptText="1234567890" style="-fx-background-color: transparent; -fx-border-width: 0;" HBox.hgrow="ALWAYS">
+                            <TextField fx:id="phoneField" promptText="01234567890" style="-fx-background-color: transparent; -fx-border-width: 0;" HBox.hgrow="ALWAYS">
                                 <font>
                                     <Font size="14" />
                                 </font>
