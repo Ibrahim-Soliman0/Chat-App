@@ -19,7 +19,8 @@ import java.util.List;
 
 public class GetUserServiceImpl extends UnicastRemoteObject implements GetUserService {
 
-    public GetUserServiceImpl() throws RemoteException {}
+    public GetUserServiceImpl() throws RemoteException {
+    }
 
     @Override
     public Users getUser(Long userId) throws RemoteException {
@@ -83,9 +84,9 @@ public class GetUserServiceImpl extends UnicastRemoteObject implements GetUserSe
     }
 
     @Override
-    public int getUnreadMessagesCount(Users user, Room room) throws RemoteException {
+    public List<Long> getUnreadMessagesIds(Users user, Room room) throws RemoteException {
         MessageDaoImpl messageDao = new MessageDaoImpl();
-        return messageDao.getUnreadMessagesCount(user, room);
+        return messageDao.getUnreadMessagesIds(user, room);
     }
 
     @Override

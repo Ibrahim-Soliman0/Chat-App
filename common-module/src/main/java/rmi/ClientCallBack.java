@@ -12,4 +12,6 @@ public interface ClientCallBack extends Remote {
     void receiveMessage(ChatRoomDTO chatRoomDTO) throws RemoteException;
 
     void receiveNotification() throws RemoteException;
+
+    void updateHomeScreenChat() throws RemoteException;
 }

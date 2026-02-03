@@ -1,6 +1,7 @@
 package org.client.chatapp.ui.component;
 
 import dto.ChatRoomDTO;
+import dto.MessageStatusDTO;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -17,6 +18,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import model.Message;
 import model.Room;
 import model.Users;
 import org.client.chatapp.ClientChatApp;
@@ -24,8 +26,12 @@ import org.client.chatapp.model.ChatItem;
 import org.client.chatapp.ui.controller.ChatRoomController;
 import org.client.chatapp.ui.utils.ImageUtil;
 import org.client.chatapp.ui.utils.TimeUtils;
+import rmi.GetMessageService;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class ChatItemView extends HBox {
@@ -84,12 +90,11 @@ public class ChatItemView extends HBox {
         textBox.setSpacing(4);
 
         unreadBadge = new StackPane();
-        if (chatItem.getUnreadMessageCount() > 0) {
+        if (!chatItem.getUnreadMessageIds().isEmpty()) {
+            Label unread = new Label(!chatItem.getUnreadMessageIds().isEmpty()
+                    ? String.valueOf(chatItem.getUnreadMessageIds().size()) : "");
 
-            Label unread = new Label(chatItem.getUnreadMessageCount() > 0
-                    ? String.valueOf(chatItem.getUnreadMessageCount()) : "");
-
-            int count = chatItem.getUnreadMessageCount();
+            int count = chatItem.getUnreadMessageIds().size();
             unread.setText(count > 99 ? "99+" : String.valueOf(count));
             unread.setPrefSize(26, 26);
             unreadBadge.setMinSize(26, 26);
@@ -107,7 +112,7 @@ public class ChatItemView extends HBox {
         }
 
         rightBox = new VBox(time);
-        if (chatItem.getUnreadMessageCount() > 0) {
+        if (!chatItem.getUnreadMessageIds().isEmpty()) {
             rightBox.getChildren().add(unreadBadge);
         }
 
@@ -121,8 +126,24 @@ public class ChatItemView extends HBox {
     private void registerHandlers() {
         setOnMouseClicked(mouseEvent -> {
 
-            chatItem.setUnreadMessageCount(0);
-            rightBox.getChildren().remove(unreadBadge);
+            try {
+                GetMessageService getMessageService =
+                        (GetMessageService) ClientChatApp.registry.lookup("GetMessageService");
+
+                rightBox.getChildren().remove(unreadBadge);
+
+                for (Long messageId : chatItem.getUnreadMessageIds()) {
+                    Message message = new Message();
+                    message.setId(messageId);
+                    MessageStatusDTO messageStatusDTO = new MessageStatusDTO(dataToBeUsedInChat.getMe(),
+                            message, LocalDateTime.now());
+                    getMessageService.setMessageStatusAsSeen(messageStatusDTO);
+                }
+
+                chatItem.getUnreadMessageIds().clear();
+            } catch (RemoteException | NotBoundException e) {
+                throw new RuntimeException(e);
+            }
 
             Parent root = null;
             try {
