@@ -40,7 +40,7 @@ public class RegisterServiceImpl extends UnicastRemoteObject implements Register
             if (user.getPictureBytes() != null && user.getPictureBytes().length > 0) {
                 String fileName = user.getPhoneNumber() + "_" + System.currentTimeMillis() + ".jpg";
                 File destinationFile = new File(UPLOAD_DIR, fileName);
-                String relativePath = "uploads" + File.separator + "profiles" + File.separator + fileName;
+                String relativePath = "server-Chat-App" +File.separator+ "uploads" + File.separator + "profiles" + File.separator + fileName;
 
                 try (FileOutputStream fos = new FileOutputStream(destinationFile)) {
                     fos.write(user.getPictureBytes());
