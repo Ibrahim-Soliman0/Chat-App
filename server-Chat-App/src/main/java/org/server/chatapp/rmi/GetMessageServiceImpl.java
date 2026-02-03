@@ -4,7 +4,10 @@ import dto.ChatRoomDTO;
 import dto.MessageStatusDTO;
 import model.Message;
 import model.MessageStatus;
+import model.Notification;
 import model.Users;
+import model.enums.NotificationStatus;
+import model.enums.NotificationType;
 import org.server.chatapp.dao.ClientManager;
 import org.server.chatapp.dao.implement.*;
 import rmi.ClientCallBack;
@@ -43,6 +46,7 @@ public class GetMessageServiceImpl extends UnicastRemoteObject implements GetMes
         UsersImpl usersImpl = new UsersImpl();
         RoomImpl roomImpl = new RoomImpl();
         UserRoomsImpl userRoomsImpl = new UserRoomsImpl();
+        NotificationServiceImpl notificationService = new NotificationServiceImpl();
         ChatRoomDTO chatRoomDTO = new ChatRoomDTO();
         chatRoomDTO.setMe(usersImpl.get(message.getSenderId()));
         chatRoomDTO.setRoom(roomImpl.get(message.getRoomId()));
@@ -52,12 +56,32 @@ public class GetMessageServiceImpl extends UnicastRemoteObject implements GetMes
         if (users != null) {
             MessageStatus messageStatus = new MessageStatus(message.getId(), users.getId());
             messageStatusDao.insert(messageStatus);
+            Notification newMessageNotification = new Notification(
+                    users.getId(),
+                    NotificationType.MESSAGE,
+                    message.getText(),
+                    null,
+                    Timestamp.valueOf(message.getSentAt()),
+                    NotificationStatus.UNREAD,
+                    message.getRoomId()
+            );
+            notificationService.sendNotification(newMessageNotification, true);
         }
         else {
             List<Users> usersList = userRoomsImpl.getUsersInRoom(chatRoomDTO);
             for (Users user : usersList) {
                 MessageStatus messageStatus = new MessageStatus(message.getId(), user.getId());
                 messageStatusDao.insert(messageStatus);
+                Notification newMessageNotification = new Notification(
+                        user.getId(),
+                        NotificationType.MESSAGE,
+                        message.getText(),
+                        null,
+                        Timestamp.valueOf(message.getSentAt()),
+                        NotificationStatus.UNREAD,
+                        message.getRoomId()
+                );
+                notificationService.sendNotification(newMessageNotification, true);
             }
         }
     }
@@ -83,5 +107,17 @@ public class GetMessageServiceImpl extends UnicastRemoteObject implements GetMes
         messageStatus.setSeenAt(Timestamp.valueOf(messageStatusDTO.getSeenAt()));
 
         messageStatusDao.update(messageStatus);
+
+        NotificationDaoImpl notificationDao = new NotificationDaoImpl();
+        Notification messageNotification = notificationDao.getMessageNotification(
+                messageStatusDTO.getUser(), messageStatusDTO.getRoomId());
+
+        //* message already seen
+        if (messageNotification == null) {
+            return;
+        }
+
+        messageNotification.setStatus(NotificationStatus.READ);
+        notificationDao.update(messageNotification);
     }
 }

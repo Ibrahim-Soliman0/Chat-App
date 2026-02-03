@@ -86,7 +86,7 @@ public class ClientCallBackImp extends UnicastRemoteObject implements ClientCall
     public void updateHomeScreenChat() throws RemoteException {
         Platform.runLater(() -> {
             if (homeScreenListener != null) {
-                homeScreenListener.onNewMessage();
+                homeScreenListener.onNewMessage(false);
             }
         });
     }

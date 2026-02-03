@@ -4,6 +4,6 @@ public interface NotificationListener {
 
     void onNewNotification();
 
-    default void onNewMessage() {
+    default void onNewMessage(boolean updateNotificationIcon) {
     }
 }

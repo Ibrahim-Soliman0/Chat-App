@@ -68,9 +68,15 @@ public class NotificationServiceImpl extends UnicastRemoteObject implements Noti
     }
 
     @Override
-    public void sendNotification(Notification notification) throws RemoteException {
+    public void sendNotification(Notification notification, boolean isMessage) throws RemoteException {
         NotificationDaoImpl notificationDao = new NotificationDaoImpl();
         notificationDao.insert(notification);
+
+        //* if this is a message notification only insert in the database
+        //* no need to notify the users that are online right now
+        if (isMessage) {
+            return;
+        }
 
         UsersImpl usersImpl = new UsersImpl();
         Users notificationReceiver = usersImpl.get(notification.getReceiverId());

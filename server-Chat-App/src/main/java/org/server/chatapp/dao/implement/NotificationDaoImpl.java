@@ -232,4 +232,24 @@ public class NotificationDaoImpl implements NotificationDao {
 
         return null;
     }
+
+    @Override
+    public Notification getMessageNotification(Users receiver, Long roomId) {
+        String sql = "SELECT * FROM notification WHERE receiverId = ? AND roomId = ? AND status = 'UNREAD' LIMIT 1;";
+        try (Connection connection = Database.getDataSource().getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setLong(1, receiver.getId());
+            stmt.setLong(2, roomId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return extractNotificationFromResultSet(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 }

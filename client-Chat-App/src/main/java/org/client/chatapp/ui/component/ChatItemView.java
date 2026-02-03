@@ -136,7 +136,7 @@ public class ChatItemView extends HBox {
                     Message message = new Message();
                     message.setId(messageId);
                     MessageStatusDTO messageStatusDTO = new MessageStatusDTO(dataToBeUsedInChat.getMe(),
-                            message, LocalDateTime.now());
+                            message, LocalDateTime.now(), dataToBeUsedInChat.getRoom().getId());
                     getMessageService.setMessageStatusAsSeen(messageStatusDTO);
                 }
 
