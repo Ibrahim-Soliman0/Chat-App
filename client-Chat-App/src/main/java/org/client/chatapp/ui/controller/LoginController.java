@@ -82,9 +82,9 @@ public class LoginController {
             if (!newValue.matches("\\d*")) {
                 phoneField.setText(newValue.replaceAll("[^\\d]", ""));
             }
-            // Limit to 10 digits for Egyptian phone numbers
-            if (newValue.length() > 10) {
-                phoneField.setText(newValue.substring(0, 10));
+            // Limit to 11 digits for Egyptian phone numbers
+            if (newValue.length() > 11) {
+                phoneField.setText(newValue.substring(0, 11));
             }
         });
 
@@ -124,8 +124,8 @@ public class LoginController {
             return;
         }
 
-        if (phone.length() != 10) {
-            showError("Phone number must be 10 digits");
+        if (phone.length() != 11) {
+            showError("Phone number must be 11 digits");
             return;
         }
 
@@ -134,12 +134,9 @@ public class LoginController {
             return;
         }
 
-        // Construct a full phone number with country code
-        String fullPhone = "0" + phone;
-
         LoginService loginService = (LoginService) ClientChatApp.registry.lookup("LoginService");
         client = new ClientCallBackImp();
-        Users success = loginService.login(fullPhone, password, client);
+        Users success = loginService.login(phone, password, client);
         if (success != null) {
             String encrypted = EncryptionUtil.encrypt(password);
             SavedUserUtil newUser = new SavedUserUtil(success.getName(), success.getPhoneNumber(), encrypted);

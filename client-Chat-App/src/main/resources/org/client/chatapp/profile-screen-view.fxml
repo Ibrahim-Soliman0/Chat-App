@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.effect.*?>
@@ -40,10 +39,17 @@
                         <!-- Profile Image -->
                         <VBox alignment="CENTER" spacing="10" style="-fx-padding: 30 0 10 0;">
                             <children>
-                                <Circle fx:id="profileImage" fill="#e0e0e0" radius="60" stroke="#25D366" strokeWidth="3" />
-                                <Label fx:id="initialsLabel" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #666666;" translateY="-75" />
+                                <StackPane>
+                                    <children>
+                                        <Circle fx:id="profileImage" fill="#e0e0e0" radius="60" stroke="#25D366" strokeWidth="3" />
+
+                                        <!-- Camera / Remove Button -->
+                                        <Group fx:id="imageActionButton" managed="false" onMouseClicked="#onImageActionClicked" style="-fx-cursor: hand;" translateX="-150.0" visible="false" StackPane.alignment="BOTTOM_RIGHT"/>
+                                    </children>
+                                </StackPane>
                             </children>
                         </VBox>
+
 
                         <!-- Profile Fields Container -->
                         <VBox prefWidth="390.0" spacing="15" style="-fx-padding: 0 30 20 30;">
@@ -87,7 +93,7 @@
                                         <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 12 15;">
                                             <children>
                                                 <Label fx:id="genderLabel" style="-fx-font-size: 14px; -fx-text-fill: #333333;" text="Male" HBox.hgrow="ALWAYS" />
-                                                <ComboBox fx:id="genderComboBox" managed="false" visible="false" HBox.hgrow="ALWAYS" styleClass="profile-combo" />
+                                                <ComboBox fx:id="genderComboBox" managed="false" styleClass="profile-combo" visible="false" HBox.hgrow="ALWAYS" />
 
                                             </children>
                                             <effect>
@@ -104,7 +110,7 @@
                                         <HBox alignment="CENTER_LEFT" focusTraversable="true" spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 12 15;">
                                             <children>
                                                 <Label fx:id="countryLabel" style="-fx-font-size: 14px; -fx-text-fill: #333333;" text="Egypt" HBox.hgrow="ALWAYS" />
-                                                <ComboBox fx:id="countryComboBox" managed="false" visible="false" HBox.hgrow="ALWAYS" styleClass="profile-combo" />
+                                                <ComboBox fx:id="countryComboBox" managed="false" styleClass="profile-combo" visible="false" HBox.hgrow="ALWAYS" />
                                             </children>
                                             <effect>
                                                 <DropShadow blurType="GAUSSIAN" color="#00000020" height="5.0" radius="2.0" spread="0.1" width="5.0" />
@@ -175,7 +181,7 @@
                 <DropShadow blurType="ONE_PASS_BOX" height="15.0" radius="3.25" spread="0.5" width="0.0" />
             </effect>
             <children>
-                <Group fx:id="profileIcon" layoutX="363.0" layoutY="25.0"/>
+                <Group fx:id="profileIcon" layoutX="363.0" layoutY="25.0" />
                 <Group fx:id="chatsIcon" layoutX="94.0" layoutY="25.0" onMouseClicked="#onChatsIconClick" />
             </children>
         </Pane>
