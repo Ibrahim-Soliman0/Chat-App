@@ -112,11 +112,12 @@ public class ProfileScreenController {
 
         // Auto scroll to top appropriately
         Node content = scrollPane.getContent();
-        content.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
-            if (newBounds.getHeight() > 0) {
-                Platform.runLater(() -> scrollPane.setVvalue(0.0));
-            }
-        });
+        scrollPane.setVvalue(0.0);
+//        content.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
+//            if (newBounds.getHeight() > 0) {
+//                Platform.runLater(() -> );
+//            }
+//        });
 
         statusComboBox.getItems().addAll(
                 new StatusItem("Online", Color.web("#25D366")),
