@@ -52,6 +52,7 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class ChatRoomController {
 
@@ -246,8 +247,14 @@ public class ChatRoomController {
                     userStatus.setTextFill(Color.web("#808080"));
                     break;
                 case "Group Chat":
-                    userStatus.setText("Group Chat");
-                    userStatus.setTextFill(Color.web("#25D366"));
+                    String groupMembers = chatRoomDTO.getGroupMembers().stream()
+                            .map(Users::getName)
+                            .collect(Collectors.joining(", "));
+                    if (groupMembers.length() > 50) {
+                        groupMembers = groupMembers.substring(0, 47) + "...";
+                    }
+                    userStatus.setText(groupMembers);
+                    userStatus.setTextFill(Color.web("#000000"));
                     break;
                 default:
                     userStatus.setText("Unknown");
