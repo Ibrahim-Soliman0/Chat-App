@@ -415,7 +415,6 @@ public class ProfileScreenController {
         if (newSelectedImageBytes != null) {
             user.setPictureBytes(newSelectedImageBytes);
             // TODO: Ahmed Ramadan should handle this
-            // user.setPicturePath(file.getAbsolutePath());
         }
 
         GetUserService getUserService = (GetUserService) ClientChatApp.registry.lookup("GetUserService");
