@@ -51,13 +51,12 @@ public class GetMessageServiceImpl extends UnicastRemoteObject implements GetMes
         chatRoomDTO.setMe(usersImpl.get(message.getSenderId()));
         chatRoomDTO.setRoom(roomImpl.get(message.getRoomId()));
 
-        Users users = userRoomsImpl.getSingleUserInRoom(chatRoomDTO);
-
-        if (users != null) {
-            MessageStatus messageStatus = new MessageStatus(message.getId(), users.getId());
+        List<Users> usersList = userRoomsImpl.getUsersInRoom(chatRoomDTO);
+        for (Users user : usersList) {
+            MessageStatus messageStatus = new MessageStatus(message.getId(), user.getId());
             messageStatusDao.insert(messageStatus);
             Notification newMessageNotification = new Notification(
-                    users.getId(),
+                    user.getId(),
                     NotificationType.MESSAGE,
                     message.getText(),
                     null,
@@ -67,35 +66,32 @@ public class GetMessageServiceImpl extends UnicastRemoteObject implements GetMes
             );
             notificationService.sendNotification(newMessageNotification, true);
         }
-        else {
-            List<Users> usersList = userRoomsImpl.getUsersInRoom(chatRoomDTO);
-            for (Users user : usersList) {
-                MessageStatus messageStatus = new MessageStatus(message.getId(), user.getId());
-                messageStatusDao.insert(messageStatus);
-                Notification newMessageNotification = new Notification(
-                        user.getId(),
-                        NotificationType.MESSAGE,
-                        message.getText(),
-                        null,
-                        Timestamp.valueOf(message.getSentAt()),
-                        NotificationStatus.UNREAD,
-                        message.getRoomId()
-                );
-                notificationService.sendNotification(newMessageNotification, true);
-            }
-        }
+
     }
 
     @Override
     public void updateOthersGUI(ChatRoomDTO chatRoomDTO) throws RemoteException {
-        ClientCallBack clientCallBack = ClientManager.getClient(chatRoomDTO.getOther().getPhoneNumber());
-        if (clientCallBack == null)
-            return;
-        try {
-            clientCallBack.receiveMessage(chatRoomDTO);
-            clientCallBack.updateHomeScreenChat();
-        } catch (RemoteException e) {
-            ClientManager.removeClient(chatRoomDTO.getOther().getPhoneNumber());
+        if (chatRoomDTO.getOther() == null) {
+            Users firstUser = chatRoomDTO.getGroupMembers().getFirst();
+            ClientCallBack clientCallBack = ClientManager.getClient(firstUser.getPhoneNumber());
+            if (clientCallBack == null) return;
+            try {
+                clientCallBack.receiveMessage(chatRoomDTO);
+                clientCallBack.updateHomeScreenChat();
+            } catch (RemoteException e) {
+                ClientManager.removeClient(firstUser.getPhoneNumber());
+            }
+        }
+        else {
+            ClientCallBack clientCallBack = ClientManager.getClient(chatRoomDTO.getOther().getPhoneNumber());
+            if (clientCallBack == null)
+                return;
+            try {
+                clientCallBack.receiveMessage(chatRoomDTO);
+                clientCallBack.updateHomeScreenChat();
+            } catch (RemoteException e) {
+                ClientManager.removeClient(chatRoomDTO.getOther().getPhoneNumber());
+            }
         }
     }
 

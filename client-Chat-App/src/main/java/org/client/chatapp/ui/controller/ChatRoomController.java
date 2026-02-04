@@ -23,6 +23,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
@@ -34,6 +35,7 @@ import org.client.chatapp.ClientChatApp;
 import org.client.chatapp.ui.utils.ImageUtil;
 import rmi.FileTransferService;
 import rmi.GetMessageService;
+import rmi.GetUserService;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -118,7 +120,7 @@ public class ChatRoomController {
 //        activeControllers.put(chatRoomDTO.getRoom().getId(), this);
 
         // Set the other user's name
-        chatUserName.setText(otherUser.getName());
+        chatUserName.setText(otherUser == null ? chatRoomDTO.getRoom().getName() : otherUser.getName());
 
         // Set user status
         updateUserStatus();
@@ -224,7 +226,7 @@ public class ChatRoomController {
     }
 
     private void updateUserStatus() {
-        String status = String.valueOf(otherUser.getStatus());
+        String status = String.valueOf(otherUser == null ? "Group Chat" : otherUser.getStatus());
         if (status != null) {
             switch (status) {
                 case "ONLINE":
@@ -242,6 +244,10 @@ public class ChatRoomController {
                 case "OFFLINE":
                     userStatus.setText("Offline");
                     userStatus.setTextFill(Color.web("#808080"));
+                    break;
+                case "Group Chat":
+                    userStatus.setText("Group Chat");
+                    userStatus.setTextFill(Color.web("#25D366"));
                     break;
                 default:
                     userStatus.setText("Unknown");
@@ -269,7 +275,17 @@ public class ChatRoomController {
     }
 
     private void addMessageToUI(Message message) {
-        boolean isSentByMe = message.getSenderId() == currentUser.getId();
+        boolean isSentByMe = Objects.equals(message.getSenderId(), currentUser.getId());
+        Users sender;
+        String senderName = "";
+        try{
+            GetUserService getUserService = (GetUserService) ClientChatApp.registry.lookup("GetUserService");
+            sender = getUserService.getUser(message.getSenderId());
+            senderName = sender.getName();
+        } catch (RemoteException | NotBoundException e) {
+            e.printStackTrace();
+            showError("Failed to load user");
+        }
 
         // Create message bubble
         HBox messageBox = new HBox();
@@ -285,6 +301,14 @@ public class ChatRoomController {
                         ? "-fx-background-color: #00ab8a; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);"
                         : "-fx-background-color: #ffffff; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);"
         );
+        // Add sender name to the bubble if the message is not sent by me
+        messageBubble.setSpacing(5);
+        if (!isSentByMe && chatRoomDTO.getOther() == null) {
+            Text senderNameText = new Text(senderName);
+            senderNameText.setFill(Color.BLACK);
+            senderNameText.setFont(Font.font("System", FontWeight.BOLD, 16));
+            messageBubble.getChildren().add(senderNameText);
+        }
 
         if (message.getAttachedFile() == null) {
             // Message text
