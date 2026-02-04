@@ -2,6 +2,7 @@ package org.server.chatapp.rmi;
 
 import dto.BidirectionalFriendStatusDTO;
 import dto.ChatRoomDTO;
+import dto.StatusDTO;
 import model.Friend;
 import model.Message;
 import model.Room;
@@ -99,5 +100,13 @@ public class GetUserServiceImpl extends UnicastRemoteObject implements GetUserSe
     public void updateUser(Users user) throws RemoteException {
         UsersImpl usersImpl = new UsersImpl();
         usersImpl.update(user);
+    }
+
+    @Override
+    public void updateStatus(StatusDTO statusDTO) throws RemoteException {
+        UsersImpl usersDao = new UsersImpl();
+        Users user = usersDao.get(statusDTO.getUserId());
+        user.setStatus(statusDTO.getStatus());
+        usersDao.update(user);
     }
 }

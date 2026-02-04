@@ -1,9 +1,11 @@
 package org.client.chatapp.ui.controller;
 
 import dto.GetMyFriendsListDTO;
+import dto.StatusDTO;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -12,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
@@ -23,15 +26,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.Users;
 import model.enums.Gender;
+import model.enums.Status;
 import org.client.chatapp.ClientChatApp;
 import org.client.chatapp.ui.utils.ImageUtil;
-import rmi.GetMessageService;
+import rmi.*;
 import org.client.chatapp.config.ConfigManager;
 import org.client.chatapp.config.UserConfig;
 import org.client.chatapp.ui.utils.SavedUserUtil;
-import rmi.GetUserService;
-import rmi.LoadFriendsListService;
-import rmi.LoginService;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -81,6 +82,9 @@ public class ProfileScreenController {
     @FXML
     private Group imageActionButton;
 
+    @FXML
+    private ComboBox<StatusItem> statusComboBox;
+
     private byte[] newSelectedImageBytes = null;
     private Image previousImage = null;
 
@@ -91,6 +95,7 @@ public class ProfileScreenController {
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
     private File file;
 
+    public record StatusItem(String text, Color color) {}
     @FXML
     public void initialize() throws RemoteException {
         // Initialize bottom navigation icons
@@ -112,6 +117,70 @@ public class ProfileScreenController {
                 Platform.runLater(() -> scrollPane.setVvalue(0.0));
             }
         });
+
+        statusComboBox.getItems().addAll(
+                new StatusItem("Online", Color.web("#25D366")),
+                new StatusItem("Away", Color.web("#FFA500")),
+                new StatusItem("Busy", Color.web("#FF3B30")),
+                new StatusItem("Offline", Color.web("#9E9E9E"))
+        );
+
+        statusComboBox.getSelectionModel().selectFirst();
+        statusComboBox.setCellFactory(listView -> new ListCell<>() {
+            @Override
+            protected void updateItem(StatusItem item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(createStatusItem(item.text(), item.color()));
+                }
+            }
+        });
+
+        statusComboBox.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(StatusItem item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(createStatusItem(item.text(), item.color()));
+                }
+            }
+        });
+
+        statusComboBox.setOnAction(event -> {
+            StatusItem selected = statusComboBox.getValue();
+
+            if (selected == null) {
+                return;
+            }
+
+            Status status = Status.valueOf(selected.text.toUpperCase());
+            StatusDTO statusDTO = new StatusDTO(user.getId(), status);
+
+            try {
+                GetUserService getUserService =
+                        (GetUserService) ClientChatApp.registry.lookup("GetUserService");
+                getUserService.updateStatus(statusDTO);
+            } catch (NotBoundException | RemoteException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private HBox createStatusItem(String text, Color color) {
+        Circle icon = new Circle(6, color);
+        Label label = new Label(text);
+        label.setTextFill(Color.BLACK);
+
+        HBox box = new HBox(8, icon, label);
+        box.setPadding(new Insets(6, 10, 6, 10));
+
+        return box;
     }
 
     private void initializeNavigationIcons() {
