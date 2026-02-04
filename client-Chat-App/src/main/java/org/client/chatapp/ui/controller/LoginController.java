@@ -262,7 +262,7 @@ public class LoginController {
         avatarStack.getChildren().addAll(avatarGroup, removeBtn);
         imageCircle.setOnMouseClicked(event -> {
             if (user.getEncryptedPassword() == null || user.getEncryptedPassword().isEmpty()) {
-                phoneField.setText(user.getPhoneNumber().substring(1));
+                phoneField.setText(user.getPhoneNumber());
                 passwordField.requestFocus();
                 showError("Please enter your password to sign in.");
             } else {
