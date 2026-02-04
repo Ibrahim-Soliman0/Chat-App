@@ -16,40 +16,40 @@
             </effect>
             <children>
                 <!-- Back Button -->
-                <Group fx:id="backButton" layoutX="15.0" layoutY="26.0" onMouseClicked="#onBackButtonClick" style="-fx-cursor: hand;">
+                <Group fx:id="backButton" layoutX="15.0" layoutY="26.0" onMouseClicked="#onBackButtonClick">
                     <children>
-                        <SVGPath fx:id="backArrow1" content="m12 19-7-7 7-7" style="-fx-stroke: #000000; -fx-stroke-width: 2; -fx-stroke-linecap: round; -fx-stroke-linejoin: round; -fx-fill: transparent;" />
-                        <SVGPath fx:id="backArrow2" content="M19 12H5" style="-fx-stroke: #000000; -fx-stroke-width: 2; -fx-stroke-linecap: round; -fx-stroke-linejoin: round; -fx-fill: transparent;" />
+                        <SVGPath fx:id="backArrow1" content="m12 19-7-7 7-7"/>
+                        <SVGPath fx:id="backArrow2" content="M19 12H5"/>
                     </children>
                 </Group>
 
                 <!-- User Name -->
-                <Label fx:id="chatUserName" layoutX="55.0" layoutY="16.0" text="User Name">
+                <Label fx:id="chatUserName" layoutX="101.0" layoutY="13.0" text="User Name">
                     <font>
                         <Font name="System Bold" size="24.0" />
                     </font>
                 </Label>
 
                 <!-- User Status -->
-                <Label fx:id="userStatus" layoutX="55.0" layoutY="45.0" text="Online" textFill="#25D366">
+                <Label fx:id="userStatus" layoutX="101.0" layoutY="46.0" text="Online" textFill="#25D366">
                     <font>
                         <Font size="12.0" />
                     </font>
                 </Label>
                 <!-- Video Call Button -->
-                <SVGPath fx:id="videoCallButton" content="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5 M4 6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H4z" layoutX="347.0" layoutY="26.0" onMouseClicked="#onVideoCallButtonClick" style="-fx-stroke: #000000; -fx-stroke-width: 2; -fx-stroke-linecap: round; -fx-stroke-linejoin: round; -fx-fill: transparent; -fx-cursor: hand;" />
-
+                <SVGPath fx:id="videoCallButton" content="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5 M4 6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2H4z" layoutX="347.0" layoutY="26.0" onMouseClicked="#onVideoCallButtonClick"/>
                 <!-- Phone Call Button -->
-                <SVGPath fx:id="phoneCallButton" content="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" layoutX="388.0" layoutY="25.0" onMouseClicked="#onPhoneCallButtonClick" style="-fx-stroke: #000000; -fx-stroke-width: 2; -fx-stroke-linecap: round; -fx-stroke-linejoin: round; -fx-fill: transparent; -fx-cursor: hand;" />
+                <SVGPath fx:id="phoneCallButton" content="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" layoutX="388.0" layoutY="25.0" onMouseClicked="#onPhoneCallButtonClick"/>
 
                 <!-- Ellipsis Menu Button -->
-                <Group fx:id="ellipsisButton" layoutX="420.0" layoutY="25.0" onMouseClicked="#onEllipsisButtonClick" style="-fx-cursor: hand;">
+                <Group fx:id="ellipsisButton" layoutX="420.0" layoutY="25.0" onMouseClicked="#onEllipsisButtonClick">
                     <children>
-                        <Circle centerX="12" centerY="12" radius="1.5" style="-fx-fill: #000000;" />
-                        <Circle centerX="12" centerY="5" radius="1.5" style="-fx-fill: #000000;" />
-                        <Circle centerX="12" centerY="19" radius="1.5" style="-fx-fill: #000000;" />
+                        <Circle centerX="12" centerY="12" radius="1.5"/>
+                        <Circle centerX="12" centerY="5" radius="1.5"/>
+                        <Circle centerX="12" centerY="19" radius="1.5"/>
                     </children>
                 </Group>
+            <Circle fx:id="profileImage" fill="#e0e0e0" layoutX="68.0" layoutY="38.0" radius="24.0" stroke="#25D366" strokeWidth="3" />
             </children>
         </Pane>
 
@@ -68,20 +68,20 @@
             <children>
                 <TextField fx:id="messageInput" layoutX="50.0" layoutY="20.0" onAction="#onSendButtonClick" prefHeight="35.0" prefWidth="315.0" promptText="Type a message..." style="-fx-background-color: #f0f0f0; -fx-background-radius: 18; -fx-padding: 0 15 0 15;" />
 
-                <Button fx:id="sendButton" layoutX="380.0" layoutY="20.0" onAction="#onSendButtonClick" prefHeight="35.0" prefWidth="55.0" style="-fx-background-color: #00ab8a; -fx-background-radius: 18; -fx-text-fill: white; -fx-cursor: hand;">
+                <Button fx:id="sendButton" layoutX="380.0" layoutY="20.0" onAction="#onSendButtonClick" prefHeight="35.0" prefWidth="55.0" style="-fx-background-color: #00ab8a; -fx-opacity: 0.3; -fx-background-radius: 18; -fx-text-fill: white; -fx-cursor: hand;">
                     <font>
                         <Font name="System Bold" size="11.0" />
                     </font>
                <graphic>
-                  <Group fx:id="backButton1" nodeOrientation="RIGHT_TO_LEFT" onMouseClicked="#onBackButtonClick" style="-fx-cursor: hand;" stylesheets="@../../../css/chat-light.css">
+                  <Group fx:id="sendArrow" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#onSendButtonClick" style="-fx-cursor: hand;">
                      <children>
-                        <SVGPath fx:id="backArrow11" content="m12 19-7-7 7-7" style="-fx-stroke: #000000; -fx-stroke-width: 2; -fx-stroke-linecap: round; -fx-stroke-linejoin: round; -fx-fill: transparent;" />
-                        <SVGPath fx:id="backArrow21" content="M19 12H5" style="-fx-stroke: #000000; -fx-stroke-width: 2; -fx-stroke-linecap: round; -fx-stroke-linejoin: round; -fx-fill: transparent;" />
+                        <SVGPath fx:id="backArrow11" content="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z" style="-fx-stroke: #000000; -fx-opacity: 0.5; -fx-stroke-width: 2; -fx-stroke-linecap: round; -fx-stroke-linejoin: round; -fx-fill: transparent;" />
+                        <SVGPath fx:id="backArrow21" content="M6 12h16" style="-fx-stroke: #000000; -fx-opacity: 0.5; -fx-stroke-width: 2; -fx-stroke-linecap: round; -fx-stroke-linejoin: round; -fx-fill: transparent;" />
                      </children>
                   </Group>
                </graphic>
                 </Button>
-            <SVGPath fx:id="attachmentButton" content="m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551" layoutX="20.0" layoutY="25.0" onMouseClicked="#onAttachmentButtonClick" style="-fx-stroke: #000000; -fx-stroke-width: 2; -fx-stroke-linecap: round; -fx-stroke-linejoin: round; -fx-fill: transparent; -fx-cursor: hand;" />
+            <SVGPath fx:id="attachmentButton" content="m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551" layoutX="20.0" layoutY="25.0" onMouseClicked="#onAttachmentButtonClick"/>
             </children>
         </Pane>
     </children>

@@ -1,6 +1,7 @@
 package rmi;
 
 import dto.ChatRoomDTO;
+import dto.MessageStatusDTO;
 import model.Message;
 import model.Users;
 
@@ -10,6 +11,10 @@ import java.util.List;
 
 public interface GetMessageService extends Remote {
     List<Message> getRoomMessages(Long roomId) throws RemoteException;
-    long sendMessage(Message message) throws RemoteException;
+
+    void sendMessage(Message message) throws RemoteException;
+
     void updateOthersGUI(ChatRoomDTO chatRoomDTO) throws RemoteException;
+
+    void setMessageStatusAsSeen(MessageStatusDTO messageStatusDTO) throws RemoteException;
 }

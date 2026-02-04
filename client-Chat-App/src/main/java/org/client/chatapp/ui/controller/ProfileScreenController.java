@@ -1,36 +1,57 @@
 package org.client.chatapp.ui.controller;
 
 import dto.GetMyFriendsListDTO;
+import dto.StatusDTO;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import model.Users;
+import model.enums.Gender;
+import model.enums.Status;
 import org.client.chatapp.ClientChatApp;
-import rmi.GetUserService;
-import rmi.LoadFriendsListService;
-import rmi.LoginService;
+import org.client.chatapp.ui.utils.ImageUtil;
+import rmi.*;
+import org.client.chatapp.config.ConfigManager;
+import org.client.chatapp.config.UserConfig;
+import org.client.chatapp.ui.utils.SavedUserUtil;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
+
+import static org.client.chatapp.config.ConfigManager.loadConfig;
 
 public class ProfileScreenController {
 
     private Users user = new Users();
+
     @FXML
     private Group profileIcon, chatsIcon, editIcon, passwordIcon;
 
@@ -58,12 +79,23 @@ public class ProfileScreenController {
     @FXML
     private Button logoutButton;
 
+    @FXML
+    private Group imageActionButton;
+
+    @FXML
+    private ComboBox<StatusItem> statusComboBox;
+
+    private byte[] newSelectedImageBytes = null;
+    private Image previousImage = null;
+
     private Parent root;
     private Stage stage;
     private Scene scene;
     private boolean isEditMode = false;
-    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+    private File file;
 
+    public record StatusItem(String text, Color color) {}
     @FXML
     public void initialize() throws RemoteException {
         // Initialize bottom navigation icons
@@ -78,7 +110,78 @@ public class ProfileScreenController {
         // Initialize ComboBoxes and DatePicker
         initializeFormControls();
 
-        Platform.runLater(() -> scrollPane.setVvalue(0.0));
+        // Auto scroll to top appropriately
+        Node content = scrollPane.getContent();
+        scrollPane.setVvalue(0.0);
+//        content.layoutBoundsProperty().addListener((obs, oldBounds, newBounds) -> {
+//            if (newBounds.getHeight() > 0) {
+//                Platform.runLater(() -> );
+//            }
+//        });
+
+        statusComboBox.getItems().addAll(
+                new StatusItem("Online", Color.web("#25D366")),
+                new StatusItem("Away", Color.web("#FFA500")),
+                new StatusItem("Busy", Color.web("#FF3B30")),
+                new StatusItem("Offline", Color.web("#9E9E9E"))
+        );
+
+//        statusComboBox.getSelectionModel().selectFirst();
+        statusComboBox.setCellFactory(listView -> new ListCell<>() {
+            @Override
+            protected void updateItem(StatusItem item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(createStatusItem(item.text(), item.color()));
+                }
+            }
+        });
+
+        statusComboBox.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(StatusItem item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(createStatusItem(item.text(), item.color()));
+                }
+            }
+        });
+
+        statusComboBox.setOnAction(event -> {
+            StatusItem selected = statusComboBox.getValue();
+
+            if (selected == null) {
+                return;
+            }
+
+            Status status = Status.valueOf(selected.text.toUpperCase());
+            StatusDTO statusDTO = new StatusDTO(user.getId(), status);
+            user.setStatus(status);
+            try {
+                GetUserService getUserService =
+                        (GetUserService) ClientChatApp.registry.lookup("GetUserService");
+                getUserService.updateStatus(statusDTO);
+            } catch (NotBoundException | RemoteException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private HBox createStatusItem(String text, Color color) {
+        Circle icon = new Circle(6, color);
+        Label label = new Label(text);
+        label.setTextFill(Color.BLACK);
+
+        HBox box = new HBox(8, icon, label);
+        box.setPadding(new Insets(6, 10, 6, 10));
+
+        return box;
     }
 
     private void initializeNavigationIcons() {
@@ -167,7 +270,7 @@ public class ProfileScreenController {
                 "United States", "Uruguay", "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela",
                 "Vietnam", "Yemen", "Zambia", "Zimbabwe");
 
-        // Initialize DatePicker with date cell factory to disable future dates
+        // Initialize DatePicker with the date cell factory to disable future dates
         dobPicker.setDayCellFactory(picker -> new DateCell() {
             @Override
             public void updateItem(LocalDate date, boolean empty) {
@@ -182,56 +285,44 @@ public class ProfileScreenController {
     }
 
     private void loadProfileData(Users user) {
-        // Placeholder data - in a real app, this would load from a database or service
+        // Load from the database through RMI
         fullNameLabel.setText(user.getName());
         emailLabel.setText(user.getEmail());
-        genderLabel.setText(user.getGender().toString());
+        genderLabel.setText(user.getGender().toString().equals("MALE") ? "Male" : "Female");
         countryLabel.setText(user.getCountry());
         dobLabel.setText(user.getDob().toString());
         bioLabel.setText(user.getBio());
+        Image image = ImageUtil.getImageFromByteArray(user.getPictureBytes());
+        profileImage.setFill(new ImagePattern(image));
+
+        // Update Status Combo box according to the user initial status
+        String initialStatus = user.getStatus().toString();
+        if (initialStatus.equals("ONLINE"))
+            statusComboBox.getSelectionModel().select(0);
+        else if (initialStatus.equals("AWAY"))
+            statusComboBox.getSelectionModel().select(1);
+        else if (initialStatus.equals("BUSY"))
+            statusComboBox.getSelectionModel().select(2);
+        else if (initialStatus.equals("OFFLINE"))
+            statusComboBox.getSelectionModel().select(3);
 
         // Set initial values for form controls
         fullNameField.setText(fullNameLabel.getText());
         emailField.setText(emailLabel.getText());
         genderComboBox.setValue(genderLabel.getText());
         countryComboBox.setValue(countryLabel.getText());
-
-        // Parse and set date
-        try {
-            LocalDate dob = LocalDate.parse(dobLabel.getText(), dateFormatter);
-            dobPicker.setValue(dob);
-        } catch (Exception e) {
-            dobPicker.setValue(LocalDate.of(1990, 1, 1));
-        }
-
+        dobPicker.setValue(LocalDate.parse(dobLabel.getText()));
         bioField.setText(bioLabel.getText());
-
-        // Set initials
-        updateInitials(fullNameLabel.getText());
-    }
-
-    private void updateInitials(String fullName) {
-        if (fullName != null && !fullName.trim().isEmpty()) {
-            String[] nameParts = fullName.trim().split("\\s+");
-            String initials = "";
-            if (nameParts.length >= 2) {
-                initials = String.valueOf(nameParts[0].charAt(0)) +
-                        String.valueOf(nameParts[1].charAt(0));
-            } else if (nameParts.length == 1) {
-                initials = String.valueOf(nameParts[0].charAt(0));
-            }
-            initialsLabel.setText(initials.toUpperCase());
-        }
     }
 
     @FXML
-    private void onEditIconClick(MouseEvent event) {
+    private void onEditIconClick(MouseEvent event) throws NotBoundException, RemoteException {
         if (!isEditMode) {
             // Switch to edit mode
             enterEditMode();
         } else {
             // Save changes and exit edit mode
-            saveProfileChanges();
+            saveProfileChanges(user);
             exitEditMode();
         }
     }
@@ -276,6 +367,11 @@ public class ProfileScreenController {
         checkPath.setContent("M20 6L9 17l-5-5");
         checkPath.getStyleClass().add("icon");
         editIcon.getChildren().add(checkPath);
+        editIcon.setOnMouseEntered(e -> checkPath.getStyleClass().setAll("onIconHover"));
+        editIcon.setOnMouseExited(e -> checkPath.getStyleClass().setAll("icon"));
+
+        previousImage = ((ImagePattern) profileImage.getFill()).getImage();
+        showCameraIcon();
     }
 
     private void exitEditMode() {
@@ -312,38 +408,42 @@ public class ProfileScreenController {
         bioField.setVisible(false);
         bioField.setManaged(false);
 
+        hideImageActionButton();
+        newSelectedImageBytes = null;
+        previousImage = null;
+
         // Change checkmark back to edit icon
         initializeEditIcon();
     }
 
-    private void saveProfileChanges() {
-        // Update labels with new values
-        fullNameLabel.setText(fullNameField.getText());
-        emailLabel.setText(emailField.getText());
-        genderLabel.setText(genderComboBox.getValue());
-        countryLabel.setText(countryComboBox.getValue());
-
-        // Format and update date of birth
-        if (dobPicker.getValue() != null) {
-            dobLabel.setText(dobPicker.getValue().format(dateFormatter));
+    private void saveProfileChanges(Users user) throws NotBoundException, RemoteException {
+        // Update in the database through RMI
+        user.setName(fullNameField.getText());
+        user.setEmail(emailField.getText());
+        user.setGender(Gender.valueOf(genderComboBox.getValue().toUpperCase()));
+        user.setCountry(countryComboBox.getValue());
+        user.setDob(dobPicker.getValue());
+        user.setBio(bioField.getText());
+        if (newSelectedImageBytes != null) {
+            user.setPictureBytes(newSelectedImageBytes);
+            // TODO: Ahmed Ramadan should handle this
         }
 
-        bioLabel.setText(bioField.getText());
+        GetUserService getUserService = (GetUserService) ClientChatApp.registry.lookup("GetUserService");
+        getUserService.updateUser(user);
 
-        // Update initials
-        updateInitials(fullNameField.getText());
-
-        // Here, save to database/service
-        System.out.println("Profile updated successfully");
+        // Update the current controller
+        loadProfileData(user);
     }
 
     @FXML
     private void onChangePasswordClick(MouseEvent event) {
         try {
-            root = FXMLLoader.load(
-                    Objects.requireNonNull(getClass().getResource(
-                            "/org/client/chatapp/change-password-view.fxml")));
-
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource(
+                    "/org/client/chatapp/change-password-view.fxml")));
+            root = loader.load();
+            ChangePasswordController changePasswordController = loader.getController();
+            changePasswordController.setUser(user);
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             scene = new Scene(root);
             scene.getStylesheets().addAll(ClientChatApp.allStyles);
@@ -373,8 +473,9 @@ public class ProfileScreenController {
             // Navigate to login screen
             try {
                 LoginService loginService = (LoginService) ClientChatApp.registry.lookup("LoginService");
-//                TODO: Remove currentUser from onlineUsersMap
-//                  loginService.logout(user.getPhoneNumber());
+                loginService.logout(user.getPhoneNumber());
+                ConfigManager.logoutUser(user.getPhoneNumber());
+                this.user = null;
 
                 root = FXMLLoader.load(
                         Objects.requireNonNull(getClass().getResource(
@@ -411,6 +512,91 @@ public class ProfileScreenController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void onImageActionClicked(MouseEvent event) {
+        if (newSelectedImageBytes == null) {
+            chooseNewProfileImage();
+        } else {
+            removeSelectedImage();
+        }
+    }
+
+    private void chooseNewProfileImage() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Choose Profile Picture");
+        chooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg", "*.gif")
+        );
+
+        file = chooser.showOpenDialog(profileImage.getScene().getWindow());
+        if (file != null) {
+            try {
+                Image img = new Image(file.toURI().toString());
+                profileImage.setFill(new ImagePattern(img));
+                newSelectedImageBytes = Files.readAllBytes(file.toPath());
+                showRemoveIcon(); // switch camera → cross
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void removeSelectedImage() {
+        profileImage.setFill(new ImagePattern(previousImage));
+        newSelectedImageBytes = null;
+        showCameraIcon(); // back to camera
+    }
+
+    private void showCameraIcon() {
+        imageActionButton.getChildren().clear();
+
+        Circle bg = new Circle(18, javafx.scene.paint.Color.web("#00ab8a"));
+
+        SVGPath camera = new SVGPath();
+        camera.setContent(
+                "M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"
+        );
+        camera.setFill(Color.TRANSPARENT);
+        camera.setStroke(Color.WHITE);
+        camera.setStrokeWidth(2);
+        camera.setStyle("-fx-fill: transparent;");
+        camera.setScaleX(1.1);
+
+        Circle bgInside = new Circle(3, Color.TRANSPARENT);
+        bgInside.setStroke(Color.WHITE);
+        bgInside.setStrokeWidth(2);
+
+        StackPane iconWrapper = new StackPane(bg, camera, bgInside);
+        iconWrapper.setPrefSize(36, 36);
+
+        imageActionButton.getChildren().add(iconWrapper);
+        imageActionButton.setVisible(true);
+        imageActionButton.setManaged(true);
+    }
+
+
+    private void showRemoveIcon() {
+        imageActionButton.getChildren().clear();
+
+        Line l1 = new Line(-6, -6, 6, 6);
+        Line l2 = new Line(-6, 6, 6, -6);
+        l1.setStrokeWidth(2);
+        l2.setStrokeWidth(2);
+        l1.setStroke(javafx.scene.paint.Color.WHITE);
+        l2.setStroke(javafx.scene.paint.Color.WHITE);
+
+        Circle bg = new Circle(14, javafx.scene.paint.Color.web("#ff4444"));
+
+        imageActionButton.getChildren().addAll(bg, l1, l2);
+        imageActionButton.setVisible(true);
+        imageActionButton.setManaged(true);
+    }
+
+    private void hideImageActionButton() {
+        imageActionButton.setVisible(false);
+        imageActionButton.setManaged(false);
     }
 
     public void setUser(Users user) {

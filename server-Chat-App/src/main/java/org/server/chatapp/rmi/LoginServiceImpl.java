@@ -27,8 +27,7 @@ public class LoginServiceImpl extends UnicastRemoteObject implements LoginServic
     }
 
     public Users getUserByPhoneNumber(UserLoginDTO userLoginDTO) {
-        UsersImpl users = new UsersImpl();
-        return users.getUserByPhoneNumber(userLoginDTO.getPhoneNumber());
+        return usersDao.getUserByPhoneNumber(userLoginDTO.getPhoneNumber());
     }
 
     @Override
@@ -37,6 +36,7 @@ public class LoginServiceImpl extends UnicastRemoteObject implements LoginServic
             Users user = usersDao.getUserByPhoneNumber(phoneNumber);
             if (PasswordUtil.verifyPassword(password, user.getPassword())) {
                 ClientManager.addClient(phoneNumber, callBack);
+                usersDao.updateStatus(phoneNumber , Status.ONLINE);
                 return user;
             } else
                 return null;
@@ -47,6 +47,8 @@ public class LoginServiceImpl extends UnicastRemoteObject implements LoginServic
     @Override
     public void logout(String phoneNumber) throws RemoteException {
         ClientManager.removeClient(phoneNumber);
+        usersDao.updateStatus(phoneNumber , Status.OFFLINE);
+
     }
 
     @Override
@@ -69,7 +71,7 @@ public class LoginServiceImpl extends UnicastRemoteObject implements LoginServic
     public byte[] getUserProfilePicture(String phoneNumber) throws RemoteException {
         Users user = usersDao.getUserByPhoneNumber(phoneNumber);
         if (user != null && user.getPicturePath() != null) {
-            String fullPath = System.getProperty("user.dir") + File.separator + "server-Chat-App" + File.separator + user.getPicturePath();
+            String fullPath = System.getProperty("user.dir") + File.separator + user.getPicturePath();
             File imageFile = new File(fullPath);
 
             if (imageFile.exists()) {

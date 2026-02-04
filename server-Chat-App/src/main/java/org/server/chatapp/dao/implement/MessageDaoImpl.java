@@ -261,11 +261,12 @@ public class MessageDaoImpl implements MessageDao {
     }
 
     @Override
-    public int getUnreadMessagesCount(Users user, Room room) {
+    public List<Long> getUnreadMessagesIds(Users user, Room room) {
 
+        List<Long> unreadMessage = new ArrayList<>();
         String sql = """
                   SELECT
-                      COUNT(*) AS unreadCount
+                      id
                   FROM
                       Message AS m
                   WHERE
@@ -279,16 +280,19 @@ public class MessageDaoImpl implements MessageDao {
                             MessageStatus
                         WHERE
                             seenAt IS NULL
+                            AND
+                            userId = ?
                       );""";
         try (Connection connection = Database.getDataSource().getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
             ps.setLong(1, user.getId());
             ps.setLong(2, room.getId());
+            ps.setLong(3, user.getId());
 
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("unreadCount");
+                while (rs.next()) {
+                    unreadMessage.add(rs.getLong("id"));
                 }
             }
 
@@ -296,7 +300,7 @@ public class MessageDaoImpl implements MessageDao {
             throw new RuntimeException(e);
         }
 
-        return 0;
+        return unreadMessage;
     }
 
     @Override

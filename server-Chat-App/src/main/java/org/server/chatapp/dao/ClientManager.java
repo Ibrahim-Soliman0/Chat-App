@@ -11,7 +11,9 @@ public class ClientManager {
     private static final Map<String, ClientCallBack> onlineClients = new ConcurrentHashMap<>();
 
     public static void addClient(String phone, ClientCallBack callback) {
-        onlineClients.put(phone, callback);
+        if (phone != null && callback != null) {
+            onlineClients.put(phone, callback);
+        }
     }
 
     public static void removeClient(String phone) {

@@ -1,21 +1,22 @@
 package org.client.chatapp.rmi;
 
 import dto.ChatRoomDTO;
-import dto.NotificationDTO;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.web.WebView;
 import javafx.stage.Window;
 import javafx.util.Duration;
+import model.Users;
+import org.client.chatapp.ui.controller.ChatRoomController;
 import org.client.chatapp.ui.listener.NotificationListener;
 import org.controlsfx.control.Notifications;
 import rmi.ClientCallBack;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import org.client.chatapp.ui.controller.ChatRoomController;
 
+import static org.client.chatapp.ui.controller.ChatRoomController.UserRoomKey;
 import static org.client.chatapp.ui.controller.ChatRoomController.activeControllers;
 
 public class ClientCallBackImp extends UnicastRemoteObject implements ClientCallBack {
@@ -60,12 +61,26 @@ public class ClientCallBackImp extends UnicastRemoteObject implements ClientCall
 
     @Override
     public void receiveMessage(ChatRoomDTO chatRoomDTO) throws RemoteException {
-        Platform.runLater(() -> {
-            ChatRoomController chatRoomController = activeControllers.getOrDefault(chatRoomDTO.getRoom().getId(), null);
-            if (chatRoomController != null) {
-                chatRoomController.loadMessages();
+        if (chatRoomDTO.getOther() != null) {
+            UserRoomKey key = new UserRoomKey(chatRoomDTO.getOther().getId(), chatRoomDTO.getRoom().getId());
+            ChatRoomController chatRoomController = activeControllers.get(key);
+            Platform.runLater(() -> {
+                if (chatRoomController != null) {
+                    chatRoomController.loadMessages();
+                }
+            });
+        }
+        else {
+            for (Users userDTO : chatRoomDTO.getGroupMembers()) {
+                UserRoomKey key = new UserRoomKey(userDTO.getId(), chatRoomDTO.getRoom().getId());
+                ChatRoomController chatRoomController = activeControllers.get(key);
+                Platform.runLater(() -> {
+                    if (chatRoomController != null) {
+                        chatRoomController.loadMessages();
+                    }
+                });
             }
-        });
+        }
     }
 
     @Override
@@ -76,6 +91,15 @@ public class ClientCallBackImp extends UnicastRemoteObject implements ClientCall
             }
             else if (notificationScreenListener != null) {
                 notificationScreenListener.onNewNotification();
+            }
+        });
+    }
+
+    @Override
+    public void updateHomeScreenChat() throws RemoteException {
+        Platform.runLater(() -> {
+            if (homeScreenListener != null) {
+                homeScreenListener.onNewMessage(false);
             }
         });
     }

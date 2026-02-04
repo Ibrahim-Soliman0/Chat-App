@@ -34,7 +34,7 @@ public class FriendRequestServiceImpl extends UnicastRemoteObject implements Fri
                 friendRecordId, Timestamp.from(Instant.now()), NotificationStatus.UNREAD, null);
 
         NotificationServiceImpl notificationService = new NotificationServiceImpl();
-        notificationService.sendNotification(friendRequestNotification);
+        notificationService.sendNotification(friendRequestNotification, false);
     }
 
     @Override

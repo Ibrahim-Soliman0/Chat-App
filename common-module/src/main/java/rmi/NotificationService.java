@@ -17,5 +17,5 @@ public interface NotificationService extends Remote {
 
     void markNotificationAsRead(Long notificationId) throws RemoteException;
 
-    void sendNotification(Notification notification) throws RemoteException;
+    void sendNotification(Notification notification, boolean isMessage) throws RemoteException;
 }

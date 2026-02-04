@@ -1,22 +1,22 @@
 package org.client.chatapp.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class ChatItem {
 
     private String name, lastMessage;
     private boolean incoming;
     private LocalDateTime messageTime;
-    private int unreadMessageCount;
-
+    private List<Long> unreadMessageIds;
 
     public ChatItem(String name, String lastMessage, boolean incoming,
-                    LocalDateTime messageTime, int unreadMessageCount) {
+                    LocalDateTime messageTime, List<Long> unreadMessageIds) {
         this.name = name;
         this.lastMessage = lastMessage;
         this.incoming = incoming;
         this.messageTime = messageTime;
-        this.unreadMessageCount = unreadMessageCount;
+        this.unreadMessageIds = unreadMessageIds;
     }
 
     public String getName() {
@@ -51,12 +51,12 @@ public class ChatItem {
         this.messageTime = messageTime;
     }
 
-    public int getUnreadMessageCount() {
-        return unreadMessageCount;
+    public List<Long> getUnreadMessageIds() {
+        return unreadMessageIds;
     }
 
-    public void setUnreadMessageCount(int unreadMessageCount) {
-        this.unreadMessageCount = unreadMessageCount;
+    public void setUnreadMessageIds(List<Long> unreadMessageIds) {
+        this.unreadMessageIds = unreadMessageIds;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class ChatItem {
                 ", lastMessage='" + lastMessage + '\'' +
                 ", incoming=" + incoming +
                 ", messageTime=" + messageTime +
-                ", unreadMessageCount=" + unreadMessageCount +
+                ", unreadMessageIds=" + unreadMessageIds +
                 '}';
     }
 }

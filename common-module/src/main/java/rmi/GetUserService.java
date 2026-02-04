@@ -2,6 +2,7 @@ package rmi;
 
 import dto.BidirectionalFriendStatusDTO;
 import dto.ChatRoomDTO;
+import dto.StatusDTO;
 import model.Message;
 import model.Room;
 import model.Users;
@@ -24,7 +25,11 @@ public interface GetUserService extends Remote {
 
     List<Users> getUsersInRoom(ChatRoomDTO chatRoomDTO) throws RemoteException;
 
-    int getUnreadMessagesCount(Users user, Room room) throws RemoteException;
+    List<Long> getUnreadMessagesIds(Users user, Room room) throws RemoteException;
 
     List<Message> getUnreadMessages(Users user, Room room) throws RemoteException;
+
+    void updateUser(Users user) throws RemoteException;
+
+    void updateStatus(StatusDTO statusDTO) throws RemoteException;
 }

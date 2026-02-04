@@ -82,6 +82,10 @@ public class HomeScreenController implements NotificationListener {
     private Polyline iconPolyLine;
     @FXML
     private Label emptyStateLabel;
+    @FXML
+    private Label searchLabel;
+    private List<ChatItemView> allChats;
+    private String searchText;
 
     public void initialize() {
         Circle profileHeadIcon = new Circle(12, 7, 4);
@@ -243,6 +247,10 @@ public class HomeScreenController implements NotificationListener {
         emptyStateIcon.getChildren().add(iconPolyLine);
 
         ClientCallBackImp.setHomeScreenListener(this);
+
+        searchBar.textProperty().addListener((obs, oldText, newText) -> {
+            filterRoom(newText);
+        });
     }
 
     @FXML
@@ -292,9 +300,13 @@ public class HomeScreenController implements NotificationListener {
     private void onGroupIconClick(MouseEvent actionEvent) {
         ClientCallBackImp.setHomeScreenListener(null);
         try {
-            root = FXMLLoader.load(
+            FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(getClass().getResource(
                             "/org/client/chatapp/group-screen-view.fxml")));
+
+            root = loader.load();
+            CreateGroupController createGroupController = loader.getController();
+            createGroupController.setUser(user);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -333,6 +345,43 @@ public class HomeScreenController implements NotificationListener {
     public void setUser(Users user) {
         this.user = user;
 
+        //* initialize home screen
+        onNewMessage(true);
+    }
+
+    private void filterRoom(String text) {
+        if (text == null || text.isBlank()) {
+            chatsList.setItems(FXCollections.observableArrayList(allChats));
+            searchLabel.setVisible(false);
+            return;
+        }
+
+        searchText = text.toLowerCase();
+        List<ChatItemView> filtered = allChats.stream()
+                .filter(
+                        chat ->
+                                chat.getChatItem()
+                                        .getName()
+                                        .toLowerCase()
+                                        .startsWith(searchText)
+                )
+                .toList();
+
+        chatsList.setItems(FXCollections.observableArrayList(filtered));
+        searchLabel.setVisible(filtered.isEmpty());
+    }
+
+    public void clearNotifications() {
+        notificationsFound.setVisible(false);
+    }
+
+    @Override
+    public void onNewNotification() {
+        notificationsFound.setVisible(true);
+    }
+
+    @Override
+    public void onNewMessage(boolean updateNotificationIcon) {
         try {
             GetUserService getUserService =
                     (GetUserService) ClientChatApp.registry.lookup("GetUserService");
@@ -352,9 +401,9 @@ public class HomeScreenController implements NotificationListener {
                                                             chatRoomDTO.getLastMessage().getSenderId()
                                                                     != chatRoomDTO.getMe().getId(),
                                                     chatRoomDTO.getLastMessage() == null
-                                                    ? LocalDateTime.now() : chatRoomDTO.getLastMessage().getSentAt(),
-                                                    getUserService.getUnreadMessagesCount
-                                                            (chatRoomDTO.getMe(), chatRoomDTO.getRoom())
+                                                            ? LocalDateTime.now() : chatRoomDTO.getLastMessage().getSentAt(),
+                                                    getUserService.getUnreadMessagesIds(
+                                                            chatRoomDTO.getMe(), chatRoomDTO.getRoom())
                                             ),
                                             chatRoomDTO.getOther(),
                                             chatRoomDTO.getRoom(),
@@ -366,6 +415,8 @@ public class HomeScreenController implements NotificationListener {
                             }
                     )
                     .toList();
+
+            allChats = userRoomsToChatItemView;
 
             chatsList.setItems(FXCollections.observableArrayList(userRoomsToChatItemView));
 
@@ -379,21 +430,12 @@ public class HomeScreenController implements NotificationListener {
 
             int notificationsCount = notificationService.getNotificationsCount(user);
 
-            if (notificationsCount > 0) {
+            if (notificationsCount > 0 && updateNotificationIcon) {
                 notificationsFound.setVisible(true);
             }
 
         } catch (RemoteException | NotBoundException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void clearNotifications() {
-        notificationsFound.setVisible(false);
-    }
-
-    @Override
-    public void onNewNotification() {
-        notificationsFound.setVisible(true);
     }
 }

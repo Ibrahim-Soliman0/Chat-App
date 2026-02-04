@@ -1,6 +1,8 @@
 package org.server.chatapp.dao.implement;
 
+import model.Message;
 import model.MessageStatus;
+import model.Users;
 import org.server.chatapp.dao.Database;
 import org.server.chatapp.dao.dao.MessageStatusDao;
 
@@ -104,6 +106,23 @@ public class MessageStatusDaoImpl implements MessageStatusDao {
             e.printStackTrace();
         }
         return messageStatuses;
+    }
+
+    @Override
+    public MessageStatus getMessageStatusByUserAndRoom(Users user, Message message) {
+        String sql = "SELECT * FROM messagestatus WHERE userId = ? AND messageId = ?";
+        try (Connection connection = Database.getDataSource().getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setLong(1, user.getId());
+            stmt.setLong(2, message.getId());
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return extractMessageStatusFromResultSet(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private MessageStatus extractMessageStatusFromResultSet(ResultSet rs) throws SQLException {
