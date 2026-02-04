@@ -42,7 +42,7 @@ class MessageDaoImplTest {
         testMessage.setSentAt(LocalDateTime.now());
         testMessage.setDeleted(false);
 
-        int inserted = messageDao.insert(testMessage);
+        long inserted = messageDao.insert(testMessage);
         assertEquals(1, inserted, "Insert should affect 1 row");
         assertTrue(testMessage.getId() > 0, "Inserted message should have generated ID");
     }

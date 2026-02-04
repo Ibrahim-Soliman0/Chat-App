@@ -13,11 +13,18 @@ import org.server.chatapp.dao.implement.UserRoomsImpl;
 import org.server.chatapp.dao.implement.UsersImpl;
 import rmi.GetUserService;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
 public class GetUserServiceImpl extends UnicastRemoteObject implements GetUserService {
+    private final String UPLOAD_DIR = System.getProperty("user.dir")
+            + File.separator + "server-Chat-App"
+            + File.separator + "uploads"
+            + File.separator + "profiles";
 
     public GetUserServiceImpl() throws RemoteException {
     }
@@ -97,7 +104,28 @@ public class GetUserServiceImpl extends UnicastRemoteObject implements GetUserSe
 
     @Override
     public void updateUser(Users user) throws RemoteException {
-        UsersImpl usersImpl = new UsersImpl();
-        usersImpl.update(user);
+        try {
+            if (user.getPictureBytes() != null && user.getPictureBytes().length > 0) {
+                String fileName = user.getPhoneNumber() + "_" + System.currentTimeMillis() + ".jpg";
+                File destinationFile = new File(UPLOAD_DIR, fileName);
+
+                String relativePath = "server-Chat-App" + File.separator + "uploads" + File.separator + "profiles" + File.separator + fileName;
+
+                try (FileOutputStream fos = new FileOutputStream(destinationFile)) {
+                    fos.write(user.getPictureBytes());
+                    user.setPicturePath(relativePath);
+                }
+            }
+            UsersImpl usersImpl = new UsersImpl();
+            int rowsAffected = usersImpl.update(user);
+
+            if (rowsAffected <= 0) {
+                System.out.println("Warning: No rows updated in database for user: " + user.getPhoneNumber());
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RemoteException("Failed to save profile picture: " + e.getMessage());
+        }
     }
 }
