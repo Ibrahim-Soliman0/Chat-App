@@ -28,6 +28,9 @@
                 </StackPane>
                 <!-- Edit Icon -->
                 <Group fx:id="editIcon" layoutX="405.0" layoutY="26.0" onMouseClicked="#onEditIconClick" style="-fx-cursor: hand;" />
+                <ComboBox fx:id="statusComboBox" layoutX="212.0" layoutY="22.0" prefWidth="150.0" promptText="Set Your Status"
+                          style="-fx-border-color: #d0d0d0; -fx-background-color: #ffffff;
+                               -fx-background-radius: 25; -fx-border-radius: 25;" />
             </children>
         </Pane>
 
