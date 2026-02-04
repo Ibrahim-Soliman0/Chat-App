@@ -1,7 +1,6 @@
 package org.client.chatapp.rmi;
 
 import dto.ChatRoomDTO;
-import dto.NotificationDTO;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -9,16 +8,16 @@ import javafx.scene.web.WebView;
 import javafx.stage.Window;
 import javafx.util.Duration;
 import model.Users;
+import org.client.chatapp.ui.controller.ChatRoomController;
 import org.client.chatapp.ui.listener.NotificationListener;
 import org.controlsfx.control.Notifications;
 import rmi.ClientCallBack;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import org.client.chatapp.ui.controller.ChatRoomController;
 
-import static org.client.chatapp.ui.controller.ChatRoomController.activeControllers;
 import static org.client.chatapp.ui.controller.ChatRoomController.UserRoomKey;
+import static org.client.chatapp.ui.controller.ChatRoomController.activeControllers;
 
 public class ClientCallBackImp extends UnicastRemoteObject implements ClientCallBack {
 
