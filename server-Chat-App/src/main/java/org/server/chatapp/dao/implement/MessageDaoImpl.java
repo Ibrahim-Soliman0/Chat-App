@@ -280,12 +280,15 @@ public class MessageDaoImpl implements MessageDao {
                             MessageStatus
                         WHERE
                             seenAt IS NULL
+                            AND
+                            userId = ?
                       );""";
         try (Connection connection = Database.getDataSource().getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
             ps.setLong(1, user.getId());
             ps.setLong(2, room.getId());
+            ps.setLong(3, user.getId());
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {

@@ -4,7 +4,6 @@ import dto.ChatRoomDTO;
 import dto.MessageStatusDTO;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,6 +22,7 @@ import model.Room;
 import model.Users;
 import org.client.chatapp.ClientChatApp;
 import org.client.chatapp.model.ChatItem;
+import org.client.chatapp.rmi.ClientCallBackImp;
 import org.client.chatapp.ui.controller.ChatRoomController;
 import org.client.chatapp.ui.utils.ImageUtil;
 import org.client.chatapp.ui.utils.TimeUtils;
@@ -127,6 +127,8 @@ public class ChatItemView extends HBox {
         setOnMouseClicked(mouseEvent -> {
 
             try {
+                ClientCallBackImp.setHomeScreenListener(null);
+                ClientCallBackImp.setNotificationScreenListener(null);
                 GetMessageService getMessageService =
                         (GetMessageService) ClientChatApp.registry.lookup("GetMessageService");
 

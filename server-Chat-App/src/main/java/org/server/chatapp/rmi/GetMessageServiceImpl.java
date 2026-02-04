@@ -16,7 +16,6 @@ import rmi.GetMessageService;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class GetMessageServiceImpl extends UnicastRemoteObject implements GetMessageService {
@@ -55,6 +54,7 @@ public class GetMessageServiceImpl extends UnicastRemoteObject implements GetMes
         for (Users user : usersList) {
             MessageStatus messageStatus = new MessageStatus(message.getId(), user.getId());
             messageStatusDao.insert(messageStatus);
+
             Notification newMessageNotification = new Notification(
                     user.getId(),
                     NotificationType.MESSAGE,
@@ -64,6 +64,7 @@ public class GetMessageServiceImpl extends UnicastRemoteObject implements GetMes
                     NotificationStatus.UNREAD,
                     message.getRoomId()
             );
+
             notificationService.sendNotification(newMessageNotification, true);
         }
 
@@ -84,8 +85,7 @@ public class GetMessageServiceImpl extends UnicastRemoteObject implements GetMes
                     ClientManager.removeClient(user.getPhoneNumber());
                 }
             }
-        }
-        else {
+        } else {
             ClientCallBack clientCallBack = ClientManager.getClient(chatRoomDTO.getOther().getPhoneNumber());
             if (clientCallBack == null)
                 return;

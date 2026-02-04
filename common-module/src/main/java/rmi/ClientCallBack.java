@@ -1,7 +1,6 @@
 package rmi;
 
 import dto.ChatRoomDTO;
-import dto.NotificationDTO;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
