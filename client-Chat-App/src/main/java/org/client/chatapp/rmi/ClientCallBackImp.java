@@ -8,6 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.web.WebView;
 import javafx.stage.Window;
 import javafx.util.Duration;
+import model.Users;
 import org.client.chatapp.ui.listener.NotificationListener;
 import org.controlsfx.control.Notifications;
 import rmi.ClientCallBack;
@@ -61,13 +62,26 @@ public class ClientCallBackImp extends UnicastRemoteObject implements ClientCall
 
     @Override
     public void receiveMessage(ChatRoomDTO chatRoomDTO) throws RemoteException {
-        Platform.runLater(() -> {
+        if (chatRoomDTO.getOther() != null) {
             UserRoomKey key = new UserRoomKey(chatRoomDTO.getOther().getId(), chatRoomDTO.getRoom().getId());
             ChatRoomController chatRoomController = activeControllers.get(key);
-            if (chatRoomController != null) {
-                chatRoomController.loadMessages();
+            Platform.runLater(() -> {
+                if (chatRoomController != null) {
+                    chatRoomController.loadMessages();
+                }
+            });
+        }
+        else {
+            for (Users userDTO : chatRoomDTO.getGroupMembers()) {
+                UserRoomKey key = new UserRoomKey(userDTO.getId(), chatRoomDTO.getRoom().getId());
+                ChatRoomController chatRoomController = activeControllers.get(key);
+                Platform.runLater(() -> {
+                    if (chatRoomController != null) {
+                        chatRoomController.loadMessages();
+                    }
+                });
             }
-        });
+        }
     }
 
     @Override

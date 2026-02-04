@@ -124,7 +124,8 @@ public class AddGroupMemberController {
 
             for (Friend friend : myFriends) {
                 try {
-                    Users friendUser = finalGetUserService.getUser(friend.getReceiverUserId());
+                    Users friendUser = finalGetUserService.getUser(friend.getReceiverUserId() == user.getId() ?
+                                                        friend.getSenderUserId() : friend.getReceiverUserId());
                     FriendItemView friendView = new FriendItemView(friendUser, user);
                     CheckBox checkBox = new CheckBox();
                     checkBox.setFocusTraversable(false);
@@ -187,6 +188,7 @@ public class AddGroupMemberController {
             addMemberFlag.setVisible(true);
             return;
         }
+        selectedUserId.add(user.getId());
         createGroupOnServer(selectedUserId);
         openHomeScreen();
 
