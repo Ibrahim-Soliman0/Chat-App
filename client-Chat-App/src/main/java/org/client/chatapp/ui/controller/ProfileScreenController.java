@@ -126,7 +126,7 @@ public class ProfileScreenController {
                 new StatusItem("Offline", Color.web("#9E9E9E"))
         );
 
-        statusComboBox.getSelectionModel().selectFirst();
+//        statusComboBox.getSelectionModel().selectFirst();
         statusComboBox.setCellFactory(listView -> new ListCell<>() {
             @Override
             protected void updateItem(StatusItem item, boolean empty) {
@@ -162,7 +162,7 @@ public class ProfileScreenController {
 
             Status status = Status.valueOf(selected.text.toUpperCase());
             StatusDTO statusDTO = new StatusDTO(user.getId(), status);
-
+            user.setStatus(status);
             try {
                 GetUserService getUserService =
                         (GetUserService) ClientChatApp.registry.lookup("GetUserService");
@@ -294,6 +294,17 @@ public class ProfileScreenController {
         bioLabel.setText(user.getBio());
         Image image = ImageUtil.getImageFromByteArray(user.getPictureBytes());
         profileImage.setFill(new ImagePattern(image));
+
+        // Update Status Combo box according to the user initial status
+        String initialStatus = user.getStatus().toString();
+        if (initialStatus.equals("ONLINE"))
+            statusComboBox.getSelectionModel().select(0);
+        else if (initialStatus.equals("AWAY"))
+            statusComboBox.getSelectionModel().select(1);
+        else if (initialStatus.equals("BUSY"))
+            statusComboBox.getSelectionModel().select(2);
+        else if (initialStatus.equals("OFFLINE"))
+            statusComboBox.getSelectionModel().select(3);
 
         // Set initial values for form controls
         fullNameField.setText(fullNameLabel.getText());
