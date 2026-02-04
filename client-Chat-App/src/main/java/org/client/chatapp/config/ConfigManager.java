@@ -14,6 +14,11 @@ public class ConfigManager {
 
     public static void saveConfig(UserConfig config) {
         try {
+            File file = new File(FILE_PATH);
+            File parentDir = file.getParentFile();
+            if (parentDir != null && !parentDir.exists()) {
+                parentDir.mkdirs();
+            }
             JAXBContext context = JAXBContext.newInstance(UserConfig.class);
             Marshaller marshaller = context.createMarshaller();
 
