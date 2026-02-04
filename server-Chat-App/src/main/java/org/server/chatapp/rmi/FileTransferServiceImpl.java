@@ -12,6 +12,11 @@ import java.rmi.server.UnicastRemoteObject;
 public class FileTransferServiceImpl extends UnicastRemoteObject implements FileTransferService {
 
     public FileTransferServiceImpl() throws RemoteException {
+        File storageDir = new File(FileTransferService.STORAGE_PATH);
+
+        if (!storageDir.exists()) {
+            storageDir.mkdirs();
+        }
     }
 
     @Override

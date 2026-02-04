@@ -340,6 +340,12 @@ public class ChatRoomController {
                     File attachedFile = new File(FileTransferService.CLIENT_MESSAGE_PATH,
                             message.getAttachedFile());
 
+                    File parentDir = new File(FileTransferService.CLIENT_MESSAGE_PATH);
+
+                    if (!parentDir.exists()) {
+                        parentDir.mkdirs();
+                    }
+
                     if (!attachedFile.exists()) {
 
                         FileTransferService service =
