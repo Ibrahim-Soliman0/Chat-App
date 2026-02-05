@@ -21,7 +21,7 @@
                 fill="WHITE" scaleX="0.04" scaleY="0.04"/>
     </StackPane>
 
-    <Label style="-fx-font-weight: bold; -fx-font-size: 32px; -fx-text-fill: #1f2937;" text="ChatFlow"/>
+    <Label style="-fx-font-weight: bold; -fx-font-size: 32px; -fx-text-fill: #1f2937;" text="!What's App"/>
 
     <Label style="-fx-font-size: 14px; -fx-text-fill: #6b7280;" text="Connect with friends and family"/>
 
