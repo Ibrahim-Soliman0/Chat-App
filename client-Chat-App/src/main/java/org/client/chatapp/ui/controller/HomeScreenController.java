@@ -89,6 +89,7 @@ public class HomeScreenController implements NotificationListener {
     private List<ChatItemView> allChats;
     private String searchText;
 
+    private GetUserService getUserService;
     public void initialize() {
         Circle profileHeadIcon = new Circle(12, 7, 4);
         profileHeadIcon.getStyleClass().add("icon");
@@ -253,6 +254,12 @@ public class HomeScreenController implements NotificationListener {
         searchBar.textProperty().addListener((obs, oldText, newText) -> {
             filterRoom(newText);
         });
+
+        try {
+            getUserService = (GetUserService) ClientChatApp.registry.lookup("GetUserService");
+        } catch (RemoteException | NotBoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @FXML
@@ -263,6 +270,7 @@ public class HomeScreenController implements NotificationListener {
                     "/org/client/chatapp/profile-screen-view.fxml")));
             root = loader.load();
             ProfileScreenController profileScreenController = loader.getController();
+            user = getUserService.getUser(user.getId());
             profileScreenController.setUser(user);
             stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             scene = new Scene(root);
@@ -385,8 +393,6 @@ public class HomeScreenController implements NotificationListener {
     @Override
     public void onNewMessage(boolean updateNotificationIcon) {
         try {
-            GetUserService getUserService =
-                    (GetUserService) ClientChatApp.registry.lookup("GetUserService");
             List<ChatRoomDTO> allUserRooms = getUserService.getUserRooms(user);
             List<ChatItemView> userRoomsToChatItemView = allUserRooms.stream()
                     .map(chatRoomDTO -> {

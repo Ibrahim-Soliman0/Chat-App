@@ -162,7 +162,6 @@ public class ProfileScreenController {
 
             Status status = Status.valueOf(selected.text.toUpperCase());
             StatusDTO statusDTO = new StatusDTO(user.getId(), status);
-            user.setStatus(status);
             try {
                 GetUserService getUserService =
                         (GetUserService) ClientChatApp.registry.lookup("GetUserService");
@@ -602,5 +601,6 @@ public class ProfileScreenController {
     public void setUser(Users user) {
         this.user = user;
         loadProfileData(user);
+        System.out.println(user.getStatus());
     }
 }
