@@ -4,6 +4,8 @@ import dto.ChatRoomDTO;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.web.WebView;
 import javafx.stage.Window;
 import javafx.util.Duration;
@@ -56,6 +58,13 @@ public class ClientCallBackImp extends UnicastRemoteObject implements ClientCall
                     });
 
             notificationBuilder.showInformation();
+
+            Media sound = new Media(
+                    getClass().getResource("/sounds/notification.mp3").toExternalForm()
+            );
+
+            MediaPlayer mediaPlayer = new MediaPlayer(sound);
+            mediaPlayer.play();
         });
     }
 
