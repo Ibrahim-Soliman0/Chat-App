@@ -190,5 +190,9 @@ public class ChatItemView extends HBox {
     public void setChatRoom(Room chatRoom) {
         this.chatRoom = chatRoom;
     }
+
+    public LocalDateTime getLastMessageDate() {
+        return dataToBeUsedInChat.getLastMessage().getSentAt();
+    }
 }
 

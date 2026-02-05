@@ -24,6 +24,7 @@ import javafx.scene.shape.Polyline;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import model.Message;
 import model.Users;
 import model.enums.RoomType;
 import org.client.chatapp.ClientChatApp;
@@ -38,6 +39,7 @@ import java.io.IOException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -389,19 +391,23 @@ public class HomeScreenController implements NotificationListener {
             List<ChatItemView> userRoomsToChatItemView = allUserRooms.stream()
                     .map(chatRoomDTO -> {
                                 try {
+                                    if (chatRoomDTO.getLastMessage() == null) {
+                                        Message defaultMessage = new Message();
+                                        defaultMessage.setText("No Messages in This Chat Yet!");
+                                        defaultMessage.setSentAt(LocalDateTime.now());
+                                        chatRoomDTO.setLastMessage(defaultMessage);
+                                    }
+
                                     return new ChatItemView(
                                             new ChatItem(
                                                     chatRoomDTO.getRoom().getType() == RoomType.ONE_TO_ONE
                                                             ? chatRoomDTO.getOther().getName()
                                                             : chatRoomDTO.getRoom().getName(),
-                                                    chatRoomDTO.getLastMessage() == null
-                                                            ? "No Messages in This Chat Yet!"
-                                                            : chatRoomDTO.getLastMessage().getText(),
+                                                    chatRoomDTO.getLastMessage().getText(),
                                                     chatRoomDTO.getLastMessage() == null ||
                                                             chatRoomDTO.getLastMessage().getSenderId()
                                                                     != chatRoomDTO.getMe().getId(),
-                                                    chatRoomDTO.getLastMessage() == null
-                                                            ? LocalDateTime.now() : chatRoomDTO.getLastMessage().getSentAt(),
+                                                    chatRoomDTO.getLastMessage().getSentAt(),
                                                     getUserService.getUnreadMessagesIds(
                                                             chatRoomDTO.getMe(), chatRoomDTO.getRoom())
                                             ),
@@ -414,6 +420,7 @@ public class HomeScreenController implements NotificationListener {
                                 }
                             }
                     )
+                    .sorted(Comparator.comparing(ChatItemView::getLastMessageDate).reversed())
                     .toList();
 
             allChats = userRoomsToChatItemView;
