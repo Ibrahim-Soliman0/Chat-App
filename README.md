@@ -5,7 +5,6 @@
 ![Maven](https://img.shields.io/badge/Maven-4.0-C71A36?style=for-the-badge&logo=apache-maven)
 ![RMI](https://img.shields.io/badge/RMI-Callback%20Pattern-informational?style=for-the-badge)
 ![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Active-success?style=for-the-badge)
 
 > A modern, feature-rich desktop chat application built with Java and JavaFX. Connect, communicate, and collaborate seamlessly with real-time messaging, group chats, and intelligent offline message delivery.
 
