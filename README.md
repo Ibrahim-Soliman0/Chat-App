@@ -25,7 +25,6 @@
 - [Usage Guide](#-usage-guide)
 - [Testing](#-testing)
 - [Future Enhancements](#-future-enhancements)
-- [Contributing](#-contributing)
 - [Team Members](#-team-members)
 
 ---
@@ -72,6 +71,7 @@ ChatApp follows a **Client-Server Architecture** with clear separation of concer
 <div align="center">
 <img width="600" height="600" alt="Architecture - visual selection" src="https://github.com/user-attachments/assets/56344106-0477-4a73-b5f4-b916d8a4279f" />
 </div>
+
 ---
 
 ## 📂 Project Structure
@@ -229,6 +229,7 @@ Server Invokes Client Callback → Recipient Receives Instantly
 <div align="center">
 <img width="679" height="1022" alt="Screenshot 2026-02-11 010258" src="https://github.com/user-attachments/assets/0c867441-2f51-41bb-a27e-4c58879af53b" />
 </div>
+
 ---
 
 #### 💬 Chat Screen
@@ -250,7 +251,6 @@ Server Invokes Client Callback → Recipient Receives Instantly
 <div align="center">
 <img width="1580" height="1097" alt="Screenshot 2026-02-11 005928" src="https://github.com/user-attachments/assets/e37b27d2-ab4d-49e9-90c2-21ac25c8949d" />
 </div>
-
 
 ---
 
