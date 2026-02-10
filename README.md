@@ -69,9 +69,9 @@ Whether you're looking for a feature-complete messaging platform or learning how
 ## 🏗️ Architecture
 
 ChatApp follows a **Client-Server Architecture** with clear separation of concerns:
-
-<img width="888" height="815" alt="🏗️ Architecture - visual selection" src="C:\Users\ibrah\Downloads\Architecture - visual selection.png" />
-
+<div align="center">
+<img width="600" height="600" alt="Architecture - visual selection" src="https://github.com/user-attachments/assets/56344106-0477-4a73-b5f4-b916d8a4279f" />
+</div>
 ---
 
 ## 📂 Project Structure
@@ -212,38 +212,52 @@ Server Invokes Client Callback → Recipient Receives Instantly
 
 ### Client Side
 #### 🔐 Login Screen
-Image
+<div align="center">
+<img width="679" height="1022" alt="Screenshot 2026-02-11 005953" src="https://github.com/user-attachments/assets/832589a4-742d-4980-bb21-46a02c212409" />
+</div>
 
 ---
 
 #### 🏠 Main Chat Screen
-Image
+<div align="center">
+<img width="679" height="1022" alt="Screenshot 2026-02-11 010227" src="https://github.com/user-attachments/assets/6cc0e59c-8207-468d-a63c-62a5da5b0a91" />
+</div>
 
 ---
 
 #### 🔔 Notification Screen
-Image
-
+<div align="center">
+<img width="679" height="1022" alt="Screenshot 2026-02-11 010258" src="https://github.com/user-attachments/assets/0c867441-2f51-41bb-a27e-4c58879af53b" />
+</div>
 ---
 
 #### 💬 Chat Screen
-Image
+<div align="center">
+<img width="679" height="1022" alt="Screenshot 2026-02-11 010438" src="https://github.com/user-attachments/assets/2a636b02-887f-46b6-a50d-0ecab811478e" />
+</div>
 
 ---
 
 ### Server Side
 #### 🏠 Main Server Screen
-Image
+<div align="center">
+<img width="1580" height="1097" alt="Screenshot 2026-02-11 005825" src="https://github.com/user-attachments/assets/d33cedd4-36f2-441d-9e43-8aff26f74f64" />
+</div>
 
 ---
 
 #### 📈 Statistics Server Screen
-Image
+<div align="center">
+<img width="1580" height="1097" alt="Screenshot 2026-02-11 005928" src="https://github.com/user-attachments/assets/e37b27d2-ab4d-49e9-90c2-21ac25c8949d" />
+</div>
+
 
 ---
 
 ### 📊 Database Schema Diagram
-<img width="888" height="815" alt="🏗️ Architecture - visual selection" src="C:\Users\ibrah\Downloads\Screenshot 2026-02-11 004132.png" />
+<div align="center">
+<img width="600" height="600" alt="Screenshot 2026-02-11 004132" src="https://github.com/user-attachments/assets/437d51c2-912c-4a8b-afab-419db33710c2" />
+</div>
 
 ---
 
